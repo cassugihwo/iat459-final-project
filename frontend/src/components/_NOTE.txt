@@ -1,0 +1,2 @@
+/components folder is for UI components
+eg. navbar, recipe card, buttons, etc.
