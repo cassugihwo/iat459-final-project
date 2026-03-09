@@ -1,3 +1,33 @@
+@import 'index.css';
+
+h1 {
+  font-family: "Passion One", sans-serif;
+  font-size: var(--fontsize-title);
+  color: var(--color-red1);
+  line-height: 78%;
+}
+
+h2 {
+  font-family: "Passion One", sans-serif;
+  font-size: var(--fontsize-header);
+  color: var(--color-red1);
+}
+
+h3 {
+  font-family: "Passion One", sans-serif;
+  font-size: var(--fontsize-subheader);
+  color: var(--color-red1);
+}
+
+p {
+  font-family: "Noto Sans", sans-serif;
+  font-size: var(--fontsize-paragraph);
+  color: var(--color-red0);
+}
+
+body {
+  background-color: var(--color-white0);
+}
 
 .App {
   text-align: center;

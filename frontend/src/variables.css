@@ -1,0 +1,20 @@
+
+/* Colors */
+:root {
+    --color-white0: #F6F1ED;
+    --color-white1: #E1DAD7;
+
+    --color-red0: #570000;
+    --color-red1: #9E3B3B;
+
+    --color-pink0: #E47281;
+    --color-yellow0: #E98C00;
+}
+
+/* Font sizes */
+:root {
+    --fontsize-title: 7rem;
+    --fontsize-header: 5.5rem;
+    --fontsize-subheader: 4.35rem;
+    --fontsize-paragraph: 1rem;
+}
