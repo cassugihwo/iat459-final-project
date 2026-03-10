@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "../App.css";
+import "pages/MainPage.css";
 
 function FindRecipes(props) {}
 

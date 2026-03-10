@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./UI_Navbar.css";
+import { useAuth } from "context/AuthContext";
 
 function UI_Navbar(props) {
   const [testCurrentSelectButton, setTestCurrentSelectButton] = useState(1);

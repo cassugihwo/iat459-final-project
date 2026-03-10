@@ -3,42 +3,41 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
+const authRoutes = require("./routes/authRoutes");
+const verifyToken = require("./middleware/authMiddleWare");
+
 const app = express();
-const PORT = 5000;
+const PORT = 5001;
 
-// Enable CORS: Allow requests specifically from React Frontend
 app.use(cors({ origin: "http://localhost:3000" }));
-
-// Middleware to parse JSON
 app.use(express.json());
 
-// database connection
 const uri = process.env.MONGO_URI;
-
-const clientOptions = {
-  serverApi: { version: "1", strict: true, deprecationErrors: true },
-};
 
 async function connectDB() {
   try {
-    await mongoose.connect(uri, clientOptions);
-
-    // optional: the "Ping" command just confirms everything is working
+    await mongoose.connect(uri);
     await mongoose.connection.db.admin().command({ ping: 1 });
-    console.log("✅ Pinged the db. You successfully connected to MongoDB!");
+    console.log("✅ Connected to MongoDB");
   } catch (err) {
     console.error("❌ Connection failed:", err);
-    // If the DB is down, we might want to stop the server
-    // process.exit(1);
   }
 }
 
-// execute the connection function
 connectDB();
 
-// TEST ROUTE
-app.get('/api/hello', (req, res) => {
+app.get("/api/hello", (req, res) => {
   res.json({ message: "Hello from the Node backend!" });
+});
+
+app.use("/api/auth", authRoutes);
+
+// example protected route
+app.get("/api/protected", verifyToken, (req, res) => {
+  res.json({
+    message: `Hello ${req.user.username}, you accessed a protected route.`,
+    user: req.user,
+  });
 });
 
 app.listen(PORT, () => {
