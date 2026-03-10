@@ -32,7 +32,7 @@ function Home() {
             </div>
           </div>
 
-          <p>placeholder text here please please please please work</p>
+          <p>placeholder text here</p>
 
           <button onClick={handleLogout}>Logout</button>
         </div>

@@ -1,8 +1,10 @@
 import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "pages/MainPage.css";
 import { AuthContext } from "context/AuthContext";
 
 function SavedRecipes(props) {
+  const navigate = useNavigate();
   const [userRecipes, setUserRecipes] = useState([]);
   const [formData, setFormData] = useState({
     name: "",
@@ -91,6 +93,7 @@ function SavedRecipes(props) {
 
   return (
     <div className="placeholderpage">
+      <a onClick={() => navigate("/home")}>Go back</a>
       <h1>Recipes</h1>
       <h2>Add a recipe</h2>
       <div className="form-container">
