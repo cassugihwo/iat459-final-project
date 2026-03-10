@@ -3,6 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
+const userRecipeRoutes = require("./routes/userRecipes");
 const authRoutes = require("./routes/authRoutes");
 const verifyToken = require("./middleware/authMiddleWare");
 
@@ -23,7 +24,6 @@ async function connectDB() {
     console.error("❌ Connection failed:", err);
   }
 }
-
 connectDB();
 
 app.get("/api/hello", (req, res) => {
@@ -31,6 +31,7 @@ app.get("/api/hello", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/user-recipes", userRecipeRoutes);
 
 // example protected route
 app.get("/api/protected", verifyToken, (req, res) => {

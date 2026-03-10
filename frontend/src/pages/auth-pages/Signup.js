@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "services/authService";
-import "App.css";
+import "./AuthPages.css";
 
 function Signup() {
   const [formData, setFormData] = useState({

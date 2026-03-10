@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import "pages/MainPage.css";
 import { AuthContext } from "context/AuthContext";
 
-function SavedRecipes(props) {
+function FindRecipes(props) {
   const [userRecipes, setUserRecipes] = useState([]);
   const [formData, setFormData] = useState({
     name: "",
@@ -68,7 +68,7 @@ function SavedRecipes(props) {
   // deleting data: protected DELETE request
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5001/api/user-recipes/${id}`, {
+      const response = await fetch(`http://localhost:5000/api/user-recipes/${id}`, {
         method: "DELETE",
         headers: {
           // attach the token to prove user is authorized - again
@@ -137,4 +137,4 @@ function SavedRecipes(props) {
 
 }
 
-export default SavedRecipes;
+export default FindRecipes;

@@ -8,6 +8,7 @@ import Pantry from "pages/main-pages/Pantry";
 import SavedRecipes from "pages/main-pages/SavedRecipes";
 import FindRecipes from "pages/main-pages/FindRecipes";
 import MealPlan from "pages/main-pages/MealPlan";
+import AddRecipe from "pages/main-pages/AddRecipe"
 
 import ProtectedRoute from "components/ProtectedRoute";
 
@@ -59,6 +60,15 @@ export default function App() {
         element={
           <ProtectedRoute>
             <MealPlan />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/add-recipe"
+        element={
+          <ProtectedRoute>
+            <AddRecipe />
           </ProtectedRoute>
         }
       />

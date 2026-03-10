@@ -13,19 +13,13 @@ function UI_Navbar() {
           </a>
         </li>
         <li>
-          <a onClick={() => navigate("/find-recipes")}>
-            Find Recipes
-          </a>
+          <a onClick={() => navigate("/find-recipes")}>Find Recipes</a>
         </li>
         <li>
-          <a onClick={() => navigate("/pantry")}>
-            Your Pantry
-          </a>
+          <a onClick={() => navigate("/pantry")}>Your Pantry</a>
         </li>
         <li>
-          <a onClick={() => navigate("/saved-recipes")}>
-            Your Recipe List
-          </a>
+          <a onClick={() => navigate("/saved-recipes")}>Your Recipe List</a>
         </li>
         <li>
           <a onClick={() => navigate("/meal-plan")}>
