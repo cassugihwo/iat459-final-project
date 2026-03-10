@@ -1,36 +1,39 @@
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./UI_Navbar.css";
 import logo from "assets/logo/logo-noslogan.png";
 
-function UI_NavbarHeader(props) {
-    
-    const [testCurrentState, setTestCurrentState] = useState(1);
+function UI_NavbarHeader() {
+  const navigate = useNavigate();
 
-    let stateContent;
-    switch (testCurrentState) {
-      case 0:
-        stateContent = (
-          <div className="userProfilePicture"></div>
-        );
-        break;
-      default:
-        stateContent = (<div className="buttons">
-          <button className="buttonLogin">Login</button>
-          <button className="buttonSignup">Signup</button>
-        </div>);
-    }
+  return (
+    <div className="navbarHeader-container">
+      <div className="logo">
+        <img
+          src={logo}
+          alt="YumMeal logo"
+          onClick={() => navigate("/home")}
+          style={{ cursor: "pointer" }}
+        />
+      </div>
 
-    return (
-      <div className="navbarHeader-container">
-        <div className="logo">
-          <img src={logo} alt="YumMeal Logo"/>
-        </div>
-        <div className="rightside">
-          {stateContent}
+      <div className="rightside">
+        <div className="buttons">
+          <button
+            className="buttonLogin"
+            onClick={() => navigate("/login")}
+          >
+            Login
+          </button>
+          <button
+            className="buttonSignup"
+            onClick={() => navigate("/signup")}
+          >
+            Signup
+          </button>
         </div>
       </div>
-    );
-
+    </div>
+  );
 }
 
 export default UI_NavbarHeader;
