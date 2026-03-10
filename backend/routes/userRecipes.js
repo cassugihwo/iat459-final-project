@@ -4,14 +4,14 @@ const UserRecipe = require("../models/UserRecipe");
 const verifyToken = require("../middleware/authMiddleWare");
 
 // GET ROUTE (public)
-// router.get("/", async (req, res) => {
-//     try {
-//         const userRecipes = await UserRecipe.find(); // No filter, returns all
-//         res.json(userRecipes);
-//     } catch (err) {
-//         res.status(500).json({ error: err.message });
-//     }
-// });
+router.get("/", async (req, res) => {
+  try {
+      const userRecipes = await UserRecipe.find(); // No filter, returns all
+      res.json(userRecipes);
+  } catch (err) {
+      res.status(500).json({ error: err.message });
+  }
+});
 
 // GET ROUTE (personalized)
 router.get("/my-recipes", verifyToken, async (req, res) => {
@@ -55,7 +55,7 @@ router.post("/", verifyToken, async (req, res) => {
         name: req.body.name,
         ingredients: req.body.ingredients,
         instructions: req.body.instructions,
-        owner: req.userId
+        owner: req.userId,
     });
     await userRecipe.save();
     res.status(201).json(userRecipe);

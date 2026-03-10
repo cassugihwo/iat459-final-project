@@ -13,7 +13,7 @@ function SavedRecipes(props) {
   const { token, user, logout } = useContext(AuthContext);
 
   useEffect(() => {
-    fetch("http://localhost:5001/api/user-recipes")
+    fetch("http://localhost:5001/api/user-recipes/")
       .then((res) => res.json())
       .then((data) => setUserRecipes(data))
       .catch((err) => console.error("Error fetching recipes:", err));
@@ -31,7 +31,7 @@ function SavedRecipes(props) {
     e.preventDefault(); // stop the page from refreshing
 
     try {
-      const response = await fetch("http://localhost:5001/api/user-recipes", {
+      const response = await fetch("http://localhost:5001/api/user-recipes/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -59,7 +59,7 @@ function SavedRecipes(props) {
         instructions: "",
       });
     } catch (err) {
-        console.log("Failed form submit");
+      console.log("Failed form submit");
       console.error(err);
       alert(err.message); // show the error to the user
     }
@@ -124,7 +124,7 @@ function SavedRecipes(props) {
       <h2>Your Recipes</h2>
       <div className="recipe-list">
         {userRecipes.map((recipe) => (
-          <div className="recipe-card">
+          <div key={recipe._id} className="recipe-card">
             <h3>{recipe.name}</h3>
             <p>{recipe.ingredients}</p>
             <p>{recipe.instructions}</p>
