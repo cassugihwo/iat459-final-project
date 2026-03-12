@@ -68,7 +68,7 @@ export default function App() {
         path="/add-recipe"
         element={
           <ProtectedRoute>
-            <AddRecipe />
+            <AddRecipe/>
           </ProtectedRoute>
         }
       />
