@@ -3,6 +3,7 @@ import { useAuth } from "context/AuthContext";
 import Navbar from "components/navbar/UI_Navbar";
 import NavbarHeader from "components/navbar/UI_NavbarHeader";
 import logo from "assets/logo/logo-full.png";
+import RecipeCard from "components/recipe-card/UI_RecipeCard";
 import "pages/MainPage.css";
 
 function Home() {
@@ -32,7 +33,11 @@ function Home() {
             </div>
           </div>
 
+          <div>
+            <RecipeCard/>
+          </div>
           <p>placeholder text here</p>
+
 
           <button onClick={handleLogout}>Logout</button>
         </div>
