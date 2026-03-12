@@ -10,49 +10,51 @@ import centerDish from "assets/bg image/center.png";
 import rightDish from "assets/bg image/right.png";
 
 function FindRecipes(props) {
-  return (
-    <div className="home-page">
-      <div className="navbarHeader">
-        <NavbarHeader />
-      </div>
-
-      <div className="bg">
-        <div className="bg-food bg-food-left">
-          <img src={leftDish} alt="Decorative dish" />
-        </div>
-
-        <div className="bg-food bg-food-center">
-          <img src={centerDish} alt="Decorative dish" />
-        </div>
-
-        <div className="bg-food bg-food-right">
-          <img src={rightDish} alt="Decorative dish" />
-        </div>
-
-        <div className="bg-logo">
-          <img src={logo} alt="YumMeal Logo" />
-        </div>
-
-        <div className="bg-gradient"></div>
-      </div>
-
-      <div className="main">
-        <div className="navbar">
-          <Navbar />
-        </div>
-
-        <div className="main-content">
-          <div className="header-container">
-            <div className="header-container-wrapper">
+    return (
+        <div className="home-page">
+            <div className="navbarHeader">
+                <NavbarHeader />
             </div>
-          </div>
 
-          <p>placeholder text here</p>
+            <div className="bg">
+                <div className="bg-food bg-food-left">
+                    <img src={leftDish} alt="Decorative dish" />
+                </div>
 
+                <div className="bg-food bg-food-center">
+                    <img src={centerDish} alt="Decorative dish" />
+                </div>
+
+                <div className="bg-food bg-food-right">
+                    <img src={rightDish} alt="Decorative dish" />
+                </div>
+
+                <div className="bg-logo">
+                    <img src={logo} alt="YumMeal Logo" />
+                </div>
+
+                <div className="bg-gradient"></div>
+            </div>
+
+            <div className="main">
+                <div className="navbar">
+                    <Navbar />
+                </div>
+
+                <div className="main-content">
+                    <div className="header-container">
+                        <div className="header-container-wrapper">
+                            <h1>Find Recipes</h1>
+                            <p>Find recipes based on your ingredients</p>
+                        </div>
+                    </div>
+
+                    <p>placeholder text here</p>
+
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  ); 
+    );
 }
 
 export default FindRecipes;

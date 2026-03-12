@@ -28,7 +28,7 @@ function UI_Navbar() {
             to="/pantry"
             className={({ isActive }) => (isActive ? "selected" : "")}
           >
-            Your Pantry
+            Saved Recipes
           </NavLink>
         </li>
 
@@ -37,7 +37,7 @@ function UI_Navbar() {
             to="/saved-recipes"
             className={({ isActive }) => (isActive ? "selected" : "")}
           >
-            Your Recipe List
+            Add Your Recipes
           </NavLink>
         </li>
 
