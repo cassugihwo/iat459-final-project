@@ -1,10 +1,14 @@
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "pages/MainPage.css";
 import { AuthContext } from "context/AuthContext";
+import Navbar from "components/navbar/UI_Navbar";
+import NavbarHeader from "components/navbar/UI_NavbarHeader";
+import logo from "assets/logo/logo-full.png";
+import leftDish from "assets/bg image/left.png";
+import centerDish from "assets/bg image/center.png";
+import rightDish from "assets/bg image/right.png";
 
-function SavedRecipes(props) {
-  const navigate = useNavigate();
+function SavedRecipes() {
   const [userRecipes, setUserRecipes] = useState([]);
   const [formData, setFormData] = useState({
     name: "",
@@ -12,14 +16,34 @@ function SavedRecipes(props) {
     instructions: "",
   });
 
-  const { token, user, logout } = useContext(AuthContext);
+  const { token } = useContext(AuthContext);
 
   useEffect(() => {
-    fetch("http://localhost:5001/api/user-recipes/")
-      .then((res) => res.json())
-      .then((data) => setUserRecipes(data))
-      .catch((err) => console.error("Error fetching recipes:", err));
-  }, []);
+    async function fetchRecipes() {
+      try {
+        const response = await fetch("http://localhost:5001/api/user-recipes", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch recipes.");
+        }
+
+        const data = await response.json();
+        setUserRecipes(data);
+      } catch (err) {
+        console.error("Error fetching recipes:", err);
+      }
+    }
+
+    if (token) {
+      fetchRecipes();
+    }
+  }, [token]);
 
   function handleChange(e) {
     setFormData({
@@ -28,116 +52,165 @@ function SavedRecipes(props) {
     });
   }
 
-  // creating data: protected POST request
   async function handleSubmit(e) {
-    e.preventDefault(); // stop the page from refreshing
+    e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:5001/api/user-recipes/", {
+      const response = await fetch("http://localhost:5001/api/user-recipes", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // attach the token to prove user is authorized
           Authorization: token,
         },
-        body: JSON.stringify(formData), // send the form data to the server
+        body: JSON.stringify(formData),
       });
 
-      // basic error handling if the token is invalid/missing or the server rejects
       if (!response.ok) {
         throw new Error("Failed to add recipe. Are you authorized?");
       }
 
-      // if successful, the server sends back the newly created plant (including its new MongoDB _id)
       const newUserRecipe = await response.json();
 
-      // update our local React state to include the new plant instantly without refreshing the page
-      setUserRecipes([...userRecipes, newUserRecipe]);
+      setUserRecipes((prevRecipes) => [...prevRecipes, newUserRecipe]);
 
-      // clear the form fields
       setFormData({
         name: "",
         ingredients: "",
         instructions: "",
       });
     } catch (err) {
-      console.log("Failed form submit");
-      console.error(err);
-      alert(err.message); // show the error to the user
+      console.error("Failed form submit:", err);
+      alert(err.message);
     }
   }
 
-  // deleting data: protected DELETE request
-  const handleDelete = async (id) => {
+  async function handleDelete(id) {
     try {
-      const response = await fetch(`http://localhost:5001/api/user-recipes/${id}`, {
-        method: "DELETE",
-        headers: {
-          // attach the token to prove user is authorized - again
-          Authorization: token,
-        },
-      });
+      const response = await fetch(
+        `http://localhost:5001/api/user-recipes/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to delete. Are you authorized?");
       }
 
-      // if the backend successfully deleted it, remove it from our local React state
-      // this filters out the deleted plant so it disappears from the screen instantly
-      setUserRecipes(userRecipes.filter((recipe) => recipe._id !== id));
+      setUserRecipes((prevRecipes) =>
+        prevRecipes.filter((recipe) => recipe._id !== id)
+      );
     } catch (err) {
       console.error(err);
       alert(err.message);
     }
-  };
+  }
 
   return (
-    <div className="placeholderpage">
-      <a onClick={() => navigate("/home")}>Go back</a>
-      <h1>Recipes</h1>
-      <h2>Add a recipe</h2>
-      <div className="form-container">
-        <form onSubmit={handleSubmit}>
-          <label>Recipe Name</label>
-          <input
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
-
-          <label>Ingredients</label>
-          <input
-            name="ingredients"
-            value={formData.ingredients}
-            onChange={handleChange}
-          />
-
-          <label>Instructions</label>
-          <input
-            name="instructions"
-            value={formData.instructions}
-            onChange={handleChange}
-          />
-
-          <button type="submit">Add Recipe</button>
-        </form>
+    <div className="home-page">
+      <div className="navbarHeader">
+        <NavbarHeader />
       </div>
 
-      <h2>Your Recipes</h2>
-      <div className="recipe-list">
-        {userRecipes.map((recipe) => (
-          <div key={recipe._id} className="recipe-card">
-            <h3>{recipe.name}</h3>
-            <p>{recipe.ingredients}</p>
-            <p>{recipe.instructions}</p>
+      <div className="bg">
+        <div className="bg-food bg-food-left">
+          <img src={leftDish} alt="Decorative dish" />
+        </div>
+
+        <div className="bg-food bg-food-center">
+          <img src={centerDish} alt="Decorative dish" />
+        </div>
+
+        <div className="bg-food bg-food-right">
+          <img src={rightDish} alt="Decorative dish" />
+        </div>
+
+        <div className="bg-logo">
+          <img src={logo} alt="YumMeal Logo" />
+        </div>
+
+        <div className="bg-gradient"></div>
+      </div>
+
+      <div className="main">
+        <div className="navbar">
+          <Navbar />
+        </div>
+
+        <div className="main-content">
+          <div className="header-container">
+            <div className="header-container-wrapper">
+              <h1>Recipes</h1>
+              <p>Add and manage your recipes here.</p>
+            </div>
           </div>
-        ))}
+
+          <div className="placeholderpage">
+            <h2>Add a Recipe</h2>
+
+            <div className="form-container">
+              <form onSubmit={handleSubmit}>
+                <label htmlFor="name">Recipe Name</label>
+                <input
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
+
+                <label htmlFor="ingredients">Ingredients</label>
+                <input
+                  id="ingredients"
+                  name="ingredients"
+                  value={formData.ingredients}
+                  onChange={handleChange}
+                  required
+                />
+
+                <label htmlFor="instructions">Instructions</label>
+                <input
+                  id="instructions"
+                  name="instructions"
+                  value={formData.instructions}
+                  onChange={handleChange}
+                  required
+                />
+
+                <button type="submit">Add Recipe</button>
+              </form>
+            </div>
+
+            <h2>Your Recipes</h2>
+
+            <div className="recipe-list">
+              {userRecipes.length > 0 ? (
+                userRecipes.map((recipe) => (
+                  <div key={recipe._id} className="recipe-card">
+                    <h3>{recipe.name}</h3>
+                    <p>
+                      <strong>Ingredients:</strong> {recipe.ingredients}
+                    </p>
+                    <p>
+                      <strong>Instructions:</strong> {recipe.instructions}
+                    </p>
+                    <button onClick={() => handleDelete(recipe._id)}>
+                      Delete
+                    </button>
+                  </div>
+                ))
+              ) : (
+                <p>No recipes yet.</p>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
-
-
 }
 
 export default SavedRecipes;

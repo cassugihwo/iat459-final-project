@@ -1,30 +1,53 @@
-import { useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import "./UI_Navbar.css";
 
 function UI_Navbar() {
-  const navigate = useNavigate();
-
   return (
     <div className="navbar-container">
       <ul>
         <li>
-          <a className="selected" onClick={() => navigate("/home")}>
+          <NavLink
+            to="/home"
+            className={({ isActive }) => (isActive ? "selected" : "")}
+          >
             Home
-          </a>
+          </NavLink>
         </li>
+
         <li>
-          <a onClick={() => navigate("/find-recipes")}>Find Recipes</a>
+          <NavLink
+            to="/find-recipes"
+            className={({ isActive }) => (isActive ? "selected" : "")}
+          >
+            Find Recipes
+          </NavLink>
         </li>
+
         <li>
-          <a onClick={() => navigate("/pantry")}>Your Pantry</a>
+          <NavLink
+            to="/pantry"
+            className={({ isActive }) => (isActive ? "selected" : "")}
+          >
+            Favourite Recipes
+          </NavLink>
         </li>
+
         <li>
-          <a onClick={() => navigate("/saved-recipes")}>Your Recipe List</a>
+          <NavLink
+            to="/saved-recipes"
+            className={({ isActive }) => (isActive ? "selected" : "")}
+          >
+            Add Your Recipes
+          </NavLink>
         </li>
+
         <li>
-          <a onClick={() => navigate("/meal-plan")}>
+          <NavLink
+            to="/meal-plan"
+            className={({ isActive }) => (isActive ? "selected" : "")}
+          >
             Your Meal Plan
-          </a>
+          </NavLink>
         </li>
       </ul>
     </div>
