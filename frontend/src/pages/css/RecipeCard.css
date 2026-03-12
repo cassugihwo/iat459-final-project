@@ -1,0 +1,157 @@
+@import "App.css";
+
+.recipe-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(260px, 1fr));
+  gap: 3rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.recipe-card {
+    position: relative;
+    width: 100%;
+    border: 0.25rem solid #9f3e3d;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-sizing: border-box;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.recipe-card-image {
+    width: 100%;
+    border-radius: 1rem;
+    object-fit: cover;
+}
+
+.recipe-card h3 {
+    margin: 0 0 0.5rem;
+    font-size: 2.2rem;
+    line-height: 1.02;
+    font-weight: 800;
+    color: #9f3e3d;
+    letter-spacing: -0.02em;
+}
+
+.recipe-time {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #9f3e3d;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.recipe-card-buttons {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+}
+
+.recipe-card-buttons button {
+    border: none;
+    border-radius: 999px;
+    padding: 0.8rem 1rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.recipe-card-buttons button:first-child {
+    background: #9f3e3d;
+    color: white;
+}
+
+.recipe-card-buttons button:first-child:hover {
+    background: #882f2e;
+}
+
+.recipe-card-buttons button:last-child {
+    background: #ead9d7;
+    color: #9f3e3d;
+}
+
+.recipe-card-buttons button:last-child:hover {
+    background: #e3cdca;
+}
+
+.recipe-fav-btn {
+    position: absolute;
+    right: 14px;
+    top: -30px;
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    border: 3px solid #9f3e3d;
+    background: #fffdfc;
+    color: #9f3e3d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    cursor: pointer;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+    transition: 0.2s ease;
+    z-index: 3;
+}
+
+.recipe-fav-btn:hover {
+    transform: scale(1.06);
+    background: #fff4f3;
+}
+
+
+
+
+
+.recipe-filter-section {
+  margin: 2rem 0 2.5rem;
+}
+
+.recipe-filter-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #8f4a4a;
+  margin-bottom: 1rem;
+
+}
+
+/* Recipe FIlter */
+.recipe-filter-pills {
+  display: flex;
+  gap: 1.4rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 0.4rem 0;
+}
+
+.recipe-filter-pills::-webkit-scrollbar {
+  display: none;
+}
+
+.recipe-filter-pill {
+  min-width: 180px;
+  padding: 1.1rem 2rem;
+  border: 2px solid #e4d8c8;
+  border-radius: 999px;
+  background: #f4efe7;
+  color: #5c0000;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+  transition: 0.2s ease;
+  white-space: nowrap;
+}
+
+.recipe-filter-pill:hover {
+  transform: translateY(-1px);
+}
+
+.recipe-filter-pill.active {
+  background: #9f3e3d;
+  color: white;
+  border-color: #9f3e3d;
+}

@@ -44,7 +44,7 @@ function MealPlan(props) {
         <div className="main-content">
           <div className="header-container">
             <div className="header-container-wrapper">
-              <h2>Meal Schedule</h2>
+              <h1>Meal Schedule</h1>
 
             </div>
           </div>

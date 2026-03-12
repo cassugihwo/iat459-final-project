@@ -1,7 +1,5 @@
-import { useState } from "react";
 import "pages/MainPage.css";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "context/AuthContext";
+import { useNavigate, useLocation } from "react-router-dom";
 import Navbar from "components/navbar/UI_Navbar";
 import NavbarHeader from "components/navbar/UI_NavbarHeader";
 import logo from "assets/logo/logo-full.png";
@@ -9,7 +7,12 @@ import leftDish from "assets/bg image/left.png";
 import centerDish from "assets/bg image/center.png";
 import rightDish from "assets/bg image/right.png";
 
-function Pantry(props) {
+function MemberOnly() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const featureName = location.state?.featureName || "This feature";
+
   return (
     <div className="home-page">
       <div className="navbarHeader">
@@ -42,18 +45,22 @@ function Pantry(props) {
         </div>
 
         <div className="main-content">
-          <div className="header-container">
-            <div className="header-container-wrapper">
-              <h1>Favourite</h1>
+          <div className="member-only-card">
+            <h1>{featureName} is a member-only feature</h1>
+            <p>
+              Please sign up or log in to access favorites, meal planning,
+              pantry tools, and other personalized features.
+            </p>
+
+            <div className="member-only-buttons">
+              <button onClick={() => navigate("/login")}>Login</button>
+              <button onClick={() => navigate("/signup")}>Sign Up</button>
             </div>
           </div>
-
-          <p>placeholder text here</p>
-
         </div>
       </div>
     </div>
-  ); 
+  );
 }
 
-export default Pantry;
+export default MemberOnly;

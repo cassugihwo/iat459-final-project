@@ -1,0 +1,72 @@
+@import "App.css";
+
+.navbarHeader-container {
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 20% 60% 20%;
+    align-items: center;
+    background-color: var(--color-white0);
+    padding: 1.2rem 0;
+}
+
+.navbarHeader-container .logo {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0 1rem;
+    cursor: pointer;
+}
+
+.navbarHeader-container .logo img {
+    height: 2.2rem;
+    width: auto;
+    display: block;
+}
+
+.navbarHeader-container .rightside {
+    grid-column-start: 3;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+    padding: 0 1rem;
+}
+
+.navbarHeader-container .rightside button {
+    padding: 0.5rem 1.35rem;
+    border-radius: 10rem;
+    font-size: 0.9rem;
+    font-family: "Noto Sans", sans-serif;
+    font-weight: 600;
+    border: none;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.navbarHeader-container .rightside .outlined-btn {
+    color: #9E3B3B;
+    background-color: transparent;
+    border: 1.5px solid #9E3B3B;
+    transition: color, background-color 0.2s ease, color 0.2s ease;
+}
+
+.navbarHeader-container .rightside .filled-btn {
+    color: var(--color-white0);
+    background-color: #9E3B3B;
+    border: 1.5px solid #9E3B3B;
+    transition: color, background-color 0.2s ease, color 0.2s ease;
+
+}
+
+.navbarHeader-container .rightside .outlined-btn:hover,
+.navbarHeader-container .rightside .filled-btn:hover {
+    color: var(--color-white0);
+    background-color: #511d1d;
+    border: 1.5px solid #511d1d;
+
+}

@@ -8,26 +8,24 @@ import Pantry from "pages/main-pages/Pantry";
 import SavedRecipes from "pages/main-pages/SavedRecipes";
 import FindRecipes from "pages/main-pages/FindRecipes";
 import MealPlan from "pages/main-pages/MealPlan";
-import AddRecipe from "pages/main-pages/AddRecipe"
+import MemberOnly from "pages/main-pages/MemberOnly";
 
 import ProtectedRoute from "components/ProtectedRoute";
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/login" replace />} />
+      {/* default page */}
+      <Route path="/" element={<Navigate to="/home" replace />} />
+
+      {/* public routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/home" element={<Home />} />
+      <Route path="/find-recipes" element={<FindRecipes />} />
+      <Route path="/member-only" element={<MemberOnly />} />
 
-      <Route
-        path="/home"
-        element={
-          <ProtectedRoute>
-            <Home />
-          </ProtectedRoute>
-        }
-      />
-
+      {/* protected member routes */}
       <Route
         path="/pantry"
         element={
@@ -47,15 +45,6 @@ export default function App() {
       />
 
       <Route
-        path="/find-recipes"
-        element={
-          <ProtectedRoute>
-            <FindRecipes />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
         path="/meal-plan"
         element={
           <ProtectedRoute>
@@ -64,14 +53,6 @@ export default function App() {
         }
       />
 
-      <Route
-        path="/add-recipe"
-        element={
-          <ProtectedRoute>
-            <AddRecipe/>
-          </ProtectedRoute>
-        }
-      />
     </Routes>
   );
 }
