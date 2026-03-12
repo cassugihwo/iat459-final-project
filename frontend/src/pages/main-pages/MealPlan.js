@@ -44,6 +44,8 @@ function MealPlan(props) {
         <div className="main-content">
           <div className="header-container">
             <div className="header-container-wrapper">
+              <h2>Meal Schedule</h2>
+
             </div>
           </div>
 
@@ -52,7 +54,7 @@ function MealPlan(props) {
         </div>
       </div>
     </div>
-  ); 
+  );
 }
 
 export default MealPlan;

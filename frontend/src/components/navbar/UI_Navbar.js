@@ -28,7 +28,7 @@ function UI_Navbar() {
             to="/pantry"
             className={({ isActive }) => (isActive ? "selected" : "")}
           >
-            Saved Recipes
+            Favourite Recipes
           </NavLink>
         </li>
 

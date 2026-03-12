@@ -44,6 +44,7 @@ function Pantry(props) {
         <div className="main-content">
           <div className="header-container">
             <div className="header-container-wrapper">
+              <h2>Favourite Recipes</h2>
             </div>
           </div>
 
