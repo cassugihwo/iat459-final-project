@@ -5,7 +5,7 @@ const cors = require("cors");
 
 const userRecipeRoutes = require("./routes/userRecipes");
 const authRoutes = require("./routes/authRoutes");
-const apiRoutes = require("./routes/apiRoutes");
+const homeRecipesRoutes = require("./routes/homeRecipeRoute");
 const verifyToken = require("./middleware/authMiddleWare");
 
 const app = express();
@@ -13,6 +13,7 @@ const PORT = 5001;
 
 app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
+app.use("/api", homeRecipesRoutes);
 
 const uri = process.env.MONGO_URI;
 
@@ -32,8 +33,6 @@ app.get("/api/hello", (req, res) => {
 });
 app.use("/api/auth", authRoutes);
 app.use("/api/user-recipes", userRecipeRoutes);
-app.use("/api/spoonacular", apiRoutes);
-
 // example protected route
 app.get("/api/protected", verifyToken, (req, res) => {
   res.json({

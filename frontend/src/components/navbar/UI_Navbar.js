@@ -1,7 +1,20 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "context/AuthContext";
 import "./UI_Navbar.css";
 
 function UI_Navbar() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  function handleMemberNavigation(path, featureName, event) {
+    if (!user) {
+      event.preventDefault();
+      navigate("/member-only", {
+        state: { featureName },
+      });
+    }
+  }
+
   return (
     <div className="navbar-container">
       <ul>
@@ -27,6 +40,9 @@ function UI_Navbar() {
           <NavLink
             to="/pantry"
             className={({ isActive }) => (isActive ? "selected" : "")}
+            onClick={(event) =>
+              handleMemberNavigation("/pantry", "Favourite Recipes", event)
+            }
           >
             Favourite Recipes
           </NavLink>
@@ -36,6 +52,9 @@ function UI_Navbar() {
           <NavLink
             to="/saved-recipes"
             className={({ isActive }) => (isActive ? "selected" : "")}
+            onClick={(event) =>
+              handleMemberNavigation("/saved-recipes", "Add Your Recipes", event)
+            }
           >
             Add Your Recipes
           </NavLink>
@@ -45,6 +64,9 @@ function UI_Navbar() {
           <NavLink
             to="/meal-plan"
             className={({ isActive }) => (isActive ? "selected" : "")}
+            onClick={(event) =>
+              handleMemberNavigation("/meal-plan", "Your Meal Plan", event)
+            }
           >
             Your Meal Plan
           </NavLink>

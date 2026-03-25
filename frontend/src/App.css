@@ -9,12 +9,13 @@ h1 {
 
 h2 {
   font-family: "Passion One", sans-serif;
+  font-style: normal;
   font-size: var(--fontsize-header);
   color: var(--color-red1);
 }
 
 h3 {
-  font-family: "Passion One", sans-serif;
+  font-family: "Noto Sans", sans-serif;
   font-size: var(--fontsize-subheader);
   color: var(--color-red1);
 }
