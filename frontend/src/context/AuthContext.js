@@ -20,7 +20,7 @@ export function AuthProvider({ children }) {
         localStorage.removeItem("token");
       }
     }
-  }, []);
+  }, [token]);
 
   function login(newToken) {
     localStorage.setItem("token", newToken);
@@ -31,7 +31,7 @@ export function AuthProvider({ children }) {
 
   function logout() {
     localStorage.removeItem("token");
-    setToken("");
+    setToken(null);
     setUser(null);
   }
 

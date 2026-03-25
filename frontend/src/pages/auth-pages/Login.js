@@ -29,7 +29,7 @@ function Login() {
     try {
       const data = await loginUser(formData);
       login(data.token);
-      navigate("/mainpage");
+      navigate("/home");
     } catch (err) {
       setError(err.message);
     }

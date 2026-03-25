@@ -5,6 +5,7 @@ const cors = require("cors");
 
 const userRecipeRoutes = require("./routes/userRecipes");
 const authRoutes = require("./routes/authRoutes");
+const apiRoutes = require("./routes/apiRoutes");
 const verifyToken = require("./middleware/authMiddleWare");
 
 const app = express();
@@ -31,6 +32,7 @@ app.get("/api/hello", (req, res) => {
 });
 app.use("/api/auth", authRoutes);
 app.use("/api/user-recipes", userRecipeRoutes);
+app.use("/api/spoonacular", apiRoutes);
 
 // example protected route
 app.get("/api/protected", verifyToken, (req, res) => {
@@ -39,6 +41,8 @@ app.get("/api/protected", verifyToken, (req, res) => {
     user: req.user,
   });
 });
+
+
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

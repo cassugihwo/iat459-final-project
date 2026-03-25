@@ -1,3 +1,4 @@
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "context/AuthContext";
 import Navbar from "components/navbar/UI_Navbar";
@@ -10,12 +11,31 @@ import RecipeCard from "components/recipe-card/UI_RecipeCard";
 import "pages/MainPage.css";
 
 function Home() {
-  const { user, logout } = useAuth();
+  const { user, token, logout } = useAuth();
   const navigate = useNavigate();
 
   function handleLogout() {
     logout();
     navigate("/login");
+  }
+
+  function testAPI() {
+    async function testGetAPI() {
+      try {
+        const response = await fetch("http://localhost:5001/api/spoonacular/test", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+        });
+        const data = await response.json();
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching from Spoonacular API:", error);
+      }
+    }
+    testGetAPI();
   }
 
   return (
@@ -57,12 +77,12 @@ function Home() {
           </div>
 
           <div>
-            <RecipeCard/>
+            <RecipeCard />
           </div>
           <p>placeholder text here</p>
 
-
           <button onClick={handleLogout}>Logout</button>
+          <button onClick={testAPI}>testAPI</button>
         </div>
       </div>
     </div>
