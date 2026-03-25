@@ -1,0 +1,73 @@
+@import "App.css";
+
+:root {
+    --recipe-card-width: 16rem;
+    --recipe-card-border-thickness: 3px;
+    --recipe-card-border-radius: 45px;
+}
+
+.recipe-card-container {
+    background-color: var(--color-red1);
+    border-radius: var(--recipe-card-border-radius);
+    border: var(--recipe-card-border-thickness) solid var(--color-red1);
+    overflow: hidden;
+    display: grid;
+    width: var(--recipe-card-width);
+
+    .recipe-image img{
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        display: block;
+    }
+
+    .recipe-desc {
+        background-color: var(--color-white0);
+        display: flex;
+        flex-direction: column;
+        padding: 18px 22px 20px 22px;
+        .title {
+            display: flex;
+            flex-direction: column-reverse;
+            h3 {
+                font-size: 1.5rem;
+                margin: 0;
+            }
+            ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                margin-bottom: 2px;
+                font-size: 0.8rem;
+            }
+
+            ul li {
+                display: inline;
+                color: var(--color-yellow0);
+                font-weight: 600;
+                /* opacity: 0.5; */
+            }
+
+            ul li:not(:last-child)::after {
+                content: ", ";
+            }
+        }
+        .time {
+            display:flex;
+            flex-direction: row;
+            gap: 3px;
+            .icon-cooktime {
+                width: 0.8rem;
+                height: auto;
+            }
+            p {
+                color: var(--color-red1);
+                margin: 0;
+                font-size: 0.8rem;
+                font-weight: 350;
+            }
+        }
+    }
+
+
+}

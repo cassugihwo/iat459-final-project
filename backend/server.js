@@ -41,6 +41,8 @@ app.get("/api/protected", verifyToken, (req, res) => {
   });
 });
 
+
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
