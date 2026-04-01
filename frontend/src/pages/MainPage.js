@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "context/AuthContext";
 import Navbar from "components/navbar/UI_Navbar";
 import NavbarHeader from "components/navbar/UI_NavbarHeader";
+import Footer from "components/footer/UI_Footer";
 import logo from "assets/logo/logo-full.png";
 import leftDish from "assets/bg image/left.png";
 import centerDish from "assets/bg image/center.png";
@@ -148,37 +149,9 @@ function Home() {
             </div>
           </section>
 
-          <section className="recipe-section">
-            <h2>Recipes using Chicken</h2>
-            <p>Because you have Chicken in Your Pantry</p>
-
-            <div className="recipe-grid">
-              {chickenRecipes.length > 0 ? (
-                chickenRecipes.map((recipe) => (
-                  <div key={recipe._id} className="home-recipe-card">
-                    <div className="home-recipe-image">
-                      <img src={leftDish} alt={recipe.name} />
-                      <button
-                        className={`save-btn ${savedRecipeIds.includes(recipe._id) ? "saved" : ""}`}
-                        onClick={() => toggleSaveRecipe(recipe._id)}
-                      >
-                        ♡
-                      </button>
-                    </div>
-
-                    <div className="home-recipe-body">
-                      <p className="recipe-meta">Main Dish • Easy</p>
-                      <h3>{recipe.name}</h3>
-                      <p className="recipe-small">Chicken</p>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p>No chicken recipes found from the current search.</p>
-              )}
-            </div>
-          </section>
+          
         </div>
+        <Footer />
       </div>
     </div>
   );

@@ -1,0 +1,22 @@
+import { model } from "mongoose";
+
+function verufyAdmin( req, res, next){
+    //check if user object exists on the request
+    if(!req.user){
+        return res
+            .status(401)
+            .json({message: "Unauthorized: No user information found."})
+    }
+
+    //check user's role
+    if(req.user.role !== "admin"){
+        return res
+            .status(403)
+            .json({message: "Forbidden: You do not have permission to access this"})
+    }
+
+    //if user is admin, proceed to the next middleware or route handler
+    next();
+
+}
+module.exports = verifyAdmin;

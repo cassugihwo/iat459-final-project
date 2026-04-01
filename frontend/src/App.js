@@ -9,8 +9,9 @@ import SavedRecipes from "pages/main-pages/SavedRecipes";
 import FindRecipes from "pages/main-pages/FindRecipes";
 import MealPlan from "pages/main-pages/MealPlan";
 import MemberOnly from "pages/main-pages/MemberOnly";
-
-import ProtectedRoute from "components/ProtectedRoute";
+import ProtectedRoute from "protectedRoute/ProtectedRoute";
+import AdminProtectedRoute from "protectedRoute/AdminProtectedRoute";
+import Admin from "pages/admin page/Admin";
 
 export default function App() {
   return (
@@ -53,6 +54,15 @@ export default function App() {
         }
       />
 
+      {/* admin routes will go here */}
+      <Route
+        path="/admin"
+        element={
+          <AdminProtectedRoute>
+            <Admin />
+          </AdminProtectedRoute>
+        }
+      />
     </Routes>
   );
 }

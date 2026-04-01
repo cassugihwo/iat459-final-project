@@ -1,0 +1,145 @@
+const express = require("express");
+const router = express.Router();
+
+const User = require("../models/User");
+const UserRecipe = require("../models/UserRecipe");
+const verifyToken = require("../middleware/authMiddleWare");
+const verifyAdmin = require("../middleware/verifyAdmin");
+
+// GET all members
+router.get("/members", verifyToken, verifyAdmin, async (req, res) => {
+  try {
+    const users = await User.find({}, "-password").sort({ createdAt: -1 });
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch members", error: err.message });
+  }
+});
+
+// SUSPEND member
+router.patch("/members/:id/suspend", verifyToken, verifyAdmin, async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { isSuspended: true },
+      { new: true, select: "-password" }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ message: "User suspended successfully", user });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to suspend user", error: err.message });
+  }
+});
+
+// UNSUSPEND member
+router.patch("/members/:id/unsuspend", verifyToken, verifyAdmin, async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { isSuspended: false },
+      { new: true, select: "-password" }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ message: "User unsuspended successfully", user });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to unsuspend user", error: err.message });
+  }
+});
+
+// DELETE member
+router.delete("/members/:id", verifyToken, verifyAdmin, async (req, res) => {
+  try {
+    const deletedUser = await User.findByIdAndDelete(req.params.id);
+
+    if (!deletedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    await UserRecipe.deleteMany({ owner: req.params.id });
+
+    res.json({ message: "User deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to delete user", error: err.message });
+  }
+});
+
+
+// GET all recipes/content
+router.get("/content", verifyToken, verifyAdmin, async (req, res) => {
+  try {
+    const recipes = await UserRecipe.find()
+      .populate("owner", "username firstName lastName")
+      .sort({ createdAt: -1 });
+
+    res.json(recipes);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch content", error: err.message });
+  }
+});
+
+// ADD content
+router.post("/content", verifyToken, verifyAdmin, async (req, res) => {
+  try {
+    const { name, ingredients, instructions, owner } = req.body;
+
+    const newRecipe = new UserRecipe({
+      name,
+      ingredients,
+      instructions,
+      owner: owner || req.userId,
+    });
+
+    await newRecipe.save();
+    res.status(201).json(newRecipe);
+  } catch (err) {
+    res.status(400).json({ message: "Failed to create content", error: err.message });
+  }
+});
+
+// EDIT content
+router.put("/content/:id", verifyToken, verifyAdmin, async (req, res) => {
+  try {
+    const updatedRecipe = await UserRecipe.findByIdAndUpdate(
+      req.params.id,
+      {
+        name: req.body.name,
+        ingredients: req.body.ingredients,
+        instructions: req.body.instructions,
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedRecipe) {
+      return res.status(404).json({ message: "Content not found" });
+    }
+
+    res.json(updatedRecipe);
+  } catch (err) {
+    res.status(400).json({ message: "Failed to update content", error: err.message });
+  }
+});
+
+// DELETE content
+router.delete("/content/:id", verifyToken, verifyAdmin, async (req, res) => {
+  try {
+    const deletedRecipe = await UserRecipe.findByIdAndDelete(req.params.id);
+
+    if (!deletedRecipe) {
+      return res.status(404).json({ message: "Content not found" });
+    }
+
+    res.json({ message: "Content deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to delete content", error: err.message });
+  }
+});
+
+module.exports = router;

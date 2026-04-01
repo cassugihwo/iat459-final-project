@@ -48,7 +48,9 @@ router.post("/login", async (req, res) => {
     const { username, password } = req.body;
 
     if (!username || !password) {
-      return res.status(400).json({ message: "Please enter username and password." });
+      return res
+        .status(400)
+        .json({ message: "Please enter username and password." });
     }
 
     const user = await User.findOne({ username });
@@ -56,20 +58,31 @@ router.post("/login", async (req, res) => {
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials." });
     }
-
+    if (user.isSuspended) {
+      return res
+        .status(403)
+        .json({ message: "Your account has been suspended." });
+    }
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid credentials." });
     }
+    //JWT payload - including role
+    const payload = {
+      id: user._id,
+      username: user.username,
+      role: user.role,
+    };
 
     const token = jwt.sign(
       {
         id: user._id,
         username: user.username,
+        role: user.role,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "1d" }
+      { expiresIn: "1d" },
     );
 
     res.json({ token });

@@ -9,8 +9,14 @@
     display: grid;
     grid-template-columns: 20% 60% 20%;
     align-items: center;
-    background-color:transparent;
+    background-color: transparent;
     padding: 1.2rem 0;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.navbarHeader-container.scrolled {
+    background-color: var(--color-white0);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
 .navbarHeader-container .logo {
@@ -25,6 +31,42 @@
     height: 2.2rem;
     width: auto;
     display: block;
+}
+
+.navbarHeader-container .header-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 13px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+}
+
+.navbarHeader-container.show-nav .header-nav {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.navbarHeader-container .header-nav a {
+    padding: 5px 14px;
+    border-radius: 15px;
+    font-family: "Noto Sans", sans-serif;
+    font-weight: 700;
+    color: var(--color-red1);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.navbarHeader-container .header-nav a:hover {
+    color: #4e1c1c;
+}
+
+.navbarHeader-container .header-nav a.selected {
+    background-color: var(--color-red1);
+    color: var(--color-white0);
+    padding: 10px 28px;
+    border-radius: 999px;
 }
 
 .navbarHeader-container .rightside {

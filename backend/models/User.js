@@ -22,6 +22,16 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    role:{
+      type: String,
+      reqire: true,
+      enum: ["user", "admin"],
+      default: "user"
+    },
+    isSuspended: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

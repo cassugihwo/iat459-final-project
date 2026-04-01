@@ -6,6 +6,7 @@ const cors = require("cors");
 const userRecipeRoutes = require("./routes/userRecipes");
 const authRoutes = require("./routes/authRoutes");
 const homeRecipesRoutes = require("./routes/homeRecipeRoute");
+const adminRoutes = require("./routes/adminRoutes");
 const verifyToken = require("./middleware/authMiddleWare");
 
 const app = express();
@@ -13,7 +14,11 @@ const PORT = 5001;
 
 app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
+
 app.use("/api", homeRecipesRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/user-recipes", userRecipeRoutes);
+app.use("/api/admin", adminRoutes);
 
 const uri = process.env.MONGO_URI;
 
@@ -31,17 +36,13 @@ connectDB();
 app.get("/api/hello", (req, res) => {
   res.json({ message: "Hello from the Node backend!" });
 });
-app.use("/api/auth", authRoutes);
-app.use("/api/user-recipes", userRecipeRoutes);
-// example protected route
+
 app.get("/api/protected", verifyToken, (req, res) => {
   res.json({
     message: `Hello ${req.user.username}, you accessed a protected route.`,
     user: req.user,
   });
 });
-
-
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

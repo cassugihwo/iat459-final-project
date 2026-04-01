@@ -1,4 +1,5 @@
 import "./UI_RecipeCard.css";
+import "./RecipeCard.css";
 import Icon_timer from "assets/icons/icon-timer-red.svg";
 import Icon_heart from "assets/icons/icon-heart-empty-red.svg";
 import Image_placeholderFood from "assets/images/image-placeholder-food.png";

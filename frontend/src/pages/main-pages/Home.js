@@ -8,7 +8,7 @@ import logo from "assets/logo/logo-full.png";
 import leftDish from "assets/bg image/left.png";
 import centerDish from "assets/bg image/center.png";
 import rightDish from "assets/bg image/right.png";
-import "pages/css/RecipeCard.css";
+import Footer from "components/footer/UI_Footer";
 
 function Home() {
   const { user } = useAuth();
@@ -18,6 +18,19 @@ function Home() {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [navHidden, setNavHidden] = useState(false);
+  const navbarRef = useRef(null);
+
+  useEffect(() => {
+    function handleScroll() {
+      if (navbarRef.current) {
+        const rect = navbarRef.current.getBoundingClientRect();
+        setNavHidden(rect.top < 70);
+      }
+    }
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   const [selectedType, setSelectedType] = useState("All");
 
   useEffect(() => {
@@ -111,7 +124,7 @@ function Home() {
       </div>
 
       <div className="main">
-        <div className="navbar">
+        <div ref={navbarRef} className={`navbar${navHidden ? " hidden" : ""}`}>
           <Navbar />
         </div>
 
@@ -145,22 +158,14 @@ function Home() {
               </div>
             </div>
 
-            {loading && <p>Loading recipes...</p>}
-            {error && <p>{error}</p>}
+            {/* {loading && <p>Loading recipes...</p>}
+            {error && <p>{error}</p>} */}
 
             {!loading && !error && filteredRecipes.length === 0 && (
               <p>No recipes found for this type.</p>
             )}
 
             <div className="recipe-carousel-wrapper">
-              <button
-                className="carousel-arrow carousel-arrow-left"
-                onClick={() => carouselRef.current.scrollBy({ left: -349, behavior: "smooth" })}
-                aria-label="Scroll left"
-              >
-                &#8249;
-              </button>
-
               <div className="recipe-carousel" ref={carouselRef}>
                 {filteredRecipes.map((recipe) => (
                   <RecipeCard
@@ -180,17 +185,10 @@ function Home() {
                   />
                 ))}
               </div>
-
-              <button
-                className="carousel-arrow carousel-arrow-right"
-                onClick={() => carouselRef.current.scrollBy({ left: 349, behavior: "smooth" })}
-                aria-label="Scroll right"
-              >
-                &#8250;
-              </button>
             </div>
           </section>
         </div>
+        <Footer />
       </div>
     </div>
   );
