@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "context/AuthContext";
 import Navbar from "components/navbar/UI_Navbar";
 import NavbarHeader from "components/navbar/UI_NavbarHeader";
+import RecipeCard from "components/recipe-card/UI_RecipeCard";
 import logo from "assets/logo/logo-full.png";
 import leftDish from "assets/bg image/left.png";
 import centerDish from "assets/bg image/center.png";
@@ -12,6 +13,7 @@ import "pages/css/RecipeCard.css";
 function Home() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const carouselRef = useRef(null);
 
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -150,38 +152,37 @@ function Home() {
               <p>No recipes found for this type.</p>
             )}
 
-            <div className="recipe-grid">
-              {filteredRecipes.map((recipe) => (
-                <div className="recipe-card" key={recipe.id}>
-                  <div className="recipe-card-image-wrap">
-                    <img
-                      src={recipe.image}
-                      alt={recipe.title}
-                      className="recipe-card-image"
-                    />
-                  </div>
+            <div className="recipe-carousel-wrapper">
+              <button
+                className="carousel-arrow carousel-arrow-left"
+                onClick={() => carouselRef.current.scrollBy({ left: -349, behavior: "smooth" })}
+                aria-label="Scroll left"
+              >
+                &#8249;
+              </button>
 
-                  <div className="recipe-card-body">
-                    <p className="recipe-meta">
-                      {recipe.cuisineType}, {recipe.dishType}
-                    </p>
+              <div className="recipe-carousel" ref={carouselRef}>
+                {filteredRecipes.map((recipe) => (
+                  <RecipeCard
+                    key={recipe.id}
+                    title={recipe.title}
+                    image={recipe.image}
+                    cuisineType={recipe.cuisineType}
+                    dishType={recipe.dishType}
+                    readyInMinutes={recipe.readyInMinutes}
+                    onClick={() => navigate(`/recipe/${recipe.id}`)}
+                    onFavourite={() => handleSaveFavourite(recipe)}
+                  />
+                ))}
+              </div>
 
-                    <h3>{recipe.title}</h3>
-
-                    <p className="recipe-time">⏱ {recipe.readyInMinutes} min</p>
-
-                    <div className="recipe-card-buttons">
-                      <button onClick={() => navigate(`/recipe/${recipe.id}`)}>
-                        View Recipe Details
-                      </button>
-
-                      <button onClick={() => handleSaveFavourite(recipe)}>
-                        Save as Favourite
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
+              <button
+                className="carousel-arrow carousel-arrow-right"
+                onClick={() => carouselRef.current.scrollBy({ left: 349, behavior: "smooth" })}
+                aria-label="Scroll right"
+              >
+                &#8250;
+              </button>
             </div>
           </section>
         </div>

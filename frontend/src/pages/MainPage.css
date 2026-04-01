@@ -71,7 +71,6 @@
 
 /* where main content will be */
 .main {
-    padding: 0 30px;
     margin-top: 70vh;
     border-radius: 90px 90px 0 0;
     background-color: var(--color-white0);
@@ -82,6 +81,8 @@
     }
 
     .main-content {
+        margin: 0 auto;
+
         .header-container {
             width: 100%;
             height: 100%;
