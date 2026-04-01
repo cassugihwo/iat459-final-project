@@ -55,7 +55,7 @@
 
 .bg-food-center {
     position: absolute;
-    left: 50%;
+    left: 49%;
     top: 34%;
     transform: translateX(-56%) rotate(-140deg);
     width: 50vw;
