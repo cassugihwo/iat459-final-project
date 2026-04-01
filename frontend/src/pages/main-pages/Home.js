@@ -170,6 +170,11 @@ function Home() {
                     cuisineType={recipe.cuisineType}
                     dishType={recipe.dishType}
                     readyInMinutes={recipe.readyInMinutes}
+                    difficulty={
+                      recipe.readyInMinutes <= 30 ? "Easy"
+                      : recipe.readyInMinutes <= 60 ? "Medium"
+                      : "Hard"
+                    }
                     onClick={() => navigate(`/recipe/${recipe.id}`)}
                     onFavourite={() => handleSaveFavourite(recipe)}
                   />

@@ -21,7 +21,7 @@
     .bg-logo {
         display: flex;
         justify-content: center;
-        padding-top: 20vh;
+        padding-top: 17vh;
 
         img {
             width: 35vw;
@@ -56,9 +56,9 @@
 .bg-food-center {
     position: absolute;
     left: 50%;
-    top: 40%;
+    top: 36%;
     transform: translateX(-56%) rotate(-140deg);
-    width:50vw;
+    width: 50vw;
     display: flex;
     justify-content: center;
 }
@@ -69,9 +69,8 @@
     width: 50vw;
 }
 
-/* where main content will be */
 .main {
-    margin-top: 70vh;
+    margin-top: 63vh;
     border-radius: 90px 90px 0 0;
     background-color: var(--color-white0);
     z-index: 2;
@@ -88,6 +87,7 @@
             height: 100%;
             display: flex;
             justify-content: center;
+            margin-top: -1.5rem;
 
             .header-container-wrapper {
                 max-width: 50vw;
@@ -97,17 +97,11 @@
                 }
             }
         }
-
-
     }
-
-
-
 }
 
 .placeholderpage {
   width: 100%;
-  max-width: 900px;
   margin: 0 auto;
   padding: 2rem;
 }
@@ -138,17 +132,4 @@
   border: none;
   border-radius: 10px;
   cursor: pointer;
-}
-
-.recipe-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1rem;
-}
-
-.recipe-card {
-  padding: 1.25rem;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
