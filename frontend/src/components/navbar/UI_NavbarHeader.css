@@ -9,7 +9,7 @@
     display: grid;
     grid-template-columns: 20% 60% 20%;
     align-items: center;
-    background-color: var(--color-white0);
+    background-color:transparent;
     padding: 1.2rem 0;
 }
 
@@ -50,7 +50,7 @@
 
 .navbarHeader-container .rightside .outlined-btn {
     color: #9E3B3B;
-    background-color: transparent;
+    background-color: var(--color-white0);
     border: 1.5px solid #9E3B3B;
     transition: color, background-color 0.2s ease, color 0.2s ease;
 }
