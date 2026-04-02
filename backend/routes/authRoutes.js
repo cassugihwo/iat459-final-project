@@ -14,10 +14,6 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ message: "Please fill in all fields." });
     }
 
-    /* const existingUser = await User.findOne({
-      $or: [{ username }],
-    }); */
-
     const existingUser = await User.findOne({ username });
 
     if (existingUser) {
@@ -58,22 +54,18 @@ router.post("/login", async (req, res) => {
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials." });
     }
+
     if (user.isSuspended) {
       return res
         .status(403)
         .json({ message: "Your account has been suspended." });
     }
+
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid credentials." });
     }
-    //JWT payload - including role
-    const payload = {
-      id: user._id,
-      username: user.username,
-      role: user.role,
-    };
 
     const token = jwt.sign(
       {
@@ -82,7 +74,7 @@ router.post("/login", async (req, res) => {
         role: user.role,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "1d" },
+      { expiresIn: "1d" }
     );
 
     res.json({ token });

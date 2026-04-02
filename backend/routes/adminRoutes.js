@@ -35,25 +35,6 @@ router.patch("/members/:id/suspend", verifyToken, verifyAdmin, async (req, res) 
   }
 });
 
-// UNSUSPEND member
-router.patch("/members/:id/unsuspend", verifyToken, verifyAdmin, async (req, res) => {
-  try {
-    const user = await User.findByIdAndUpdate(
-      req.params.id,
-      { isSuspended: false },
-      { new: true, select: "-password" }
-    );
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.json({ message: "User unsuspended successfully", user });
-  } catch (err) {
-    res.status(500).json({ message: "Failed to unsuspend user", error: err.message });
-  }
-});
-
 // DELETE member
 router.delete("/members/:id", verifyToken, verifyAdmin, async (req, res) => {
   try {
@@ -71,8 +52,7 @@ router.delete("/members/:id", verifyToken, verifyAdmin, async (req, res) => {
   }
 });
 
-
-// GET all recipes/content
+// GET all content
 router.get("/content", verifyToken, verifyAdmin, async (req, res) => {
   try {
     const recipes = await UserRecipe.find()

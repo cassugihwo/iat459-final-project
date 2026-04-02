@@ -17,10 +17,12 @@ function verifyToken(req, res, next) {
       process.env.JWT_SECRET || "fallbackSecret"
     );
 
+    req.user = decoded;
     req.userId = decoded.id;
+
     next();
   } catch (error) {
-    res.status(401).json({ error: "Invalid token" });
+    return res.status(401).json({ error: "Invalid token" });
   }
 }
 

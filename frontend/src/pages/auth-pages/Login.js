@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import { loginUser } from "services/authService";
 import { useAuth } from "context/AuthContext";
 import "./AuthPages.css";
@@ -29,7 +30,8 @@ function Login() {
     try {
       const data = await loginUser(formData);
       login(data.token);
-      navigate("/home");
+      const decoded = jwtDecode(data.token);
+      navigate(decoded.role === "admin" ? "/admin" : "/home");
     } catch (err) {
       setError(err.message);
     }
