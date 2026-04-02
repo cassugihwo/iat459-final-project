@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import "pages/MainPage.css";
-import "./FindRecipes.css";
+import "pages/page-css/FindRecipes.css";
 import { useNavigate } from "react-router-dom";
 import Navbar from "components/navbar/UI_Navbar";
 import NavbarHeader from "components/navbar/UI_NavbarHeader";

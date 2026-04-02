@@ -1,23 +1,39 @@
 import "./UI_RecipeCard.css";
-import "./RecipeCard.css";
+import "pages/page-css/Home.css";
 import Icon_timer from "assets/icons/icon-timer-red.svg";
 import Icon_heart from "assets/icons/icon-heart-empty-red.svg";
 import Image_placeholderFood from "assets/images/image-placeholder-food.png";
 
-function UI_RecipeCard({ title, image, cuisineType, dishType, readyInMinutes, difficulty, onFavourite, onClick }) {
+function UI_RecipeCard({
+  title,
+  image,
+  cuisineType,
+  dishType,
+  readyInMinutes,
+  difficulty,
+  onFavourite,
+  onClick,
+  hideHeart = false,
+}) {
   const categories = [cuisineType, dishType].filter(Boolean);
 
   return (
     <div className="recipe-card-container" onClick={onClick}>
       <div className="recipe-image">
         <img src={image || Image_placeholderFood} alt={title || "Dish"} />
-        <button
-          className="recipe-fav-btn"
-          onClick={(e) => { e.stopPropagation(); onFavourite && onFavourite(); }}
-          aria-label="Save as favourite"
-        >
-          <img src={Icon_heart} alt="Favourite" />
-        </button>
+
+        {!hideHeart && (
+          <button
+            className="recipe-fav-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              onFavourite && onFavourite();
+            }}
+            aria-label="Save as favourite"
+          >
+            <img src={Icon_heart} alt="Favourite" />
+          </button>
+        )}
       </div>
 
       <div className="recipe-desc">

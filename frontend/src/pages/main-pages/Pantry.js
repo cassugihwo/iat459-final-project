@@ -1,7 +1,4 @@
-import { useState } from "react";
 import "pages/MainPage.css";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "context/AuthContext";
 import Navbar from "components/navbar/UI_Navbar";
 import NavbarHeader from "components/navbar/UI_NavbarHeader";
 import Footer from "components/footer/UI_Footer";
@@ -45,7 +42,7 @@ function Pantry(props) {
         <div className="main-content">
           <div className="header-container">
             <div className="header-container-wrapper">
-              <h1>Favourite</h1>
+              <h2>Favourite</h2>
             </div>
           </div>
 

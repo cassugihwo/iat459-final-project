@@ -138,11 +138,11 @@ function Home() {
           </div>
 
           <section className="home-recipes-section">
-            <h2>Recipes of the Week</h2>
+            <h3>Recipes of the Week</h3>
             <p>Recommended recipes from the YumMeal team!</p>
 
             <div className="recipe-filter-section">
-              <div className="recipe-filter-title">Type</div>
+              <div className="recipe-filter-title">Dish Type</div>
 
               <div className="recipe-filter-pills">
                 {filterOptions.map((type) => (

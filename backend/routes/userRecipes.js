@@ -32,6 +32,7 @@ router.post("/", verifyToken, async (req, res) => {
   try {
     const userRecipe = new UserRecipe({
       name: req.body.name,
+      image: req.body.image,
       ingredients: req.body.ingredients,
       instructions: req.body.instructions,
       owner: req.userId,
