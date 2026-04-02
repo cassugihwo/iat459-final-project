@@ -48,6 +48,46 @@ router.get("/home-recipes", async (req, res) => {
   }
 });
 
+router.get("/recipes/:id", async (req, res) => {
+  try {
+    const response = await fetch(
+      `https://api.spoonacular.com/recipes/${req.params.id}/information?apiKey=${process.env.SPOONACULAR_API_KEY}`
+    );
+    const data = await response.json();
+
+    if (!response.ok) {
+      return res.status(response.status).json({ error: "Spoonacular API error", details: data });
+    }
+
+    const detail = {
+      id: data.id,
+      title: data.title,
+      image: data.image,
+      readyInMinutes: data.readyInMinutes,
+      servings: data.servings,
+      dishTypes: data.dishTypes || [],
+      cuisines: data.cuisines || [],
+      diets: data.diets || [],
+      ingredients: (data.extendedIngredients || []).map((ing) => ({
+        id: ing.id,
+        name: ing.name,
+        amount: ing.amount,
+        unit: ing.unit,
+        original: ing.original,
+      })),
+      steps: data.analyzedInstructions?.[0]?.steps?.map((s) => ({
+        number: s.number,
+        step: s.step,
+      })) || [],
+    };
+
+    res.json(detail);
+  } catch (error) {
+    console.error("Error fetching recipe detail:", error);
+    res.status(500).json({ error: "Failed to fetch recipe detail", details: error.message });
+  }
+});
+
 router.get("/find-by-ingredients", async (req, res) => {
   try {
     const { ingredients } = req.query;

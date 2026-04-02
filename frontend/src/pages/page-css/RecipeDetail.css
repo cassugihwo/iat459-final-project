@@ -1,0 +1,199 @@
+@import "App.css";
+
+.rd-page {
+    min-height: 100vh;
+    background-color: var(--color-white0);
+}
+
+/* ── Back button bar ── */
+.rd-back-bar {
+    padding: 1.25rem 2rem 0;
+}
+
+.rd-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: none;
+    border: none;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-red1);
+    cursor: pointer;
+    padding: 0.4rem 0.75rem 0.4rem 0;
+    border-radius: 8px;
+    transition: color 0.15s, gap 0.15s;
+}
+
+.rd-back-btn:hover {
+    color: var(--color-red0);
+    gap: 0.65rem;
+}
+
+.rd-back-arrow {
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+/* ── Hero image ── */
+.rd-hero {
+    width: 100%;
+    height: 22rem;
+    overflow: hidden;
+    margin-top: 1.25rem;
+}
+
+.rd-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* ── Content wrapper ── */
+.rd-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 2rem 4rem;
+}
+
+/* ── Title ── */
+.rd-title {
+    font-family: "Passion One", sans-serif;
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--color-red0);
+    margin: 0 0 1.25rem;
+    line-height: 1.1;
+}
+
+/* ── Meta chips ── */
+.rd-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 2rem;
+}
+
+.rd-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.35rem 0.9rem;
+    border-radius: 999px;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    background-color: var(--color-white1);
+    color: var(--color-red0);
+    border: 1.5px solid #e1d8d1;
+}
+
+.rd-chip.highlight {
+    background-color: var(--color-red1);
+    color: #fff;
+    border-color: var(--color-red1);
+}
+
+/* ── Two-column body ── */
+.rd-body {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 3rem;
+    align-items: start;
+}
+
+/* ── Section heading ── */
+.rd-section-title {
+    font-family: "Passion One", sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--color-red1);
+    margin: 0 0 1rem;
+    line-height: 1;
+}
+
+/* ── Ingredients ── */
+.rd-ingredients {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.rd-ingredient {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.9rem;
+    color: #333;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    background-color: #fff;
+    border: 1px solid var(--color-white1);
+}
+
+/* ── Instructions ── */
+.rd-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.rd-step {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.rd-step-number {
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background-color: var(--color-red1);
+    color: #fff;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rd-step-text {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.92rem;
+    color: #333;
+    line-height: 1.6;
+    padding-top: 0.25rem;
+}
+
+/* ── Loading / error ── */
+.rd-loading,
+.rd-error {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 40vh;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 1rem;
+    color: #888;
+}
+
+/* ── Responsive ── */
+@media (max-width: 680px) {
+    .rd-body {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .rd-hero {
+        height: 16rem;
+    }
+
+    .rd-title {
+        font-size: 2rem;
+    }
+}
