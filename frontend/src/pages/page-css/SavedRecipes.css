@@ -73,12 +73,7 @@
     resize: vertical;
 }
 
-/* Prep + Cook time side by side */
-.sr-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-}
+
 
 /*Serves */
 .sr-serves {
@@ -94,7 +89,7 @@
     width: 2.2rem;
     height: 2.2rem;
     border-radius: 50%;
-    border: 1.5px solid var(--color-white1);
+    border: 1.5px solid var(--color-red1);
     font-family: "Noto Sans", sans-serif;
     font-size: 0.88rem;
     font-weight: 600;
@@ -117,7 +112,7 @@
 .sr-table-wrapper {
     overflow-x: auto;
     border-radius: 12px;
-    border: 1.5px solid var(--color-white1);
+    border: 1.5px solid var(--color-red1);
 }
 
 .sr-table {

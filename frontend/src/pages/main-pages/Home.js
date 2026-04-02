@@ -19,7 +19,10 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [navHidden, setNavHidden] = useState(false);
+  const [favouriteIds, setFavouriteIds] = useState(new Set());
   const navbarRef = useRef(null);
+
+  const { token } = useAuth();
 
   useEffect(() => {
     function handleScroll() {
@@ -32,6 +35,23 @@ function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
   const [selectedType, setSelectedType] = useState("All");
+
+  useEffect(() => {
+    if (!token) return;
+    async function fetchFavourites() {
+      try {
+        const res = await fetch("http://localhost:5001/api/favourites", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        setFavouriteIds(new Set(data.map((f) => f.recipeId)));
+      } catch (err) {
+        console.error("Fetch favourites error:", err);
+      }
+    }
+    fetchFavourites();
+  }, [token]);
 
   useEffect(() => {
     async function fetchHomeRecipes() {
@@ -65,7 +85,7 @@ function Home() {
     fetchHomeRecipes();
   }, []);
 
-  function handleSaveFavourite(recipe) {
+  async function handleSaveFavourite(recipe) {
     if (!user) {
       navigate("/member-only", {
         state: { featureName: "Save as Favourite" },
@@ -73,7 +93,35 @@ function Home() {
       return;
     }
 
-    console.log("Save favourite:", recipe);
+    try {
+      const res = await fetch("http://localhost:5001/api/favourites/toggle", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          recipeId: recipe.id,
+          title: recipe.title,
+          image: recipe.image,
+          cuisineType: recipe.cuisineType,
+          dishType: recipe.dishType,
+          readyInMinutes: recipe.readyInMinutes,
+        }),
+      });
+      const data = await res.json();
+      setFavouriteIds((prev) => {
+        const next = new Set(prev);
+        if (data.saved) {
+          next.add(recipe.id);
+        } else {
+          next.delete(recipe.id);
+        }
+        return next;
+      });
+    } catch (err) {
+      console.error("Toggle favourite error:", err);
+    }
   }
 
   const filterOptions = useMemo(() => {
@@ -180,6 +228,7 @@ function Home() {
                       : recipe.readyInMinutes <= 60 ? "Medium"
                       : "Hard"
                     }
+                    isFavourited={favouriteIds.has(recipe.id)}
                     onClick={() => navigate(`/recipe/${recipe.id}`)}
                     onFavourite={() => handleSaveFavourite(recipe)}
                   />
