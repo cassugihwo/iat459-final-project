@@ -131,9 +131,9 @@ function Home() {
         <div className="main-content">
           <div className="header-container">
             <div className="header-container-wrapper">
-              <h1>
+              <h2>
                 Welcome {user?.username ? `back, ${user.username}` : "to YumMeal"}!
-              </h1>
+              </h2>
             </div>
           </div>
 
