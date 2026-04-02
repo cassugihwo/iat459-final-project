@@ -12,7 +12,10 @@ router.get("/members", verifyToken, verifyAdmin, async (req, res) => {
     const users = await User.find({}, "-password").sort({ createdAt: -1 });
     res.json(users);
   } catch (err) {
-    res.status(500).json({ message: "Failed to fetch members", error: err.message });
+    res.status(500).json({
+      message: "Failed to fetch members",
+      error: err.message,
+    });
   }
 });
 
@@ -22,8 +25,8 @@ router.patch("/members/:id/suspend", verifyToken, verifyAdmin, async (req, res) 
     const user = await User.findByIdAndUpdate(
       req.params.id,
       { isSuspended: true },
-      { new: true, select: "-password" }
-    );
+      { new: true }
+    ).select("-password");
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -31,7 +34,60 @@ router.patch("/members/:id/suspend", verifyToken, verifyAdmin, async (req, res) 
 
     res.json({ message: "User suspended successfully", user });
   } catch (err) {
-    res.status(500).json({ message: "Failed to suspend user", error: err.message });
+    res.status(500).json({
+      message: "Failed to suspend user",
+      error: err.message,
+    });
+  }
+});
+
+// UNSUSPEND member
+router.patch("/members/:id/unsuspend", verifyToken, verifyAdmin, async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { isSuspended: false },
+      { new: true }
+    ).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ message: "User unsuspended successfully", user });
+  } catch (err) {
+    res.status(500).json({
+      message: "Failed to unsuspend user",
+      error: err.message,
+    });
+  }
+});
+
+// CHANGE member role
+router.patch("/members/:id/role", verifyToken, verifyAdmin, async (req, res) => {
+  try {
+    const { role } = req.body;
+
+    if (!role || !["admin", "user"].includes(role)) {
+      return res.status(400).json({ message: "Invalid role" });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { role },
+      { new: true, runValidators: true }
+    ).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ message: "User role updated successfully", user });
+  } catch (err) {
+    res.status(500).json({
+      message: "Failed to update role",
+      error: err.message,
+    });
   }
 });
 
@@ -48,7 +104,10 @@ router.delete("/members/:id", verifyToken, verifyAdmin, async (req, res) => {
 
     res.json({ message: "User deleted successfully" });
   } catch (err) {
-    res.status(500).json({ message: "Failed to delete user", error: err.message });
+    res.status(500).json({
+      message: "Failed to delete user",
+      error: err.message,
+    });
   }
 });
 
@@ -61,26 +120,33 @@ router.get("/content", verifyToken, verifyAdmin, async (req, res) => {
 
     res.json(recipes);
   } catch (err) {
-    res.status(500).json({ message: "Failed to fetch content", error: err.message });
+    res.status(500).json({
+      message: "Failed to fetch content",
+      error: err.message,
+    });
   }
 });
 
 // ADD content
 router.post("/content", verifyToken, verifyAdmin, async (req, res) => {
   try {
-    const { name, ingredients, instructions, owner } = req.body;
+    const { name, ingredients, instructions, owner, image } = req.body;
 
     const newRecipe = new UserRecipe({
       name,
       ingredients,
       instructions,
+      image,
       owner: owner || req.userId,
     });
 
     await newRecipe.save();
     res.status(201).json(newRecipe);
   } catch (err) {
-    res.status(400).json({ message: "Failed to create content", error: err.message });
+    res.status(400).json({
+      message: "Failed to create content",
+      error: err.message,
+    });
   }
 });
 
@@ -93,6 +159,7 @@ router.put("/content/:id", verifyToken, verifyAdmin, async (req, res) => {
         name: req.body.name,
         ingredients: req.body.ingredients,
         instructions: req.body.instructions,
+        image: req.body.image,
       },
       { new: true, runValidators: true }
     );
@@ -103,7 +170,10 @@ router.put("/content/:id", verifyToken, verifyAdmin, async (req, res) => {
 
     res.json(updatedRecipe);
   } catch (err) {
-    res.status(400).json({ message: "Failed to update content", error: err.message });
+    res.status(400).json({
+      message: "Failed to update content",
+      error: err.message,
+    });
   }
 });
 
@@ -118,7 +188,10 @@ router.delete("/content/:id", verifyToken, verifyAdmin, async (req, res) => {
 
     res.json({ message: "Content deleted successfully" });
   } catch (err) {
-    res.status(500).json({ message: "Failed to delete content", error: err.message });
+    res.status(500).json({
+      message: "Failed to delete content",
+      error: err.message,
+    });
   }
 });
 

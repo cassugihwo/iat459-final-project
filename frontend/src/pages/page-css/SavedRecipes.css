@@ -1,21 +1,18 @@
 .sr-body {
     max-width: 90%;
     margin: 0 auto;
-    padding: 0 2rem 3rem;
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-    gap: 2.5rem;
+    gap: 4rem;
 }
 
 .sr-form-section {
     flex: 1;
-    min-width: 0;
 }
 
 .sr-list-section {
     flex: 1;
-    min-width: 0;
     position: sticky;
     top: 1rem;
 }
