@@ -3,7 +3,7 @@ import "pages/page-css/Home.css";
 import Icon_timer from "assets/icons/icon-timer-red.svg";
 import Icon_heart_empty from "assets/icons/icon-heart-empty-red.svg";
 import Icon_heart_filled from "assets/icons/icon-heart-filled-red.svg";
-import Image_placeholderFood from "assets/images/image-placeholder-food.png";
+import Logo from "assets/logo/logo-full.png";
 
 function UI_RecipeCard({
   title,
@@ -22,7 +22,13 @@ function UI_RecipeCard({
   return (
     <div className="recipe-card-container" onClick={onClick}>
       <div className="recipe-image">
-        <img src={image || Image_placeholderFood} alt={title || "Dish"} />
+        {image ? (
+          <img src={image} alt={title || "Dish"} />
+        ) : (
+          <div className="recipe-image-placeholder">
+            <img src={Logo} alt="YumMeal" />
+          </div>
+        )}
 
         {!hideHeart && (
           <button
