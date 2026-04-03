@@ -15,7 +15,9 @@ function UI_NavbarHeader() {
       setHasBg(window.scrollY > 10);
       const navEl = document.querySelector(".navbar");
       if (navEl) {
-        setShowNav(navEl.getBoundingClientRect().top < 70);
+        const shouldHide = navEl.getBoundingClientRect().top < 70;
+        setShowNav(shouldHide);
+        navEl.classList.toggle("hidden", shouldHide);
       }
     }
     window.addEventListener("scroll", handleScroll);

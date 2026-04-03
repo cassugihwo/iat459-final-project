@@ -18,22 +18,10 @@ function Home() {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [navHidden, setNavHidden] = useState(false);
   const [favouriteIds, setFavouriteIds] = useState(new Set());
-  const navbarRef = useRef(null);
 
   const { token } = useAuth();
 
-  useEffect(() => {
-    function handleScroll() {
-      if (navbarRef.current) {
-        const rect = navbarRef.current.getBoundingClientRect();
-        setNavHidden(rect.top < 70);
-      }
-    }
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
   const [selectedType, setSelectedType] = useState("All");
 
   useEffect(() => {
@@ -172,7 +160,7 @@ function Home() {
       </div>
 
       <div className="main">
-        <div ref={navbarRef} className={`navbar${navHidden ? " hidden" : ""}`}>
+        <div className="navbar">
           <Navbar />
         </div>
 
