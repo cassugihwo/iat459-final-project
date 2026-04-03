@@ -14,15 +14,13 @@ function Home() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const carouselRef = useRef(null);
-
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [favouriteIds, setFavouriteIds] = useState(new Set());
+  const [selectedType, setSelectedType] = useState("All");
 
   const { token } = useAuth();
-
-  const [selectedType, setSelectedType] = useState("All");
 
   useEffect(() => {
     if (!token) return;
@@ -113,23 +111,14 @@ function Home() {
   }
 
   const filterOptions = useMemo(() => {
-    const types = recipes
-      .map((recipe) => recipe.dishType)
-      .filter(Boolean)
-      .map((type) => type.trim());
-
-    const uniqueTypes = [...new Set(types)];
-
-    return ["All", ...uniqueTypes];
+    const types = [...new Set(recipes.map((r) => r.dishType).filter(Boolean).map((t) => t.trim()))];
+    return ["All", ...types];
   }, [recipes]);
 
   const filteredRecipes = useMemo(() => {
     if (selectedType === "All") return recipes;
-
     return recipes.filter(
-      (recipe) =>
-        recipe.dishType &&
-        recipe.dishType.toLowerCase() === selectedType.toLowerCase()
+      (r) => r.dishType && r.dishType.toLowerCase() === selectedType.toLowerCase()
     );
   }, [recipes, selectedType]);
 
@@ -179,13 +168,12 @@ function Home() {
 
             <div className="recipe-filter-section">
               <div className="recipe-filter-title">Dish Type</div>
-
               <div className="recipe-filter-pills">
                 {filterOptions.map((type) => (
                   <button
                     key={type}
                     type="button"
-                    className={`recipe-filter-pill ${selectedType === type ? "active" : ""}`}
+                    className={`recipe-filter-pill${selectedType === type ? " active" : ""}`}
                     onClick={() => setSelectedType(type)}
                   >
                     {type}
@@ -193,9 +181,6 @@ function Home() {
                 ))}
               </div>
             </div>
-
-            {/* {loading && <p>Loading recipes...</p>}
-            {error && <p>{error}</p>} */}
 
             {!loading && !error && filteredRecipes.length === 0 && (
               <p>No recipes found for this type.</p>

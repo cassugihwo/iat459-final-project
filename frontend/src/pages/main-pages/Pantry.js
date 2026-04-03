@@ -51,6 +51,13 @@ function Pantry() {
     }
   }
 
+  const grouped = favourites.reduce((acc, fav) => {
+    const key = fav.dishType ? fav.dishType.charAt(0).toUpperCase() + fav.dishType.slice(1) : "Other";
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(fav);
+    return acc;
+  }, {});
+
   return (
     <div className="home-page">
       <div className="navbarHeader">
@@ -94,26 +101,37 @@ function Pantry() {
           )}
 
           {!loading && favourites.length > 0 && (
-            <div className="fr-list">
-              {favourites.map((fav) => (
-                <div key={fav._id} className="fr-card-wrapper">
-                  <RecipeCard
-                    title={fav.title}
-                    image={fav.image}
-                    cuisineType={fav.cuisineType}
-                    dishType={fav.dishType}
-                    readyInMinutes={fav.readyInMinutes}
-                    difficulty={
-                      fav.readyInMinutes <= 30
-                        ? "Easy"
-                        : fav.readyInMinutes <= 60
-                        ? "Medium"
-                        : "Hard"
-                    }
-                    isFavourited={true}
-                    onFavourite={() => handleRemove(fav.recipeId)}
-                    onClick={() => navigate(`/recipe/${fav.recipeId}`)}
-                  />
+            <div className="fr-sections">
+              {Object.entries(grouped).map(([category, items]) => (
+                <div key={category} className="fr-section">
+                  <div className="fr-section-header">
+                    <span className="fr-section-label">{category}</span>
+                    <div className="fr-section-line" />
+                    <span className="fr-section-count">{items.length} saved</span>
+                  </div>
+                  <div className="fr-list">
+                    {items.map((fav) => (
+                      <div key={fav._id} className="fr-card-wrapper">
+                        <RecipeCard
+                          title={fav.title}
+                          image={fav.image}
+                          cuisineType={fav.cuisineType}
+                          dishType={fav.dishType}
+                          readyInMinutes={fav.readyInMinutes}
+                          difficulty={
+                            fav.readyInMinutes <= 30
+                              ? "Easy"
+                              : fav.readyInMinutes <= 60
+                              ? "Medium"
+                              : "Hard"
+                          }
+                          isFavourited={true}
+                          onFavourite={() => handleRemove(fav.recipeId)}
+                          onClick={() => navigate(`/recipe/${fav.recipeId}`)}
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>

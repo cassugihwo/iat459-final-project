@@ -157,7 +157,7 @@
     background: #fff;
 }
 
-/* ── Actions ── */
+/* Actions */
 .sr-actions {
     display: flex;
     gap: 0.75rem;
@@ -240,7 +240,7 @@
     color: #bbb;
 }
 
-/* ── Recipe list ── */
+/* Recipe list */
 .sr-empty {
     color: #aaa;
     font-family: "Noto Sans", sans-serif;

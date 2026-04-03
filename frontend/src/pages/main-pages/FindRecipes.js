@@ -1,7 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "pages/MainPage.css";
 import "pages/page-css/FindRecipes.css";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "context/AuthContext";
 import Navbar from "components/navbar/UI_Navbar";
 import NavbarHeader from "components/navbar/UI_NavbarHeader";
 import RecipeCard from "components/recipe-card/UI_RecipeCard";
@@ -29,8 +30,10 @@ function capitalize(str) {
 
 function FindRecipes() {
     const navigate = useNavigate();
+    const { token } = useAuth();
 
     const [inputValue, setInputValue]   = useState("");
+    const [favouriteIds, setFavouriteIds] = useState(new Set());
     const [ingredients, setIngredients] = useState([]);
     const [recipes, setRecipes]         = useState([]);
     const [loading, setLoading]         = useState(false);
@@ -43,6 +46,45 @@ function FindRecipes() {
     const [selectedCuisines, setSelectedCuisines]   = useState([]);
     const [selectedDietary, setSelectedDietary]     = useState([]);
     const [selectedDishTypes, setSelectedDishTypes] = useState([]);
+
+    useEffect(() => {
+        if (!token) return;
+        async function fetchFavourites() {
+            try {
+                const res = await fetch("http://localhost:5001/api/favourites", {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                if (!res.ok) return;
+                const data = await res.json();
+                setFavouriteIds(new Set(data.map((f) => String(f.recipeId))));
+            } catch (err) {}
+        }
+        fetchFavourites();
+    }, [token]);
+
+    async function handleToggleFavourite(recipe) {
+        if (!token) return navigate("/member-only", { state: { featureName: "Favourite Recipes" } });
+        try {
+            const res = await fetch("http://localhost:5001/api/favourites/toggle", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                body: JSON.stringify({
+                    recipeId: recipe.id,
+                    title: recipe.title,
+                    image: recipe.image,
+                    cuisineType: recipe.cuisine || "",
+                    dishType: recipe.dishType || "",
+                    readyInMinutes: recipe.readyInMinutes,
+                }),
+            });
+            const data = await res.json();
+            setFavouriteIds((prev) => {
+                const next = new Set(prev);
+                data.saved ? next.add(String(recipe.id)) : next.delete(String(recipe.id));
+                return next;
+            });
+        } catch (err) {}
+    }
 
     function addIngredient() {
         const trimmed = inputValue.trim();
@@ -366,6 +408,8 @@ function FindRecipes() {
                                                                 : recipe.readyInMinutes <= 60 ? "Medium"
                                                                 : "Hard"
                                                             }
+                                                            isFavourited={favouriteIds.has(String(recipe.id))}
+                                                            onFavourite={() => handleToggleFavourite(recipe)}
                                                             onClick={() => navigate(`/recipe/${recipe.id}`)}
                                                         />
                                                     </div>

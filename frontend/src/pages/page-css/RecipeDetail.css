@@ -5,7 +5,7 @@
     background-color: var(--color-white0);
 }
 
-/* ── Back button bar ── */
+/* Back button bar */
 .rd-back-bar {
     padding: 1.25rem 2rem 0;
 }
@@ -36,12 +36,14 @@
     line-height: 1;
 }
 
-/* ── Hero image ── */
+/* Hero image */
 .rd-hero {
+    position: relative;
     width: 100%;
     height: 22rem;
     overflow: hidden;
-    margin-top: 1.25rem;
+    border-radius: 16px;
+    margin: 0 0 1.5rem;
 }
 
 .rd-hero img {
@@ -51,14 +53,42 @@
     display: block;
 }
 
-/* ── Content wrapper ── */
+/* Content wrapper */
 .rd-content {
-    max-width: 900px;
+    max-width: 90vw;
     margin: 0 auto;
-    padding: 2rem 2rem 4rem;
+    padding: 2rem 3rem 4rem;
 }
 
-/* ── Title ── */
+/* Title */
+.rd-fav-btn {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.12);
+    transition: 0.2s ease;
+    z-index: 2;
+}
+
+.rd-fav-btn img {
+    width: 1rem;
+    height: auto;
+}
+
+.rd-fav-btn:hover {
+    transform: scale(1.08);
+    background: #fff;
+}
+
 .rd-title {
     font-family: "Passion One", sans-serif;
     font-size: 2.8rem;
@@ -68,7 +98,7 @@
     line-height: 1.1;
 }
 
-/* ── Meta chips ── */
+/* Meta chips */
 .rd-meta {
     display: flex;
     flex-wrap: wrap;
@@ -96,7 +126,7 @@
     border-color: var(--color-red1);
 }
 
-/* ── Two-column body ── */
+/* Two-column body */
 .rd-body {
     display: grid;
     grid-template-columns: 1fr 1.6fr;
@@ -104,7 +134,7 @@
     align-items: start;
 }
 
-/* ── Section heading ── */
+/* Section heading */
 .rd-section-title {
     font-family: "Passion One", sans-serif;
     font-size: 1.6rem;
@@ -114,7 +144,18 @@
     line-height: 1;
 }
 
-/* ── Ingredients ── */
+/* Ingredients */
+.rd-ingredients-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.rd-ingredients-col {
+    display: flex;
+    flex-direction: column;
+}
+
 .rd-ingredients {
     list-style: none;
     margin: 0;
@@ -124,17 +165,29 @@
     gap: 0.5rem;
 }
 
-.rd-ingredient {
+.rd-ingredient-name {
     font-family: "Noto Sans", sans-serif;
     font-size: 0.9rem;
-    color: #333;
+    font-weight: 600;
+    text-transform: capitalize;
+    color: var(--color-red1);
     padding: 0.5rem 0.75rem;
     border-radius: 8px;
     background-color: #fff;
     border: 1px solid var(--color-white1);
 }
 
-/* ── Instructions ── */
+.rd-ingredient-amount {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.9rem;
+    color: #555;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    background-color: #fff;
+    border: 1px solid var(--color-white1);
+}
+
+/* Instructions */
 .rd-steps {
     display: flex;
     flex-direction: column;
@@ -167,10 +220,10 @@
     font-size: 0.92rem;
     color: #333;
     line-height: 1.6;
-    padding-top: 0.25rem;
+    margin: 0;
 }
 
-/* ── Loading / error ── */
+/* Loading / error */
 .rd-loading,
 .rd-error {
     display: flex;
@@ -182,15 +235,17 @@
     color: #888;
 }
 
-/* ── Responsive ── */
+/* Responsive */
 @media (max-width: 680px) {
     .rd-body {
         grid-template-columns: 1fr;
         gap: 2rem;
     }
 
+
     .rd-hero {
         height: 16rem;
+        border-radius: 10px;
     }
 
     .rd-title {

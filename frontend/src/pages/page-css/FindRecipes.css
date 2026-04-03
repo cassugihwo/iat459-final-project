@@ -116,7 +116,7 @@
     padding: 0;
 }
 
-/* ── Status messages ── */
+/* Status messages */
 .find-status {
     text-align: center;
     color: #999;
@@ -128,14 +128,14 @@
     color: #c0392b;
 }
 
-/* ── Results layout: sidebar + main ── */
+/* Results layout: sidebar + main */
 .find-results-layout {
     display: flex;
     gap: 2rem;
     align-items: flex-start;
 }
 
-/* ── Sidebar ── */
+/* Sidebar */
 .find-sidebar {
     flex: 0 0 220px;
     background-color: #fff;
@@ -302,7 +302,7 @@
     margin: 0;
 }
 
-/* ── Main results ── */
+/* Main results */
 .find-main {
     flex: 1;
     min-width: 0;
@@ -363,7 +363,7 @@
     color: var(--color-red0);
 }
 
-/* ── Results grid ── */
+/* Results grid */
 .find-results-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -376,7 +376,7 @@
     flex-shrink: 1;
 }
 
-/* ── Card wrapper + match badge ── */
+/* Card wrapper + match badge */
 .find-card-wrapper {
     display: flex;
     flex-direction: column;
