@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Navbar from "components/navbar/UI_Navbar";
 import NavbarHeader from "components/navbar/UI_NavbarHeader";
 import Footer from "components/footer/UI_Footer";
+import ScrollToTop from "components/scroll-to-top/UI_ScrollToTop";
 import logo from "assets/logo/logo-full.png";
 import leftDish from "assets/bg image/left.png";
 import centerDish from "assets/bg image/center.png";
@@ -60,6 +61,7 @@ function MemberOnly() {
           </div>
         </div>
         <Footer />
+        <ScrollToTop />
       </div>
     </div>
   );

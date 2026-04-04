@@ -61,10 +61,44 @@
 }
 
 /* Title */
-.rd-fav-btn {
+.rd-fav-wrapper {
     position: absolute;
     top: 0.75rem;
     right: 0.75rem;
+    z-index: 2;
+}
+
+.rd-fav-tooltip {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    background-color: var(--color-red0);
+    color: #fff;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.35rem 0.75rem;
+    border-radius: 8px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.rd-fav-tooltip::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    right: 0.75rem;
+    border: 5px solid transparent;
+    border-bottom-color: var(--color-red0);
+}
+
+.rd-fav-wrapper.guest:hover .rd-fav-tooltip {
+    opacity: 1;
+}
+
+.rd-fav-btn {
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 50%;
@@ -76,7 +110,6 @@
     cursor: pointer;
     box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.12);
     transition: 0.2s ease;
-    z-index: 2;
 }
 
 .rd-fav-btn img {
@@ -222,6 +255,398 @@
     line-height: 1.6;
     margin: 0;
 }
+
+/* Reviews */
+.rd-reviews-section {
+    margin-top: 3rem;
+}
+
+.rd-rating-summary {
+    display: flex;
+    gap: 2rem;
+    background: #fff;
+    border: 1.5px solid var(--color-white1);
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+    align-items: center;
+}
+
+.rd-rating-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    min-width: 7rem;
+}
+
+.rd-rating-avg {
+    font-family: "Passion One", sans-serif;
+    font-size: 3.5rem;
+    line-height: 1;
+    color: var(--color-red0);
+}
+
+.rd-rating-stars-display {
+    display: flex;
+    gap: 0.1rem;
+}
+
+.rd-rating-star-icon {
+    font-size: 1.3rem;
+    color: #ddd;
+}
+
+.rd-rating-star-icon.active {
+    color: #c49a00;
+}
+
+.rd-rating-count {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.8rem;
+    color: #888;
+    white-space: nowrap;
+}
+
+.rd-rating-bars {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.rd-rating-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.rd-bar-label {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.85rem;
+    color: #555;
+    width: 0.75rem;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.rd-bar-track {
+    flex: 1;
+    height: 0.55rem;
+    background: #e8e3de;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.rd-bar-fill {
+    height: 100%;
+    background: #c49a00;
+    border-radius: 999px;
+    transition: width 0.4s ease;
+}
+
+.rd-bar-pct {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.78rem;
+    color: #888;
+    width: 2.5rem;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+/* Star buttons */
+.rd-stars {
+    display: flex;
+    gap: 0.1rem;
+}
+
+.rd-star {
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    color: #ddd;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    transition: color 0.15s;
+}
+
+.rd-star.active {
+    color: #f5a623;
+}
+
+/* Review form */
+.rd-review-form {
+    background: #fff;
+    border: 1.5px solid var(--color-white1);
+    border-radius: 14px;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.rd-form-label {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-red0);
+    margin: 0;
+}
+
+.rd-review-textarea {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.9rem;
+    color: #333;
+    border: 1.5px solid var(--color-white1);
+    border-radius: 10px;
+    padding: 0.6rem 0.9rem;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+.rd-review-textarea:focus {
+    border-color: var(--color-red1);
+}
+
+.rd-review-error {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.8rem;
+    color: var(--color-red0);
+    margin: 0;
+}
+
+.rd-form-btns {
+    display: flex;
+    gap: 0.6rem;
+    justify-content: flex-end;
+}
+
+.rd-review-submit {
+    padding: 0.45rem 1.25rem;
+    border-radius: 999px;
+    border: none;
+    background: var(--color-red1);
+    color: #fff;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.rd-review-submit:hover {
+    background: var(--color-red0);
+}
+
+.rd-review-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.rd-review-cancel {
+    padding: 0.45rem 1.25rem;
+    border-radius: 999px;
+    border: 1.5px solid #e1d8d1;
+    background: transparent;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #888;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.rd-review-cancel:hover {
+    border-color: #ccc;
+    color: #555;
+}
+
+/* Guest banner */
+.rd-review-guest-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1.25rem;
+    background: #fff;
+    border: 1.5px solid var(--color-white1);
+    border-radius: 14px;
+    margin-top: 1rem;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.875rem;
+    color: #888;
+}
+
+.rd-review-guest-login {
+    background: none;
+    border: none;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-red1);
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.15s;
+}
+
+.rd-review-guest-login:hover {
+    color: var(--color-red0);
+}
+
+/* Review cards */
+.rd-reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.rd-review-card {
+    background: #fff;
+    border: 1.5px solid var(--color-white1);
+    border-radius: 14px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.rd-review-card.my {
+    border-color: var(--color-white1);
+    background: #fff;
+}
+
+.rd-review-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.rd-reviewer {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-red0);
+}
+
+.rd-review-comment {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.9rem;
+    color: #444;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.rd-review-date {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.75rem;
+    color: #aaa;
+    margin: 0;
+}
+
+.rd-review-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0.1rem;
+}
+
+.rd-review-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+.rd-review-edit,
+.rd-review-delete {
+    background: none;
+    border: none;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.15s;
+}
+
+.rd-review-edit {
+    color: var(--color-red1);
+}
+
+.rd-review-edit:hover {
+    color: var(--color-red0);
+}
+
+.rd-review-delete {
+    color: #bbb;
+}
+
+.rd-review-delete:hover {
+    color: #e74c3c;
+}
+
+.rd-review-sort {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.rd-sort-pill {
+    padding: 0.3rem 0.9rem;
+    border-radius: 999px;
+    border: 1.5px solid var(--color-white1);
+    background: transparent;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #888;
+    cursor: pointer;
+    transition: 0.15s ease;
+}
+
+.rd-sort-pill:hover {
+    border-color: var(--color-red1);
+    color: var(--color-red1);
+}
+
+.rd-sort-pill.active {
+    background: var(--color-red1);
+    border-color: var(--color-red1);
+    color: #fff;
+}
+
+.rd-expand-btn {
+    display: block;
+    margin: 0.5rem auto 1.5rem;
+    padding: 0;
+    border: none;
+    background: transparent;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-red1);
+    cursor: pointer;
+    transition: color 0.15s ease;
+}
+
+.rd-expand-btn:hover {
+    color: var(--color-red0);
+}
+
+.rd-no-reviews {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.9rem;
+    color: #aaa;
+    background: #fff;
+    border: 1.5px solid var(--color-white1);
+    border-radius: 14px;
+    padding: 1.5rem;
+    text-align: center;
+    margin-bottom: 0.75rem;
+}
+
 
 /* Loading / error */
 .rd-loading,

@@ -9,6 +9,7 @@ import leftDish from "assets/bg image/left.png";
 import centerDish from "assets/bg image/center.png";
 import rightDish from "assets/bg image/right.png";
 import Footer from "components/footer/UI_Footer";
+import ScrollToTop from "components/scroll-to-top/UI_ScrollToTop";
 
 function Home() {
   const { user } = useAuth();
@@ -19,6 +20,7 @@ function Home() {
   const [error, setError] = useState("");
   const [favouriteIds, setFavouriteIds] = useState(new Set());
   const [selectedType, setSelectedType] = useState("All");
+  const [ratings, setRatings] = useState({});
 
   const { token } = useAuth();
 
@@ -60,6 +62,11 @@ function Home() {
         }
 
         setRecipes(data);
+        if (data.length) {
+          const ids = data.map((r) => r.id).join(",");
+          const rRes = await fetch(`http://localhost:5001/api/reviews/bulk-ratings?ids=${ids}`);
+          if (rRes.ok) setRatings(await rRes.json());
+        }
       } catch (err) {
         console.error("Fetch home recipes error:", err);
         setError(err.message || "Could not load recipes.");
@@ -73,9 +80,7 @@ function Home() {
 
   async function handleSaveFavourite(recipe) {
     if (!user) {
-      navigate("/member-only", {
-        state: { featureName: "Save as Favourite" },
-      });
+      navigate("/login");
       return;
     }
 
@@ -202,6 +207,8 @@ function Home() {
                       : "Hard"
                     }
                     isFavourited={favouriteIds.has(String(recipe.id))}
+                    isGuest={!user}
+                    rating={ratings[recipe.id] ?? 0}
                     onClick={() => navigate(`/recipe/${recipe.id}`)}
                     onFavourite={() => handleSaveFavourite(recipe)}
                   />
@@ -211,6 +218,7 @@ function Home() {
           </section>
         </div>
         <Footer />
+        <ScrollToTop />
       </div>
     </div>
   );
