@@ -96,7 +96,7 @@ router.get("/find-by-ingredients", async (req, res) => {
     }
 
     const findRes = await fetch(
-      `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${encodeURIComponent(ingredients)}&number=20&ranking=1&ignorePantry=true&apiKey=${process.env.SPOONACULAR_API_KEY}`
+      `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${encodeURIComponent(ingredients)}&number=100&ranking=1&ignorePantry=true&apiKey=${process.env.SPOONACULAR_API_KEY}`
     );
     const findData = await findRes.json();
     if (!findRes.ok) {

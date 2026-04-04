@@ -34,11 +34,15 @@ function FindRecipes() {
 
     const [inputValue, setInputValue]   = useState("");
     const [favouriteIds, setFavouriteIds] = useState(new Set());
-    const [ingredients, setIngredients] = useState([]);
-    const [recipes, setRecipes]         = useState([]);
+
+    const saved = sessionStorage.getItem("findRecipesState");
+    const savedState = saved ? JSON.parse(saved) : null;
+
+    const [ingredients, setIngredients] = useState(savedState?.ingredients || []);
+    const [recipes, setRecipes]         = useState(savedState?.recipes || []);
     const [loading, setLoading]         = useState(false);
     const [error, setError]             = useState("");
-    const [searched, setSearched]       = useState(false);
+    const [searched, setSearched]       = useState(savedState?.searched || false);
 
     // Filters
     const [sortBy, setSortBy]                   = useState("bestMatch");
@@ -46,6 +50,10 @@ function FindRecipes() {
     const [selectedCuisines, setSelectedCuisines]   = useState([]);
     const [selectedDietary, setSelectedDietary]     = useState([]);
     const [selectedDishTypes, setSelectedDishTypes] = useState([]);
+
+    useEffect(() => {
+        sessionStorage.setItem("findRecipesState", JSON.stringify({ ingredients, recipes, searched }));
+    }, [ingredients, recipes, searched]);
 
     useEffect(() => {
         if (!token) return;
