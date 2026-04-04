@@ -31,7 +31,7 @@ function Home() {
         });
         if (!res.ok) return;
         const data = await res.json();
-        setFavouriteIds(new Set(data.map((f) => f.recipeId)));
+        setFavouriteIds(new Set(data.map((f) => String(f.recipeId))));
       } catch (err) {
         console.error("Fetch favourites error:", err);
       }
@@ -99,9 +99,9 @@ function Home() {
       setFavouriteIds((prev) => {
         const next = new Set(prev);
         if (data.saved) {
-          next.add(recipe.id);
+          next.add(String(recipe.id));
         } else {
-          next.delete(recipe.id);
+          next.delete(String(recipe.id));
         }
         return next;
       });
@@ -201,7 +201,7 @@ function Home() {
                       : recipe.readyInMinutes <= 60 ? "Medium"
                       : "Hard"
                     }
-                    isFavourited={favouriteIds.has(recipe.id)}
+                    isFavourited={favouriteIds.has(String(recipe.id))}
                     onClick={() => navigate(`/recipe/${recipe.id}`)}
                     onFavourite={() => handleSaveFavourite(recipe)}
                   />
