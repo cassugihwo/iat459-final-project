@@ -18,8 +18,11 @@ function UI_NavbarHeader() {
         const shouldHide = navEl.getBoundingClientRect().top < 70;
         setShowNav(shouldHide);
         navEl.classList.toggle("hidden", shouldHide);
+      } else {
+        setShowNav(false);
       }
     }
+    handleScroll();
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -38,9 +41,31 @@ function UI_NavbarHeader() {
       <nav className="header-nav">
         <NavLink to="/home" className={({ isActive }) => isActive ? "selected" : ""}>Home</NavLink>
         <NavLink to="/find-recipes" className={({ isActive }) => isActive ? "selected" : ""}>Find Recipes</NavLink>
-        <NavLink to="/pantry" className={({ isActive }) => isActive ? "selected" : ""}>Favourite Recipes</NavLink>
-        <NavLink to="/saved-recipes" className={({ isActive }) => isActive ? "selected" : ""}>Add Your Recipes</NavLink>
-        <NavLink to="/meal-plan" className={({ isActive }) => isActive ? "selected" : ""}>Your Meal Plan</NavLink>
+
+        {[
+          { to: "/pantry", label: "Favourite Recipes" },
+          { to: "/saved-recipes", label: "Add Your Recipes" },
+          { to: "/meal-plan", label: "Your Meal Plan" },
+        ].map(({ to, label }) => (
+          <div key={to} className="header-nav-item">
+            <NavLink
+              to={to}
+              className={({ isActive }) =>
+                [isActive ? "selected" : "", !user ? "member-only-link" : ""]
+                  .filter(Boolean).join(" ")
+              }
+              onClick={(e) => {
+                if (!user) {
+                  e.preventDefault();
+                  navigate("/login");
+                }
+              }}
+            >
+              {label}
+            </NavLink>
+            {!user && <span className="member-only-tooltip">Login to access this feature</span>}
+          </div>
+        ))}
       </nav>
 
       <div className="rightside">

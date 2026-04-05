@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { loginUser } from "services/authService";
 import { useAuth } from "context/AuthContext";
+import Toast from "components/toast/UI_Toast";
 import "./AuthPages.css";
 import logo from "assets/logo/logo-noslogan.png";
 
@@ -39,6 +40,7 @@ function Login() {
 
   return (
     <div className="auth-page">
+      <Toast message={error} onClose={() => setError("")} />
       <div className="bg-base"></div>
       <div className="bg-blob"></div>
       <div className="bg-emoji">🍅</div>
@@ -104,8 +106,6 @@ function Login() {
                 Forgot Password
               </Link>
             </div>
-
-            {error && <p className="error-text">{error}</p>}
 
             <button type="submit">Log In To YumMeal</button>
 

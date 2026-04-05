@@ -306,6 +306,7 @@
 .find-main {
     flex: 1;
     min-width: 0;
+    padding-bottom: 3rem;
 }
 
 .find-results-header {

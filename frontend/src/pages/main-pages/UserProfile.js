@@ -39,7 +39,7 @@ function UserProfile() {
       try {
         const [profileRes, recipesRes, favsRes] = await Promise.all([
           fetch("http://localhost:5001/api/auth/profile", { headers: { Authorization: `Bearer ${token}` } }),
-          fetch("http://localhost:5001/api/user-recipes", { headers: { "Content-Type": "application/json", Authorization: token } }),
+          fetch("http://localhost:5001/api/user-recipes2", { headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` } }),
           fetch("http://localhost:5001/api/favourites", { headers: { Authorization: `Bearer ${token}` } }),
         ]);
         const profileData = await profileRes.json();
@@ -229,7 +229,7 @@ function UserProfile() {
                 <div className="up-section-card">
                   <div className="up-section-header">
                     <h3 className="up-section-title">Favourite Recipes</h3>
-                    <button className="up-section-action" onClick={() => navigate("/saved-recipes")}>View All →</button>
+                    <button className="up-section-action" onClick={() => navigate("/pantry")}>View All →</button>
                   </div>
                   {favourites.length === 0 ? (
                     <div className="up-empty-state">

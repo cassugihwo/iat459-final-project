@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import Toast from "components/toast/UI_Toast";
 import "pages/MainPage.css";
 import "pages/page-css/FindRecipes.css";
 import { useNavigate } from "react-router-dom";
@@ -34,11 +35,20 @@ function FindRecipes() {
 
     const [inputValue, setInputValue]   = useState("");
     const [favouriteIds, setFavouriteIds] = useState(new Set());
-    const [ingredients, setIngredients] = useState([]);
-    const [recipes, setRecipes]         = useState([]);
+    const [ingredients, setIngredients] = useState(() => {
+        try { return JSON.parse(sessionStorage.getItem("fr_ingredients")) || []; }
+        catch { return []; }
+    });
+    const [recipes, setRecipes] = useState(() => {
+        try { return JSON.parse(sessionStorage.getItem("fr_recipes")) || []; }
+        catch { return []; }
+    });
     const [loading, setLoading]         = useState(false);
     const [error, setError]             = useState("");
-    const [searched, setSearched]       = useState(false);
+    const [ratings, setRatings]         = useState({});
+    const [searched, setSearched] = useState(() => {
+        return sessionStorage.getItem("fr_searched") === "true";
+    });
 
     // Filters
     const [sortBy, setSortBy]                   = useState("bestMatch");
@@ -46,6 +56,28 @@ function FindRecipes() {
     const [selectedCuisines, setSelectedCuisines]   = useState([]);
     const [selectedDietary, setSelectedDietary]     = useState([]);
     const [selectedDishTypes, setSelectedDishTypes] = useState([]);
+
+    useEffect(() => {
+        sessionStorage.setItem("fr_ingredients", JSON.stringify(ingredients));
+    }, [ingredients]);
+
+    useEffect(() => {
+        if (recipes.length) {
+            const ids = recipes.map((r) => r.id).join(",");
+            fetch(`http://localhost:5001/api/reviews/bulk-ratings?ids=${ids}`)
+                .then((r) => r.ok ? r.json() : {})
+                .then((data) => setRatings(data))
+                .catch(() => {});
+        }
+    }, [recipes]);
+
+    useEffect(() => {
+        sessionStorage.setItem("fr_recipes", JSON.stringify(recipes));
+    }, [recipes]);
+
+    useEffect(() => {
+        sessionStorage.setItem("fr_searched", String(searched));
+    }, [searched]);
 
     useEffect(() => {
         if (!token) return;
@@ -114,10 +146,11 @@ function FindRecipes() {
     }
 
     async function handleSearch() {
-        if (ingredients.length === 0) return;
+        if (ingredients.length === 0) { setError("Please add at least 1 ingredient before searching."); setRecipes([]); setSearched(false); return; }
         setLoading(true);
         setError("");
         setSearched(true);
+        setRecipes([]);
         resetFilters();
         try {
             const query = ingredients.join(",");
@@ -227,7 +260,7 @@ function FindRecipes() {
                                     onKeyDown={handleKeyDown}
                                 />
                                 <button className="btn-add" onClick={addIngredient}>Add</button>
-                                <button className="btn-search" onClick={handleSearch} disabled={ingredients.length === 0}>
+                                <button className="btn-search" onClick={handleSearch}>
                                     Search
                                 </button>
                             </div>
@@ -365,7 +398,7 @@ function FindRecipes() {
                             {/* Main results */}
                             <div className="find-main">
                                 {loading && <p className="find-status">Searching...</p>}
-                                {error && <p className="find-status find-error">{error}</p>}
+                                <Toast message={error} onClose={() => setError("")} />
                                 {searched && !loading && !error && recipes.length === 0 && (
                                     <p className="find-status">No recipes found for those ingredients.</p>
                                 )}
@@ -408,7 +441,10 @@ function FindRecipes() {
                                                                 : recipe.readyInMinutes <= 60 ? "Medium"
                                                                 : "Hard"
                                                             }
+                                                            usedIngredients={recipe.usedIngredients}
+                                                            missedIngredients={recipe.missedIngredients}
                                                             isFavourited={favouriteIds.has(String(recipe.id))}
+                                                            rating={ratings[recipe.id] ?? null}
                                                             onFavourite={() => handleToggleFavourite(recipe)}
                                                             onClick={() => navigate(`/recipe/${recipe.id}`)}
                                                         />

@@ -1,5 +1,6 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
+import ScrollToTop from "components/scroll-to-top/UI_ScrollToTop";
 
 import Login from "pages/auth-pages/Login";
 import Signup from "pages/auth-pages/Signup";
@@ -17,6 +18,8 @@ import Admin from "pages/admin page/Admin";
 
 export default function App() {
   return (
+    <>
+    <ScrollToTop />
     <Routes>
       {/* default page */}
       <Route path="/" element={<Navigate to="/home" replace />} />
@@ -76,5 +79,7 @@ export default function App() {
         }
       />
     </Routes>
+    </>
+
   );
 }

@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "context/AuthContext";
 import "./UI_RecipeCard.css";
 import "pages/page-css/Home.css";
 import Icon_timer from "assets/icons/icon-timer-red.svg";
@@ -16,7 +18,12 @@ function UI_RecipeCard({
   onClick,
   hideHeart = false,
   isFavourited = false,
+  usedIngredients,
+  missedIngredients,
+  rating = null,
 }) {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const categories = [cuisineType, dishType].filter(Boolean);
 
   return (
@@ -30,12 +37,27 @@ function UI_RecipeCard({
           </div>
         )}
 
-        {!hideHeart && (
+        {rating !== null && (
+          <div className="recipe-rating-pill">
+            <span className="recipe-rating-star">★</span>
+            <span className="recipe-rating-value">
+              {rating > 0 ? rating : "0"}
+            </span>
+          </div>
+        )}
+      </div>
+
+      {!hideHeart && (
+        <div className="recipe-fav-wrapper">
           <button
             className={`recipe-fav-btn${isFavourited ? " favourited" : ""}`}
             onClick={(e) => {
               e.stopPropagation();
-              onFavourite && onFavourite();
+              if (!user) {
+                navigate("/login");
+              } else {
+                onFavourite && onFavourite();
+              }
             }}
             aria-label="Save as favourite"
           >
@@ -44,8 +66,11 @@ function UI_RecipeCard({
               alt="Favourite"
             />
           </button>
-        )}
-      </div>
+          {!user && (
+            <span className="fav-tooltip">Login to save favourites</span>
+          )}
+        </div>
+      )}
 
       <div className="recipe-desc">
         {categories.length > 0 && (
@@ -59,6 +84,21 @@ function UI_RecipeCard({
           </div>
           {difficulty && <span className="recipe-difficulty">{difficulty}</span>}
         </div>
+
+        {(usedIngredients?.length > 0 || missedIngredients?.length > 0) && (
+          <ul className="recipe-ingredients-list">
+            {usedIngredients?.map((ing) => (
+              <li key={ing} className="ingredient-match">
+                <span className="ingredient-icon">✓</span>{ing}
+              </li>
+            ))}
+            {missedIngredients?.map((ing) => (
+              <li key={ing} className="ingredient-miss">
+                <span className="ingredient-icon">✕</span>{ing}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );

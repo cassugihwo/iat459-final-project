@@ -19,7 +19,7 @@ function Home() {
   const [savedRecipeIds, setSavedRecipeIds] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5001/api/user-recipes/")
+    fetch("http://localhost:5001/api/user-recipes2/")
       .then((res) => res.json())
       .then((data) => setRecipes(data))
       .catch((err) => console.error("Error fetching recipes:", err));

@@ -96,7 +96,7 @@ router.get("/find-by-ingredients", async (req, res) => {
     }
 
     const findRes = await fetch(
-      `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${encodeURIComponent(ingredients)}&number=20&ranking=1&ignorePantry=true&apiKey=${process.env.SPOONACULAR_API_KEY}`
+      `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${encodeURIComponent(ingredients)}&number=100&ranking=1&ignorePantry=true&apiKey=${process.env.SPOONACULAR_API_KEY}`
     );
     const findData = await findRes.json();
     if (!findRes.ok) {
@@ -105,31 +105,53 @@ router.get("/find-by-ingredients", async (req, res) => {
 
     if (!findData.length) return res.json([]);
 
-    const ids = findData.map((r) => r.id).join(",");
-    const infoRes = await fetch(
-      `https://api.spoonacular.com/recipes/informationBulk?ids=${ids}&apiKey=${process.env.SPOONACULAR_API_KEY}`
-    );
-    const infoData = await infoRes.json();
-
-    const infoMap = {};
-    if (infoRes.ok && Array.isArray(infoData)) {
-      infoData.forEach((r) => { infoMap[r.id] = r; });
+    // Batch informationBulk in chunks of 25 to avoid URL length limits
+    const ids = findData.map((r) => r.id);
+    const chunkSize = 25;
+    const chunks = [];
+    for (let i = 0; i < ids.length; i += chunkSize) {
+      chunks.push(ids.slice(i, i + chunkSize));
     }
 
-    const cleaned = findData.map((recipe) => {
-      const info = infoMap[recipe.id] || {};
-      return {
-        id: recipe.id,
-        title: recipe.title,
-        image: recipe.image,
-        usedIngredientCount: recipe.usedIngredientCount,
-        missedIngredientCount: recipe.missedIngredientCount,
-        readyInMinutes: info.readyInMinutes || null,
-        cuisine: info.cuisines?.[0] || null,
-        dietary: info.diets?.[0] || null,
-        dishType: info.dishTypes?.[0] || null,
-      };
-    });
+    const infoMap = {};
+    await Promise.all(
+      chunks.map(async (chunk) => {
+        const infoRes = await fetch(
+          `https://api.spoonacular.com/recipes/informationBulk?ids=${chunk.join(",")}&apiKey=${process.env.SPOONACULAR_API_KEY}`
+        );
+        if (!infoRes.ok) return;
+        const infoData = await infoRes.json();
+        if (Array.isArray(infoData)) {
+          infoData.forEach((r) => { infoMap[r.id] = r; });
+        }
+      })
+    );
+
+    const cleaned = findData
+      .map((recipe) => {
+        const info = infoMap[recipe.id] || {};
+        return {
+          id: recipe.id,
+          title: recipe.title,
+          image: recipe.image,
+          usedIngredientCount: recipe.usedIngredientCount,
+          missedIngredientCount: recipe.missedIngredientCount,
+          usedIngredients: (recipe.usedIngredients || []).map((i) => i.name),
+          missedIngredients: (recipe.missedIngredients || []).map((i) => i.name),
+          readyInMinutes: info.readyInMinutes || null,
+          cuisine: info.cuisines?.[0] || null,
+          dietary: info.diets?.[0] || null,
+          dishType: info.dishTypes?.[0] || null,
+        };
+      })
+      .filter((r) =>
+        r.title &&
+        r.title.trim() !== "" &&
+        r.image &&
+        r.image.startsWith("http") &&
+        r.readyInMinutes &&
+        r.readyInMinutes > 0
+      );
 
     res.json(cleaned);
   } catch (error) {

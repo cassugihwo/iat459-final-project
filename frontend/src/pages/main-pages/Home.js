@@ -19,6 +19,7 @@ function Home() {
   const [error, setError] = useState("");
   const [favouriteIds, setFavouriteIds] = useState(new Set());
   const [selectedType, setSelectedType] = useState("All");
+  const [ratings, setRatings] = useState({});
 
   const { token } = useAuth();
 
@@ -60,6 +61,11 @@ function Home() {
         }
 
         setRecipes(data);
+        if (data.length) {
+          const ids = data.map((r) => r.id).join(",");
+          const rRes = await fetch(`http://localhost:5001/api/reviews/bulk-ratings?ids=${ids}`);
+          if (rRes.ok) setRatings(await rRes.json());
+        }
       } catch (err) {
         console.error("Fetch home recipes error:", err);
         setError(err.message || "Could not load recipes.");
@@ -202,6 +208,7 @@ function Home() {
                       : "Hard"
                     }
                     isFavourited={favouriteIds.has(recipe.id)}
+                    rating={ratings[recipe.id] ?? null}
                     onClick={() => navigate(`/recipe/${recipe.id}`)}
                     onFavourite={() => handleSaveFavourite(recipe)}
                   />

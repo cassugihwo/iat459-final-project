@@ -40,12 +40,6 @@ function emptyIngredients() {
 
 
 function emptyInstructions() {
-  return Array.from({ length: 4 }, () => ({
-    instruction: ""
-  }));
-}
-
-function emptyInstructions() {
   return [{ instruction: "" }];
 }
 
@@ -65,7 +59,6 @@ function SavedRecipes() {
   const [serves, setServes] = useState("");
   const [cookTime, setCookTime] = useState("");
   const [ingredients, setIngredients] = useState(emptyIngredients());
-  const [instructions, setInstructions] = useState("");
   const [instructionsList, setInstructionsList] = useState(emptyInstructions());
   const [tag, setTag] = useState("");
   const [imageBase64, setImageBase64] = useState("");
@@ -111,7 +104,6 @@ function SavedRecipes() {
     setServes("");
     setCookTime("");
     setIngredients(emptyIngredients());
-    setInstructions("");
     setInstructionsList(emptyInstructions());
     setTag("");
     setImageBase64("");
@@ -152,6 +144,17 @@ function SavedRecipes() {
       .map((r) => [r.amount, r.unit, r.name].filter(Boolean).join(" "))
       .join(", ");
 
+    if (!filledIngredients) {
+      setErrors("At least one ingredient is required");
+      return;
+    }
+
+    const filledInstructions = instructionsList.filter((r) => r.instruction.trim());
+    if (!filledInstructions.length) {
+      setErrors("At least one instruction step is required");
+      return;
+    }
+
     const tags = tag
       .split(",")
       .map((t) => t.trim())
@@ -159,7 +162,7 @@ function SavedRecipes() {
       .join(", ");
 
     const meta = `Serves: ${serves} | Cook: ${cookTime} min${tags ? ` | Tags: ${tags}` : ""}`;
-    const joinedInstructions = instructionsList.map(r => r.instruction).join("\n").trim();
+    const joinedInstructions = filledInstructions.map(r => r.instruction).join("\n").trim();
     const fullInstructions = `${meta}\n\n${joinedInstructions}`;
 
     try {
@@ -242,7 +245,7 @@ function SavedRecipes() {
           <div className="sr-body">
             {/* ── Add Recipe Form ── */}
             <section className="sr-form-section">
-              {errors && <div className="sr-error">{errors}</div>}
+              <Toast message={errors} onClose={() => setErrors("")} />
 
               <form className="sr-form" onSubmit={handleSubmit}>
                 {/* Name */}
@@ -387,14 +390,6 @@ function SavedRecipes() {
                     }
                   >
                     <Plus size={18} style={{ marginRight: 6, verticalAlign: "middle" }} />
-                        { amount: "", unit: "", name: "" },
-                      ])
-                    }
-                  >
-                    <Plus
-                      size={18}
-                      style={{ marginRight: 6, verticalAlign: "middle" }}
-                    />
                     Add Ingredient
                   </button>
                 </div>
@@ -414,7 +409,6 @@ function SavedRecipes() {
                               idx === i ? { ...row, instruction: e.target.value } : row
                             );
                             setInstructionsList(newList);
-                            setInstructions(newList.map(r => r.instruction).join("\n"));
                           }}
                           placeholder={`Describe step ${i + 1}...`}
                           rows={2}
@@ -426,8 +420,7 @@ function SavedRecipes() {
                             onClick={() => {
                               const newList = instructionsList.filter((_, idx) => idx !== i);
                               setInstructionsList(newList);
-                              setInstructions(newList.map(r => r.instruction).join("\n"));
-                            }}
+                              }}
                             tabIndex="-1"
                             aria-label="Remove step"
                           >
@@ -437,55 +430,6 @@ function SavedRecipes() {
                       </div>
                     ))}
                   </div>
-                  <div className="sr-table-wrapper">
-                    <table className="sr-table">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Instructions</th>
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {instructionsList.map((row, i) => (
-                          <tr key={i} className="sr-instruction-row">
-                            <td className="rd-step-number">
-                              {i + 1}
-                            </td>
-                            <td>
-                              <textarea
-                                className="sr-textarea rd-step-text"
-                                value={row.instruction}
-                                onChange={(e) => {
-                                  const newList = [...instructionsList];
-                                  newList[i].instruction = e.target.value;
-                                  setInstructionsList(newList);
-                                  setInstructions(newList.map(r => r.instruction).join("\n"));
-                                }}
-                                placeholder={`Step ${i + 1}`}
-                                rows={2}
-                              />
-                            </td>
-                            <td>
-                              <button
-                                type="button"
-                                className="sr-btn-trash"
-                                onClick={() => {
-                                  const newList = instructionsList.filter((_, idx) => idx !== i);
-                                  setInstructionsList(newList);
-                                  setInstructions(newList.map(r => r.instruction).join("\n"));
-                                }}
-                                tabIndex="-1"
-                                aria-label="Remove instruction"
-                              >
-                                <Trash2 size={18} />
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                    </div>
                   <button
                     type="button"
                     className="sr-btn-add"
@@ -497,20 +441,6 @@ function SavedRecipes() {
                     Add Step
                   </button>
                 </div>
-                      setInstructionsList((prev) => [
-                        ...prev,
-                        { instruction: "" },
-                      ])
-                    }
-                  >
-                    <Plus
-                      size={18}
-                      style={{ marginRight: 6, verticalAlign: "middle" }}
-                    />
-                    Add Instruction
-                  </button>
-                </div>
-
 
                 {/* Instructions (old) */}
                 {/* <div className="sr-field">

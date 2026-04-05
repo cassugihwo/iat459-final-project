@@ -227,6 +227,349 @@
     margin: 0;
 }
 
+/* Column labels */
+.rd-col-label {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-red1);
+    margin: 0 0 0.5rem;
+}
+
+/* Average rating row */
+.rd-avg-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.rd-avg-value {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #333;
+}
+
+.rd-review-count {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.85rem;
+    color: #888;
+}
+
+/* Rating summary card */
+.rd-rating-summary {
+    display: flex;
+    gap: 2.5rem;
+    align-items: center;
+    background: #fff;
+    border: 1.5px solid var(--color-white1);
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+}
+
+.rd-rating-summary-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    min-width: 7rem;
+    border-right: 1.5px solid var(--color-white1);
+    padding-right: 2rem;
+}
+
+.rd-rating-big {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: #1a1a1a;
+    line-height: 1;
+}
+
+.rd-rating-bars {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.rd-rating-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.rd-bar-label {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #555;
+    width: 0.75rem;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.rd-bar-track {
+    flex: 1;
+    height: 0.55rem;
+    background: #ede8e4;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.rd-bar-fill {
+    height: 100%;
+    background: #c49a00;
+    border-radius: 999px;
+    transition: width 0.4s ease;
+}
+
+.rd-bar-pct {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.8rem;
+    color: #888;
+    width: 2.5rem;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+/* Review avatar */
+.rd-review-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background-color: #f0e6da;
+    color: #9E3B3B;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.rd-review-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+/* Reviews section */
+.rd-reviews-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1.5px solid var(--color-white1);
+}
+
+/* Review form */
+.rd-review-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    background: var(--color-white1);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.rd-review-form-label {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-red1);
+    margin: 0;
+}
+
+.star-picker {
+    display: flex;
+    gap: 0.2rem;
+}
+
+.star-btn {
+    background: none;
+    border: none;
+    font-size: 1.75rem;
+    color: #ddd;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    transition: color 0.15s, transform 0.1s;
+}
+
+.star-btn.active {
+    color: #c49a00;
+}
+
+.star-btn:hover {
+    transform: scale(1.15);
+}
+
+.rd-review-textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1.5px solid #e0d8d4;
+    border-radius: 8px;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.9rem;
+    resize: vertical;
+    outline: none;
+    background: #fff;
+    box-sizing: border-box;
+}
+
+.rd-review-textarea:focus {
+    border-color: var(--color-red1);
+}
+
+.rd-review-error {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.85rem;
+    color: #c0392b;
+    margin: 0;
+}
+
+.rd-review-submit {
+    align-self: flex-start;
+    padding: 0.6rem 1.4rem;
+    background-color: var(--color-red1);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.rd-review-submit:hover:not(:disabled) {
+    background-color: var(--color-red0);
+}
+
+.rd-review-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.rd-review-login {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.95rem;
+    color: #888;
+    margin: 0.25rem 0 0;
+}
+
+.rd-review-login-btn {
+    background: none;
+    border: none;
+    color: var(--color-red1);
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.95rem;
+    padding: 0;
+    text-decoration: underline;
+}
+
+.rd-reviews-toggle {
+    display: block;
+    margin: 1rem auto 2rem;
+    padding: 0.55rem 1.6rem;
+    background: none;
+    border: 1.5px solid var(--color-red1);
+    border-radius: 999px;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--color-red1);
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.rd-reviews-toggle:hover {
+    background-color: var(--color-red1);
+    color: #fff;
+}
+
+.rd-no-reviews {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.9rem;
+    color: #aaa;
+}
+
+/* Review list */
+.rd-review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.rd-review-item {
+    background: #fff;
+    border: 1.5px solid var(--color-white1);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+}
+
+.rd-review-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.6rem;
+}
+
+.review-stars {
+    display: flex;
+    gap: 0.1rem;
+}
+
+.star-filled {
+    color: #c49a00;
+    font-size: 0.95rem;
+}
+
+.star-empty {
+    color: #ddd;
+    font-size: 0.95rem;
+}
+
+.rd-review-username {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+.rd-review-date {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.8rem;
+    color: #aaa;
+}
+
+.rd-review-delete {
+    background: none;
+    border: none;
+    color: #ccc;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0 0.25rem;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.rd-review-delete:hover {
+    color: #c0392b;
+}
+
+.rd-review-comment {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.9rem;
+    color: #444;
+    line-height: 1.55;
+    margin: 0;
+}
+
 /* Loading / error */
 .rd-loading,
 .rd-error {

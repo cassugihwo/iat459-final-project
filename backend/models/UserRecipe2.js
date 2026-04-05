@@ -10,23 +10,12 @@ const UserRecipe2Schema = new mongoose.Schema(
       type: String,
     },
     ingredients: {
-      type: [
-        {
-          name: String,
-          amount: Number,
-          unit: String
-        },
-      ],
-      default: [],
+      type: String,
+      default: "",
     },
     instructions: {
-      type: [
-        {
-          number: Number,
-          step: String,
-        },
-      ],
-      default: [],
+      type: String,
+      default: "",
     },
     owner:{
       type: mongoose.Schema.Types.ObjectId,
