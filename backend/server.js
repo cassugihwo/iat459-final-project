@@ -39,15 +39,7 @@ async function connectDB() {
       console.log("✅ Dropped unique review index");
     } catch (e) {
       // Index doesn't exist or already dropped — that's fine
-    }
-
-    // Drop the old userrecipes collection (replaced by userrecipe2s)
-    try {
-      await mongoose.connection.db.collection("userrecipes").drop();
-      console.log("✅ Dropped old userrecipes collection");
-    } catch (e) {
-      // Collection doesn't exist — that's fine
-    }
+    };
   } catch (err) {
     console.error("❌ Connection failed:", err);
   }
