@@ -2,17 +2,6 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "context/AuthContext";
 import "./UI_Navbar.css";
 
-const PROTECTED = [
-  { to: "/pantry", label: "Favourite Recipes" },
-  { to: "/saved-recipes", label: "Add Your Recipes" },
-  { to: "/meal-plan", label: "Your Meal Plan" },
-];
-
-const PUBLIC = [
-  { to: "/home", label: "Home" },
-  { to: "/find-recipes", label: "Find Recipes" },
-];
-
 function UI_Navbar() {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -26,33 +15,77 @@ function UI_Navbar() {
   function handleMemberNavigation(path, featureName, event) {
     if (!user) {
       event.preventDefault();
-      navigate("/login");
+      navigate("/member-only", {
+        state: { featureName },
+      });
     }
   }
 
   return (
     <div className="navbar-container">
       <ul>
-        {PUBLIC.map(({ to, label }) => (
-          <li key={to}>
-            <NavLink to={to} className={({ isActive }) => (isActive ? "selected" : "")}>
-              {label}
-            </NavLink>
-          </li>
-        ))}
+        <li>
+          <NavLink
+            to="/home"
+            className={({ isActive }) => (isActive ? "selected" : "")}
+          >
+            Home
+          </NavLink>
+        </li>
 
-        {PROTECTED.map(({ to, label }) => (
-          <li key={to} className={!user ? "nav-protected" : ""}>
-            <NavLink
-              to={to}
-              className={({ isActive }) => (isActive ? "selected" : "")}
-              onClick={handleProtectedClick}
-            >
-              {label}
-            </NavLink>
-            {!user && <span className="nav-tooltip">Login to access this feature</span>}
-          </li>
-        ))}
+        <li>
+          <NavLink
+            to="/find-recipes"
+            className={({ isActive }) => (isActive ? "selected" : "")}
+          >
+            Find Recipes
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink
+            to="/pantry"
+            className={({ isActive }) => getMemberOnlyLinkClass(isActive)}
+            onClick={(event) =>
+              handleMemberNavigation("/pantry", "Favourite Recipes", event)
+            }
+          >
+            Favourite Recipes
+          </NavLink>
+          {!user && (
+            <span className="member-only-tooltip">Log in to access feature</span>
+          )}
+        </li>
+
+        <li>
+          <NavLink
+            to="/saved-recipes"
+            className={({ isActive }) => getMemberOnlyLinkClass(isActive)}
+            onClick={(event) =>
+              handleMemberNavigation("/saved-recipes", "Add Your Recipes", event)
+            }
+          >
+            Add Your Recipes
+          </NavLink>
+          {!user && (
+            <span className="member-only-tooltip">Log in to access feature</span>
+          )}
+        </li>
+
+        <li>
+          <NavLink
+            to="/meal-plan"
+            className={({ isActive }) => getMemberOnlyLinkClass(isActive)}
+            onClick={(event) =>
+              handleMemberNavigation("/meal-plan", "Your Meal Plan", event)
+            }
+          >
+            Your Meal Plan
+          </NavLink>
+          {!user && (
+            <span className="member-only-tooltip">Log in to access feature</span>
+          )}
+        </li>
       </ul>
     </div>
   );

@@ -5,7 +5,6 @@ import Navbar from "components/navbar/UI_Navbar";
 import NavbarHeader from "components/navbar/UI_NavbarHeader";
 import RecipeCard from "components/recipe-card/UI_RecipeCard";
 import Footer from "components/footer/UI_Footer";
-import ScrollToTop from "components/scroll-to-top/UI_ScrollToTop";
 import logo from "assets/logo/logo-full.png";
 import leftDish from "assets/bg image/left.png";
 import centerDish from "assets/bg image/center.png";
@@ -17,7 +16,6 @@ function Pantry() {
   const navigate = useNavigate();
   const [favourites, setFavourites] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [ratings, setRatings] = useState({});
 
   useEffect(() => {
     async function fetchFavourites() {
@@ -28,11 +26,6 @@ function Pantry() {
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
         setFavourites(data);
-        if (data.length) {
-          const ids = data.map((f) => f.recipeId).join(",");
-          const rRes = await fetch(`http://localhost:5001/api/reviews/bulk-ratings?ids=${ids}`);
-          if (rRes.ok) setRatings(await rRes.json());
-        }
       } catch (err) {
         console.error("Fetch favourites error:", err);
       } finally {
@@ -133,7 +126,6 @@ function Pantry() {
                               : "Hard"
                           }
                           isFavourited={true}
-                          rating={ratings[fav.recipeId] ?? 0}
                           onFavourite={() => handleRemove(fav.recipeId)}
                           onClick={() => navigate(`/recipe/${fav.recipeId}`)}
                         />
@@ -146,7 +138,6 @@ function Pantry() {
           )}
         </div>
         <Footer />
-        <ScrollToTop />
       </div>
     </div>
   );

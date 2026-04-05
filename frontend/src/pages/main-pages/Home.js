@@ -9,7 +9,6 @@ import leftDish from "assets/bg image/left.png";
 import centerDish from "assets/bg image/center.png";
 import rightDish from "assets/bg image/right.png";
 import Footer from "components/footer/UI_Footer";
-import ScrollToTop from "components/scroll-to-top/UI_ScrollToTop";
 
 function Home() {
   const { user } = useAuth();
@@ -20,7 +19,6 @@ function Home() {
   const [error, setError] = useState("");
   const [favouriteIds, setFavouriteIds] = useState(new Set());
   const [selectedType, setSelectedType] = useState("All");
-  const [ratings, setRatings] = useState({});
 
   const { token } = useAuth();
 
@@ -33,7 +31,7 @@ function Home() {
         });
         if (!res.ok) return;
         const data = await res.json();
-        setFavouriteIds(new Set(data.map((f) => String(f.recipeId))));
+        setFavouriteIds(new Set(data.map((f) => f.recipeId)));
       } catch (err) {
         console.error("Fetch favourites error:", err);
       }
@@ -62,11 +60,6 @@ function Home() {
         }
 
         setRecipes(data);
-        if (data.length) {
-          const ids = data.map((r) => r.id).join(",");
-          const rRes = await fetch(`http://localhost:5001/api/reviews/bulk-ratings?ids=${ids}`);
-          if (rRes.ok) setRatings(await rRes.json());
-        }
       } catch (err) {
         console.error("Fetch home recipes error:", err);
         setError(err.message || "Could not load recipes.");
@@ -80,7 +73,9 @@ function Home() {
 
   async function handleSaveFavourite(recipe) {
     if (!user) {
-      navigate("/login");
+      navigate("/member-only", {
+        state: { featureName: "Save as Favourite" },
+      });
       return;
     }
 
@@ -104,9 +99,9 @@ function Home() {
       setFavouriteIds((prev) => {
         const next = new Set(prev);
         if (data.saved) {
-          next.add(String(recipe.id));
+          next.add(recipe.id);
         } else {
-          next.delete(String(recipe.id));
+          next.delete(recipe.id);
         }
         return next;
       });
@@ -206,9 +201,7 @@ function Home() {
                       : recipe.readyInMinutes <= 60 ? "Medium"
                       : "Hard"
                     }
-                    isFavourited={favouriteIds.has(String(recipe.id))}
-                    isGuest={!user}
-                    rating={ratings[recipe.id] ?? 0}
+                    isFavourited={favouriteIds.has(recipe.id)}
                     onClick={() => navigate(`/recipe/${recipe.id}`)}
                     onFavourite={() => handleSaveFavourite(recipe)}
                   />
@@ -218,7 +211,6 @@ function Home() {
           </section>
         </div>
         <Footer />
-        <ScrollToTop />
       </div>
     </div>
   );
