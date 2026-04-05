@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Trash2, Plus } from "lucide-react";
+import Toast from "components/toast/UI_Toast";
 import "pages/MainPage.css";
 import "pages/page-css/RecipeDetail.css";
 import "pages/page-css/SavedRecipes.css";
@@ -8,6 +9,7 @@ import Navbar from "components/navbar/UI_Navbar";
 import NavbarHeader from "components/navbar/UI_NavbarHeader";
 import RecipeCard from "components/recipe-card/UI_RecipeCard";
 import Footer from "components/footer/UI_Footer";
+import ScrollToTop from "components/scroll-to-top/UI_ScrollToTop";
 import logo from "assets/logo/logo-full.png";
 import leftDish from "assets/bg image/left.png";
 import centerDish from "assets/bg image/center.png";
@@ -197,12 +199,13 @@ function SavedRecipes() {
       setUserRecipes((prev) => prev.filter((r) => r._id !== id));
     } catch (err) {
       console.error(err);
-      alert(err.message);
+      setErrors(err.message);
     }
   }
 
   return (
     <div className="home-page">
+      <Toast message={errors} onClose={() => setErrors("")} />
       <div className="navbarHeader">
         <NavbarHeader />
       </div>
@@ -238,7 +241,6 @@ function SavedRecipes() {
           <div className="sr-body">
             {/* ── Add Recipe Form ── */}
             <section className="sr-form-section">
-              {errors && <div className="sr-error">{errors}</div>}
 
               <form className="sr-form" onSubmit={handleSubmit}>
                 {/* Name */}
@@ -577,6 +579,7 @@ function SavedRecipes() {
           </div>
         </div>
         <Footer />
+        <ScrollToTop />
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Toast from "components/toast/UI_Toast";
 import { registerUser } from "services/authService";
 import "./AuthPages.css";
 import logo from "assets/logo/logo-noslogan.png";
@@ -46,6 +47,7 @@ function Signup() {
 
   return (
     <div className="auth-page">
+      <Toast message={error} onClose={() => setError("")} />
       <div className="bg-base"></div>
       <div className="bg-blob"></div>
       <div className="bg-emoji">🍅</div>
@@ -150,7 +152,6 @@ function Signup() {
               </span>
             </label>
 
-            {error && <p className="error-text">{error}</p>}
 
             <button type="submit">Log In To YumMeal</button>
 

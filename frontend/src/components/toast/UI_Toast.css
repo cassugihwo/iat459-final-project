@@ -1,0 +1,68 @@
+@import "App.css";
+
+.toast-overlay {
+    position: fixed;
+    top: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    animation: toast-slide-down 0.25s ease;
+}
+
+@keyframes toast-slide-down {
+    from { opacity: 0; transform: translateX(-50%) translateY(-1rem); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.toast-box {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--color-red0);
+    color: #fff;
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+    min-width: 260px;
+    max-width: 420px;
+}
+
+.toast-icon {
+    flex-shrink: 0;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.toast-message {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0;
+    flex: 1;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    flex-shrink: 0;
+    transition: color 0.15s;
+}
+
+.toast-close:hover {
+    color: #fff;
+}

@@ -1,5 +1,43 @@
 @import "App.css";
 
+/* Tooltip for guest users on protected links */
+.navbarHeader-container .nav-protected {
+    position: relative;
+}
+
+.navbarHeader-container .nav-tooltip {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--color-red0);
+    color: #fff;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.35rem 0.75rem;
+    border-radius: 8px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 100;
+}
+
+.navbarHeader-container .nav-tooltip::before {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-bottom-color: var(--color-red0);
+}
+
+.navbarHeader-container .nav-protected:hover .nav-tooltip {
+    opacity: 1;
+}
+
 .navbarHeader-container {
     position: fixed;
     z-index: 1000;

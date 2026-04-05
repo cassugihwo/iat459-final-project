@@ -96,7 +96,7 @@ router.get("/find-by-ingredients", async (req, res) => {
     }
 
     const findRes = await fetch(
-      `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${encodeURIComponent(ingredients)}&number=20&ranking=1&ignorePantry=true&apiKey=${process.env.SPOONACULAR_API_KEY}`
+      `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${encodeURIComponent(ingredients)}&number=100&ranking=1&ignorePantry=true&apiKey=${process.env.SPOONACULAR_API_KEY}`
     );
     const findData = await findRes.json();
     if (!findRes.ok) {
@@ -116,20 +116,31 @@ router.get("/find-by-ingredients", async (req, res) => {
       infoData.forEach((r) => { infoMap[r.id] = r; });
     }
 
-    const cleaned = findData.map((recipe) => {
-      const info = infoMap[recipe.id] || {};
-      return {
-        id: recipe.id,
-        title: recipe.title,
-        image: recipe.image,
-        usedIngredientCount: recipe.usedIngredientCount,
-        missedIngredientCount: recipe.missedIngredientCount,
-        readyInMinutes: info.readyInMinutes || null,
-        cuisine: info.cuisines?.[0] || null,
-        dietary: info.diets?.[0] || null,
-        dishType: info.dishTypes?.[0] || null,
-      };
-    });
+    const cleaned = findData
+      .map((recipe) => {
+        const info = infoMap[recipe.id] || {};
+        return {
+          id: recipe.id,
+          title: recipe.title,
+          image: recipe.image,
+          usedIngredientCount: recipe.usedIngredientCount,
+          totalIngredientCount: info.extendedIngredients?.length ?? (recipe.usedIngredientCount + recipe.missedIngredientCount),
+          usedIngredients: (recipe.usedIngredients || []).map((i) => i.name),
+          missedIngredients: (recipe.missedIngredients || []).map((i) => i.name),
+          readyInMinutes: info.readyInMinutes || null,
+          cuisine: info.cuisines?.[0] || null,
+          dietary: info.diets?.[0] || null,
+          dishType: info.dishTypes?.[0] || null,
+        };
+      })
+      .filter((recipe) => {
+        // Remove collection pages — their "ingredients" are actually recipe titles (very long strings)
+        const allIngredients = [...recipe.usedIngredients, ...recipe.missedIngredients];
+        const hasLongIngredient = allIngredients.some((name) => name.length > 45);
+        // Also require a valid cook time — collection pages rarely have one
+        const hasCookTime = recipe.readyInMinutes != null && recipe.readyInMinutes > 0;
+        return !hasLongIngredient && hasCookTime;
+      });
 
     res.json(cleaned);
   } catch (error) {

@@ -7,6 +7,8 @@ import Navbar from "components/navbar/UI_Navbar";
 import NavbarHeader from "components/navbar/UI_NavbarHeader";
 import RecipeCard from "components/recipe-card/UI_RecipeCard";
 import Footer from "components/footer/UI_Footer";
+import ScrollToTop from "components/scroll-to-top/UI_ScrollToTop";
+import Toast from "components/toast/UI_Toast";
 import logo from "assets/logo/logo-full.png";
 import leftDish from "assets/bg image/left.png";
 import centerDish from "assets/bg image/center.png";
@@ -34,11 +36,17 @@ function FindRecipes() {
 
     const [inputValue, setInputValue]   = useState("");
     const [favouriteIds, setFavouriteIds] = useState(new Set());
-    const [ingredients, setIngredients] = useState([]);
-    const [recipes, setRecipes]         = useState([]);
+    const [ratings, setRatings] = useState({});
+    const [searchToast, setSearchToast] = useState("");
+
+    const saved = sessionStorage.getItem("findRecipesState");
+    const savedState = saved ? JSON.parse(saved) : null;
+
+    const [ingredients, setIngredients] = useState(savedState?.ingredients || []);
+    const [recipes, setRecipes]         = useState(savedState?.recipes || []);
     const [loading, setLoading]         = useState(false);
     const [error, setError]             = useState("");
-    const [searched, setSearched]       = useState(false);
+    const [searched, setSearched]       = useState(savedState?.searched || false);
 
     // Filters
     const [sortBy, setSortBy]                   = useState("bestMatch");
@@ -46,6 +54,10 @@ function FindRecipes() {
     const [selectedCuisines, setSelectedCuisines]   = useState([]);
     const [selectedDietary, setSelectedDietary]     = useState([]);
     const [selectedDishTypes, setSelectedDishTypes] = useState([]);
+
+    useEffect(() => {
+        sessionStorage.setItem("findRecipesState", JSON.stringify({ ingredients, recipes, searched }));
+    }, [ingredients, recipes, searched]);
 
     useEffect(() => {
         if (!token) return;
@@ -63,7 +75,7 @@ function FindRecipes() {
     }, [token]);
 
     async function handleToggleFavourite(recipe) {
-        if (!token) return navigate("/member-only", { state: { featureName: "Favourite Recipes" } });
+        if (!token) { navigate("/login"); return; }
         try {
             const res = await fetch("http://localhost:5001/api/favourites/toggle", {
                 method: "POST",
@@ -114,7 +126,7 @@ function FindRecipes() {
     }
 
     async function handleSearch() {
-        if (ingredients.length === 0) return;
+        if (ingredients.length === 0) { setSearchToast("Please add at least one ingredient before searching."); return; }
         setLoading(true);
         setError("");
         setSearched(true);
@@ -127,6 +139,11 @@ function FindRecipes() {
             const data = await response.json();
             if (!response.ok) throw new Error(data.error || "Failed to fetch recipes.");
             setRecipes(data);
+            if (data.length) {
+                const ids = data.map((r) => r.id).join(",");
+                const rRes = await fetch(`http://localhost:5001/api/reviews/bulk-ratings?ids=${ids}`);
+                if (rRes.ok) setRatings(await rRes.json());
+            }
         } catch (err) {
             setError(err.message || "Could not load recipes.");
             setRecipes([]);
@@ -205,6 +222,7 @@ function FindRecipes() {
                 <div className="bg-gradient"></div>
             </div>
 
+            <Toast message={searchToast} onClose={() => setSearchToast("")} />
             <div className="main">
                 <div className="navbar"><Navbar /></div>
 
@@ -227,7 +245,7 @@ function FindRecipes() {
                                     onKeyDown={handleKeyDown}
                                 />
                                 <button className="btn-add" onClick={addIngredient}>Add</button>
-                                <button className="btn-search" onClick={handleSearch} disabled={ingredients.length === 0}>
+                                <button className="btn-search" onClick={handleSearch}>
                                     Search
                                 </button>
                             </div>
@@ -409,9 +427,33 @@ function FindRecipes() {
                                                                 : "Hard"
                                                             }
                                                             isFavourited={favouriteIds.has(String(recipe.id))}
+                                                            isGuest={!token}
+                                                            rating={ratings[recipe.id] ?? 0}
                                                             onFavourite={() => handleToggleFavourite(recipe)}
                                                             onClick={() => navigate(`/recipe/${recipe.id}`)}
                                                         />
+                                                        <div className="find-ingredient-match">
+                                                            {recipe.usedIngredients?.length > 0 && (
+                                                                <div className="find-match-group">
+                                                                    <span className="find-match-group-label matched">✓ Have</span>
+                                                                    <div className="find-match-tags">
+                                                                        {recipe.usedIngredients.map((ing) => (
+                                                                            <span key={ing} className="find-match-tag matched">{ing}</span>
+                                                                        ))}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                            {recipe.missedIngredients?.length > 0 && (
+                                                                <div className="find-match-group">
+                                                                    <span className="find-match-group-label missing">✕ Need</span>
+                                                                    <div className="find-match-tags">
+                                                                        {recipe.missedIngredients.map((ing) => (
+                                                                            <span key={ing} className="find-match-tag missing">{ing}</span>
+                                                                        ))}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </div>
                                                     </div>
                                                 ))}
                                             </div>
@@ -423,6 +465,7 @@ function FindRecipes() {
                     </div>
                 </div>
                 <Footer />
+                <ScrollToTop />
             </div>
         </div>
     );

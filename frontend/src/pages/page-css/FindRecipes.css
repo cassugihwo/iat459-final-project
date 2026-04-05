@@ -378,9 +378,75 @@
 
 /* Card wrapper + match badge */
 .find-card-wrapper {
+    border-radius: 1.25rem;
+    overflow: hidden;
+    border: 0.125rem solid var(--color-white1);
+    box-shadow: 0 0.125rem 0.75rem rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.find-card-wrapper:hover {
+    transform: translateY(-0.25rem);
+    box-shadow: 0 0.75rem 1.75rem rgba(0, 0, 0, 0.15);
+}
+
+.find-card-wrapper .recipe-card-container {
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+}
+
+.find-ingredient-match {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    padding: 0.75rem 0.85rem;
+    background-color: var(--color-white0);
+    border-top: 1px solid var(--color-white1);
+}
+
+.find-match-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.find-match-group-label {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.find-match-group-label.matched { color: #2d6a2d; }
+.find-match-group-label.missing { color: #a84040; }
+
+.find-match-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.find-match-tag {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    text-transform: capitalize;
+}
+
+.find-match-tag.matched {
+    background-color: #edf7ed;
+    color: #2d6a2d;
+    border: 1px solid #b6d9b6;
+}
+
+.find-match-tag.missing {
+    background-color: #fdf0f0;
+    color: #a84040;
+    border: 1px solid #e8b8b8;
 }
 
 .match-badge {
