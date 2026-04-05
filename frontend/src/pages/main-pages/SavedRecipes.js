@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { Trash2, Plus } from "lucide-react";
 import Toast from "components/toast/UI_Toast";
 import "pages/MainPage.css";
 import "pages/page-css/SavedRecipes.css";
@@ -36,6 +37,10 @@ function emptyIngredients() {
   }));
 }
 
+function emptyInstructions() {
+  return [{ instruction: "" }];
+}
+
 function isNumber(value) {
   const v = value.trim();
   return v === "" || !Number.isNaN(Number(v));
@@ -52,6 +57,7 @@ function SavedRecipes() {
   const [cookTime, setCookTime] = useState("");
   const [ingredients, setIngredients] = useState(emptyIngredients());
   const [instructions, setInstructions] = useState("");
+  const [instructionsList, setInstructionsList] = useState(emptyInstructions());
   const [tag, setTag] = useState("");
   const [imageBase64, setImageBase64] = useState("");
   const [imagePreview, setImagePreview] = useState("");
@@ -62,7 +68,7 @@ function SavedRecipes() {
       try {
         const response = await fetch("http://localhost:5001/api/user-recipes", {
           method: "GET",
-          headers: { "Content-Type": "application/json", Authorization: token },
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         });
         if (!response.ok) throw new Error("Failed to fetch recipes.");
         const data = await response.json();
@@ -97,6 +103,7 @@ function SavedRecipes() {
     setCookTime("");
     setIngredients(emptyIngredients());
     setInstructions("");
+    setInstructionsList(emptyInstructions());
     setTag("");
     setImageBase64("");
     setImagePreview("");
@@ -148,7 +155,7 @@ function SavedRecipes() {
     try {
       const response = await fetch("http://localhost:5001/api/user-recipes", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: token },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
           name: name.trim(),
           image: imageBase64,
@@ -173,7 +180,7 @@ function SavedRecipes() {
         `http://localhost:5001/api/user-recipes/${id}`,
         {
           method: "DELETE",
-          headers: { Authorization: token },
+          headers: { Authorization: `Bearer ${token}` },
         },
       );
       if (!response.ok)
@@ -340,18 +347,69 @@ function SavedRecipes() {
                       </tbody>
                     </table>
                   </div>
+                  <button
+                    type="button"
+                    className="sr-btn-add"
+                    onClick={() =>
+                      setIngredients((prev) => [
+                        ...prev,
+                        { quantity: "", measurement: "", item: "" },
+                      ])
+                    }
+                  >
+                    <Plus size={18} style={{ marginRight: 6, verticalAlign: "middle" }} />
+                    Add Ingredient
+                  </button>
                 </div>
 
                 {/* Instructions */}
                 <div className="sr-field">
                   <label className="sr-label">Instructions</label>
-                  <textarea
-                    className="sr-textarea"
-                    value={instructions}
-                    onChange={(e) => setInstructions(e.target.value)}
-                    placeholder="Write the cooking steps here..."
-                    rows={6}
-                  />
+                  <div className="sr-steps-list">
+                    {instructionsList.map((row, i) => (
+                      <div key={i} className="sr-step-row">
+                        <span className="sr-step-num">{i + 1}</span>
+                        <textarea
+                          className="sr-textarea sr-step-textarea"
+                          value={row.instruction}
+                          onChange={(e) => {
+                            const newList = instructionsList.map((row, idx) =>
+                              idx === i ? { ...row, instruction: e.target.value } : row
+                            );
+                            setInstructionsList(newList);
+                            setInstructions(newList.map(r => r.instruction).join("\n"));
+                          }}
+                          placeholder={`Describe step ${i + 1}...`}
+                          rows={2}
+                        />
+                        {instructionsList.length > 1 && (
+                          <button
+                            type="button"
+                            className="sr-btn-trash"
+                            onClick={() => {
+                              const newList = instructionsList.filter((_, idx) => idx !== i);
+                              setInstructionsList(newList);
+                              setInstructions(newList.map(r => r.instruction).join("\n"));
+                            }}
+                            tabIndex="-1"
+                            aria-label="Remove step"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    className="sr-btn-add"
+                    onClick={() =>
+                      setInstructionsList((prev) => [...prev, { instruction: "" }])
+                    }
+                  >
+                    <Plus size={16} />
+                    Add Step
+                  </button>
                 </div>
 
                 {/* Tags */}

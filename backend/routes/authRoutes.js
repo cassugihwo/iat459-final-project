@@ -2,6 +2,7 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const verifyToken = require("../middleware/authMiddleWare");
 
 const router = express.Router();
 
@@ -81,6 +82,32 @@ router.post("/login", async (req, res) => {
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ message: "Server error during login." });
+  }
+});
+
+// GET profile
+router.get("/profile", verifyToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.userId).select("-password");
+    if (!user) return res.status(404).json({ message: "User not found." });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: "Server error." });
+  }
+});
+
+// PUT update profile (bio + links)
+router.put("/profile", verifyToken, async (req, res) => {
+  try {
+    const { bio, links, avatar } = req.body;
+    const user = await User.findByIdAndUpdate(
+      req.userId,
+      { bio, links, avatar },
+      { new: true }
+    ).select("-password");
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: "Server error." });
   }
 });
 
