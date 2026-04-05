@@ -17,7 +17,13 @@ function UI_Navbar() {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  function handleProtectedClick(event) {
+  function getMemberOnlyLinkClass(isActive) {
+    return [isActive ? "selected" : "", !user ? "member-only-link" : ""]
+      .filter(Boolean)
+      .join(" ");
+  }
+
+  function handleMemberNavigation(path, featureName, event) {
     if (!user) {
       event.preventDefault();
       navigate("/login");

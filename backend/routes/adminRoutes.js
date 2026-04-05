@@ -3,6 +3,7 @@ const router = express.Router();
 
 const User = require("../models/User");
 const UserRecipe = require("../models/UserRecipe");
+const UserRecipe2 = require("../models/UserRecipe2");
 const verifyToken = require("../middleware/authMiddleWare");
 const verifyAdmin = require("../middleware/verifyAdmin");
 
