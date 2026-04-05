@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Trash2, Plus } from "lucide-react";
+import Toast from "components/toast/UI_Toast";
 import "pages/MainPage.css";
 import "pages/page-css/RecipeDetail.css";
 import "pages/page-css/SavedRecipes.css";
@@ -44,6 +45,9 @@ function emptyInstructions() {
   }));
 }
 
+function emptyInstructions() {
+  return [{ instruction: "" }];
+}
 
 function isNumber(value) {
   const v = value.trim();
@@ -73,7 +77,7 @@ function SavedRecipes() {
       try {
         const response = await fetch(`http://localhost:5001/api/${recipeVer}`, {
           method: "GET",
-          headers: { "Content-Type": "application/json", Authorization: token },
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         });
         if (!response.ok) throw new Error("Failed to fetch recipes.");
         const data = await response.json();
@@ -161,7 +165,7 @@ function SavedRecipes() {
     try {
       const response = await fetch(`http://localhost:5001/api/${recipeVer}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: token },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
           name: name.trim(),
           image: imageBase64,
@@ -189,7 +193,7 @@ function SavedRecipes() {
         `http://localhost:5001/api/${recipeVer}/${id}`,
         {
           method: "DELETE",
-          headers: { Authorization: token },
+          headers: { Authorization: `Bearer ${token}` },
         },
       );
       if (!response.ok)
@@ -378,6 +382,11 @@ function SavedRecipes() {
                     onClick={() =>
                       setIngredients((prev) => [
                         ...prev,
+                        { quantity: "", measurement: "", item: "" },
+                      ])
+                    }
+                  >
+                    <Plus size={18} style={{ marginRight: 6, verticalAlign: "middle" }} />
                         { amount: "", unit: "", name: "" },
                       ])
                     }
@@ -393,6 +402,41 @@ function SavedRecipes() {
                 {/* Instructions (WIP) */}
                 <div className="sr-field">
                   <label className="sr-label">Instructions</label>
+                  <div className="sr-steps-list">
+                    {instructionsList.map((row, i) => (
+                      <div key={i} className="sr-step-row">
+                        <span className="sr-step-num">{i + 1}</span>
+                        <textarea
+                          className="sr-textarea sr-step-textarea"
+                          value={row.instruction}
+                          onChange={(e) => {
+                            const newList = instructionsList.map((row, idx) =>
+                              idx === i ? { ...row, instruction: e.target.value } : row
+                            );
+                            setInstructionsList(newList);
+                            setInstructions(newList.map(r => r.instruction).join("\n"));
+                          }}
+                          placeholder={`Describe step ${i + 1}...`}
+                          rows={2}
+                        />
+                        {instructionsList.length > 1 && (
+                          <button
+                            type="button"
+                            className="sr-btn-trash"
+                            onClick={() => {
+                              const newList = instructionsList.filter((_, idx) => idx !== i);
+                              setInstructionsList(newList);
+                              setInstructions(newList.map(r => r.instruction).join("\n"));
+                            }}
+                            tabIndex="-1"
+                            aria-label="Remove step"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                   <div className="sr-table-wrapper">
                     <table className="sr-table">
                       <thead>
@@ -446,6 +490,13 @@ function SavedRecipes() {
                     type="button"
                     className="sr-btn-add"
                     onClick={() =>
+                      setInstructionsList((prev) => [...prev, { instruction: "" }])
+                    }
+                  >
+                    <Plus size={16} />
+                    Add Step
+                  </button>
+                </div>
                       setInstructionsList((prev) => [
                         ...prev,
                         { instruction: "" },

@@ -5,8 +5,9 @@
     position: absolute;
     top: 0;
     width: 100%;
-    height: 100%;
+    height: 100vh;
     z-index: -1;
+    overflow: hidden;
     background-color: var(--color-white0);
 
     .bg-gradient {
@@ -69,12 +70,25 @@
     width: 50vw;
 }
 
+/* ── Page wrapper ── */
+.home-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+/* ── Main white panel ── */
 .main {
     margin-top: 63vh;
     border-radius: 90px 90px 0 0;
     background-color: var(--color-white0);
     z-index: 2;
     overflow: hidden;
+    /* grows to fill everything below 63vh */
+    min-height: calc(100vh - 63vh);
+    display: flex;
+    flex-direction: column;
 
     .navbar {
         padding-top: 35px;
@@ -91,23 +105,29 @@
 
     .main-content {
         margin: 0 auto;
-        padding-bottom: 3rem;
+        padding-bottom: 0;
+    }
 
-        .header-container {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
+    .header-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
 
-            .header-container-wrapper {
-                max-width: 90vw;
+        .header-container-wrapper {
+            max-width: 90vw;
 
-                h1 {
-                    text-align: center;
-                }
+            h1 {
+                text-align: center;
             }
         }
     }
+}
+
+/* Makes main-content fill available space so footer sits at the bottom */
+.main-content {
+    flex: 1;
+    width: 100%;
 }
 
 .placeholderpage {
