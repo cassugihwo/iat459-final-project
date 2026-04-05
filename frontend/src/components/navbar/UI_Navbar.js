@@ -26,9 +26,7 @@ function UI_Navbar() {
   function handleMemberNavigation(path, featureName, event) {
     if (!user) {
       event.preventDefault();
-      navigate("/member-only", {
-        state: { featureName },
-      });
+      navigate("/login");
     }
   }
 
@@ -44,17 +42,15 @@ function UI_Navbar() {
         ))}
 
         {PROTECTED.map(({ to, label }) => (
-          <li key={to}>
+          <li key={to} className={!user ? "nav-protected" : ""}>
             <NavLink
               to={to}
-              className={({ isActive }) => getMemberOnlyLinkClass(isActive)}
-              onClick={(event) => handleMemberNavigation(to, label, event)}
+              className={({ isActive }) => (isActive ? "selected" : "")}
+              onClick={handleProtectedClick}
             >
               {label}
             </NavLink>
-            {!user && (
-              <span className="member-only-tooltip">Log in to access feature</span>
-            )}
+            {!user && <span className="nav-tooltip">Login to access this feature</span>}
           </li>
         ))}
       </ul>
