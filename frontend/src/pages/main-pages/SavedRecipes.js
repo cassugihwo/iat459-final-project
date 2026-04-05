@@ -53,7 +53,7 @@ function isNumber(value) {
 }
 
 function SavedRecipes() {
-  const recipeVer = "user-recipes";
+  const recipeVer = "user-recipes2";
   const { token } = useContext(AuthContext);
 
   const [userRecipes, setUserRecipes] = useState([]);
@@ -477,7 +477,7 @@ function SavedRecipes() {
 
                 {/* Tags */}
                 <div className="sr-field">
-                  <label className="sr-label">Tags (separate with commas)</label>
+                  <label className="sr-label">Tags</label>
                   <input
                     className="sr-input"
                     type="text"
