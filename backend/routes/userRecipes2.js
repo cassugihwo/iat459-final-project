@@ -1,13 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const UserRecipe = require("../models/UserRecipe");
 const UserRecipe2 = require("../models/UserRecipe2");
 const verifyToken = require("../middleware/authMiddleWare");
 
 // GET all recipes for logged-in user only
 router.get("/", verifyToken, async (req, res) => {
   try {
-    const userRecipes = await UserRecipe.find({ owner: req.userId }).sort({
+    const userRecipes = await UserRecipe2.find({ owner: req.userId }).sort({
       createdAt: -1,
     });
     res.json(userRecipes);
@@ -19,7 +18,7 @@ router.get("/", verifyToken, async (req, res) => {
 // GET personalized recipes
 router.get("/my-recipes", verifyToken, async (req, res) => {
   try {
-    const userRecipes = await UserRecipe.find({ owner: req.userId }).sort({
+    const userRecipes = await UserRecipe2.find({ owner: req.userId }).sort({
       createdAt: -1,
     });
     res.json(userRecipes);
@@ -31,7 +30,7 @@ router.get("/my-recipes", verifyToken, async (req, res) => {
 // POST recipe for logged-in user only
 router.post("/", verifyToken, async (req, res) => {
   try {
-    const userRecipe = new UserRecipe({
+    const userRecipe = new UserRecipe2({
       name: req.body.name,
       image: req.body.image,
       ingredients: req.body.ingredients,
@@ -49,7 +48,7 @@ router.post("/", verifyToken, async (req, res) => {
 // DELETE route, only owner can delete
 router.delete("/:id", verifyToken, async (req, res) => {
   try {
-    const userRecipe = await UserRecipe.findById(req.params.id);
+    const userRecipe = await UserRecipe2.findById(req.params.id);
 
     if (!userRecipe) {
       return res.status(404).json({ message: "UserRecipe not found" });

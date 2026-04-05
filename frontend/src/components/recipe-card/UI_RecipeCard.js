@@ -16,8 +16,6 @@ function UI_RecipeCard({
   onClick,
   hideHeart = false,
   isFavourited = false,
-  isGuest = false,
-  rating = null,
 }) {
   const categories = [cuisineType, dishType].filter(Boolean);
 
@@ -32,28 +30,20 @@ function UI_RecipeCard({
           </div>
         )}
 
-        <div className="recipe-rating-pill">
-          <span className="recipe-rating-star">★</span>
-          <span className="recipe-rating-value">{rating !== null && rating > 0 ? rating : "0"}</span>
-        </div>
-
         {!hideHeart && (
-          <div className={`recipe-fav-wrapper${isGuest ? " guest" : ""}`}>
-            <button
-              className={`recipe-fav-btn${isFavourited ? " favourited" : ""}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                onFavourite && onFavourite();
-              }}
-              aria-label="Save as favourite"
-            >
-              <img
-                src={isFavourited ? Icon_heart_filled : Icon_heart_empty}
-                alt="Favourite"
-              />
-            </button>
-            {isGuest && <span className="recipe-fav-tooltip">Login to save recipes</span>}
-          </div>
+          <button
+            className={`recipe-fav-btn${isFavourited ? " favourited" : ""}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              onFavourite && onFavourite();
+            }}
+            aria-label="Save as favourite"
+          >
+            <img
+              src={isFavourited ? Icon_heart_filled : Icon_heart_empty}
+              alt="Favourite"
+            />
+          </button>
         )}
       </div>
 

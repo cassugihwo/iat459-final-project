@@ -99,45 +99,6 @@
     color: #E8D0B0;
 }
 
-/* Protected link tooltip */
-.footer-col ul li.footer-protected {
-    position: relative;
-    list-style: none;
-}
-
-.footer-tooltip {
-    position: absolute;
-    bottom: calc(100% + 0.5rem);
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #3b0000;
-    color: #fff;
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.72rem;
-    font-weight: 600;
-    padding: 0.35rem 0.75rem;
-    border-radius: 8px;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
-    z-index: 10;
-}
-
-.footer-tooltip::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 5px solid transparent;
-    border-top-color: #3b0000;
-}
-
-.footer-protected:hover .footer-tooltip {
-    opacity: 1;
-}
-
 /* Bottom bar */
 .footer-bottom {
     display: flex;

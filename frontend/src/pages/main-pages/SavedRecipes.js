@@ -2,13 +2,13 @@ import { useContext, useEffect, useState } from "react";
 import { Trash2, Plus } from "lucide-react";
 import Toast from "components/toast/UI_Toast";
 import "pages/MainPage.css";
+import "pages/page-css/RecipeDetail.css";
 import "pages/page-css/SavedRecipes.css";
 import { AuthContext } from "context/AuthContext";
 import Navbar from "components/navbar/UI_Navbar";
 import NavbarHeader from "components/navbar/UI_NavbarHeader";
 import RecipeCard from "components/recipe-card/UI_RecipeCard";
 import Footer from "components/footer/UI_Footer";
-import ScrollToTop from "components/scroll-to-top/UI_ScrollToTop";
 import logo from "assets/logo/logo-full.png";
 import leftDish from "assets/bg image/left.png";
 import centerDish from "assets/bg image/center.png";
@@ -29,11 +29,19 @@ const MEASUREMENT_UNITS = [
   "piece",
 ];
 
+
 function emptyIngredients() {
-  return Array.from({ length: 10 }, () => ({
-    quantity: "",
-    measurement: "",
-    item: "",
+  return Array.from({ length: 4 }, () => ({
+    amount: "",
+    unit: "",
+    name: "",
+  }));
+}
+
+
+function emptyInstructions() {
+  return Array.from({ length: 4 }, () => ({
+    instruction: ""
   }));
 }
 
@@ -47,6 +55,7 @@ function isNumber(value) {
 }
 
 function SavedRecipes() {
+  const recipeVer = "user-recipes2";
   const { token } = useContext(AuthContext);
 
   const [userRecipes, setUserRecipes] = useState([]);
@@ -66,7 +75,7 @@ function SavedRecipes() {
   useEffect(() => {
     async function fetchRecipes() {
       try {
-        const response = await fetch("http://localhost:5001/api/user-recipes", {
+        const response = await fetch(`http://localhost:5001/api/${recipeVer}`, {
           method: "GET",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         });
@@ -132,15 +141,15 @@ function SavedRecipes() {
     }
 
     for (let i = 0; i < ingredients.length; i++) {
-      if (!isNumber(ingredients[i].quantity)) {
+      if (!isNumber(ingredients[i].amount)) {
         setErrors(`Ingredient ${i + 1} quantity must be a number`);
         return;
       }
     }
 
     const filledIngredients = ingredients
-      .filter((r) => r.quantity || r.measurement || r.item)
-      .map((r) => [r.quantity, r.measurement, r.item].filter(Boolean).join(" "))
+      .filter((r) => r.amount || r.unit || r.name)
+      .map((r) => [r.amount, r.unit, r.name].filter(Boolean).join(" "))
       .join(", ");
 
     const tags = tag
@@ -150,10 +159,11 @@ function SavedRecipes() {
       .join(", ");
 
     const meta = `Serves: ${serves} | Cook: ${cookTime} min${tags ? ` | Tags: ${tags}` : ""}`;
-    const fullInstructions = `${meta}\n\n${instructions.trim()}`;
+    const joinedInstructions = instructionsList.map(r => r.instruction).join("\n").trim();
+    const fullInstructions = `${meta}\n\n${joinedInstructions}`;
 
     try {
-      const response = await fetch("http://localhost:5001/api/user-recipes", {
+      const response = await fetch(`http://localhost:5001/api/${recipeVer}`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
@@ -168,16 +178,19 @@ function SavedRecipes() {
       const newRecipe = await response.json();
       setUserRecipes((prev) => [...prev, newRecipe]);
       resetForm();
+      document.getElementById("UserRecipeList")?.scrollIntoView({ behavior: "smooth" });
     } catch (err) {
       console.error("Failed form submit:", err);
       setErrors(err.message);
     }
+    
+
   }
 
   async function handleDelete(id) {
     try {
       const response = await fetch(
-        `http://localhost:5001/api/user-recipes/${id}`,
+        `http://localhost:5001/api/${recipeVer}/${id}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },
@@ -188,13 +201,12 @@ function SavedRecipes() {
       setUserRecipes((prev) => prev.filter((r) => r._id !== id));
     } catch (err) {
       console.error(err);
-      setErrors(err.message);
+      alert(err.message);
     }
   }
 
   return (
     <div className="home-page">
-      <Toast message={errors} onClose={() => setErrors("")} />
       <div className="navbarHeader">
         <NavbarHeader />
       </div>
@@ -230,6 +242,7 @@ function SavedRecipes() {
           <div className="sr-body">
             {/* ── Add Recipe Form ── */}
             <section className="sr-form-section">
+              {errors && <div className="sr-error">{errors}</div>}
 
               <form className="sr-form" onSubmit={handleSubmit}>
                 {/* Name */}
@@ -288,34 +301,35 @@ function SavedRecipes() {
                           <th>Quantity</th>
                           <th>Measurement</th>
                           <th>Item</th>
+                          <th></th>
                         </tr>
                       </thead>
                       <tbody>
                         {ingredients.map((row, i) => (
-                          <tr key={i}>
+                          <tr key={i} className="sr-ingredient-row">
                             <td>
                               <input
                                 className="sr-input"
                                 type="text"
-                                value={row.quantity}
+                                value={row.amount}
                                 onChange={(e) =>
                                   handleIngredientChange(
                                     i,
-                                    "quantity",
+                                    "amount",
                                     e.target.value,
                                   )
                                 }
-                                placeholder="200"
+                                placeholder="0"
                               />
                             </td>
                             <td>
                               <select
                                 className="sr-select"
-                                value={row.measurement}
+                                value={row.unit}
                                 onChange={(e) =>
                                   handleIngredientChange(
                                     i,
-                                    "measurement",
+                                    "unit",
                                     e.target.value,
                                   )
                                 }
@@ -331,16 +345,31 @@ function SavedRecipes() {
                               <input
                                 className="sr-input"
                                 type="text"
-                                value={row.item}
+                                value={row.name}
                                 onChange={(e) =>
                                   handleIngredientChange(
                                     i,
-                                    "item",
+                                    "name",
                                     e.target.value,
                                   )
                                 }
-                                placeholder="Chicken Breast"
+                                placeholder="Ingredient name"
                               />
+                            </td>
+                            <td>
+                              <button
+                                type="button"
+                                className="sr-btn-trash"
+                                onClick={() => {
+                                  setIngredients((prev) =>
+                                    prev.filter((_, idx) => idx !== i),
+                                  );
+                                }}
+                                tabIndex="-1"
+                                aria-label="Remove ingredient"
+                              >
+                                <Trash2 size={18} />
+                              </button>
                             </td>
                           </tr>
                         ))}
@@ -358,11 +387,19 @@ function SavedRecipes() {
                     }
                   >
                     <Plus size={18} style={{ marginRight: 6, verticalAlign: "middle" }} />
+                        { amount: "", unit: "", name: "" },
+                      ])
+                    }
+                  >
+                    <Plus
+                      size={18}
+                      style={{ marginRight: 6, verticalAlign: "middle" }}
+                    />
                     Add Ingredient
                   </button>
                 </div>
 
-                {/* Instructions */}
+                {/* Instructions (WIP) */}
                 <div className="sr-field">
                   <label className="sr-label">Instructions</label>
                   <div className="sr-steps-list">
@@ -400,6 +437,55 @@ function SavedRecipes() {
                       </div>
                     ))}
                   </div>
+                  <div className="sr-table-wrapper">
+                    <table className="sr-table">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Instructions</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {instructionsList.map((row, i) => (
+                          <tr key={i} className="sr-instruction-row">
+                            <td className="rd-step-number">
+                              {i + 1}
+                            </td>
+                            <td>
+                              <textarea
+                                className="sr-textarea rd-step-text"
+                                value={row.instruction}
+                                onChange={(e) => {
+                                  const newList = [...instructionsList];
+                                  newList[i].instruction = e.target.value;
+                                  setInstructionsList(newList);
+                                  setInstructions(newList.map(r => r.instruction).join("\n"));
+                                }}
+                                placeholder={`Step ${i + 1}`}
+                                rows={2}
+                              />
+                            </td>
+                            <td>
+                              <button
+                                type="button"
+                                className="sr-btn-trash"
+                                onClick={() => {
+                                  const newList = instructionsList.filter((_, idx) => idx !== i);
+                                  setInstructionsList(newList);
+                                  setInstructions(newList.map(r => r.instruction).join("\n"));
+                                }}
+                                tabIndex="-1"
+                                aria-label="Remove instruction"
+                              >
+                                <Trash2 size={18} />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    </div>
                   <button
                     type="button"
                     className="sr-btn-add"
@@ -411,6 +497,32 @@ function SavedRecipes() {
                     Add Step
                   </button>
                 </div>
+                      setInstructionsList((prev) => [
+                        ...prev,
+                        { instruction: "" },
+                      ])
+                    }
+                  >
+                    <Plus
+                      size={18}
+                      style={{ marginRight: 6, verticalAlign: "middle" }}
+                    />
+                    Add Instruction
+                  </button>
+                </div>
+
+
+                {/* Instructions (old) */}
+                {/* <div className="sr-field">
+                  <label className="sr-label">Instructions</label>
+                  <textarea
+                    className="sr-textarea"
+                    value={instructions}
+                    onChange={(e) => setInstructions(e.target.value)}
+                    placeholder="Write the cooking steps here..."
+                    rows={6}
+                  />
+                </div> */}
 
                 {/* Tags */}
                 <div className="sr-field">
@@ -465,7 +577,7 @@ function SavedRecipes() {
 
             {/* ── Recipe List ── */}
             <section className="sr-list-section">
-              <h3 className="sr-section-title">Your Recipes</h3>
+              <h3 id="UserRecipeList" className="sr-section-title">Your Recipes</h3>
 
               {userRecipes.length === 0 ? (
                 <p className="sr-empty">No recipes yet. Add your first one!</p>
@@ -516,7 +628,6 @@ function SavedRecipes() {
           </div>
         </div>
         <Footer />
-        <ScrollToTop />
       </div>
     </div>
   );

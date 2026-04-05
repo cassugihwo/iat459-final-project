@@ -1,30 +1,6 @@
-import { NavLink, useNavigate } from "react-router-dom";
-import { useAuth } from "context/AuthContext";
+import { NavLink } from "react-router-dom";
 import logo from "assets/logo/logo-noslogan-light.png";
 import "./UI_Footer.css";
-
-const PROTECTED = ["/pantry", "/saved-recipes", "/meal-plan", "/profile", "/settings"];
-
-function FooterLink({ to, children }) {
-  const { user } = useAuth();
-  const navigate = useNavigate();
-  const isProtected = PROTECTED.includes(to);
-
-  if (isProtected && !user) {
-    return (
-      <li className="footer-protected">
-        <span onClick={() => navigate("/login")}>{children}</span>
-        <span className="footer-tooltip">Login required</span>
-      </li>
-    );
-  }
-
-  return (
-    <li>
-      <NavLink to={to}>{children}</NavLink>
-    </li>
-  );
-}
 
 function UI_Footer() {
   return (
@@ -43,8 +19,8 @@ function UI_Footer() {
             <span className="social-icon" aria-label="Instagram">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
             </span>
-            <span className="social-icon" aria-label="LinkedIn">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            <span className="social-icon" aria-label="YouTube">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.54C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg>
             </span>
           </div>
         </div>
@@ -52,18 +28,19 @@ function UI_Footer() {
         <div className="footer-col">
           <h4 className="footer-col-title">Explore</h4>
           <ul>
-            <FooterLink to="/find-recipes">Find Recipes</FooterLink>
-            <FooterLink to="/pantry">Favourite Recipes</FooterLink>
-            <FooterLink to="/saved-recipes">Add Your Recipe</FooterLink>
-            <FooterLink to="/meal-plan">Your Meal Plan</FooterLink>
+            <li><NavLink to="/find-recipes">Find Recipes</NavLink></li>
+            <li><NavLink to="/pantry">Favourite Recipes</NavLink></li>
+            <li><NavLink to="/saved-recipes">Add Your Recipe</NavLink></li>
+            <li><NavLink to="/meal-plan">Your Meal Plan</NavLink></li>
           </ul>
         </div>
 
         <div className="footer-col">
           <h4 className="footer-col-title">Account</h4>
           <ul>
-            <FooterLink to="/profile">My Profile</FooterLink>
-            <FooterLink to="/pantry">Your Pantry</FooterLink>
+            <li><NavLink to="/profile">My Profile</NavLink></li>
+            <li><NavLink to="/pantry">Your Pantry</NavLink></li>
+            <li><NavLink to="/settings">Settings</NavLink></li>
             <li><NavLink to="/login">Login / Sign Up</NavLink></li>
           </ul>
         </div>
