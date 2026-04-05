@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 
 const User = require("../models/User");
-const UserRecipe = require("../models/UserRecipe");
 const UserRecipe2 = require("../models/UserRecipe2");
 const verifyToken = require("../middleware/authMiddleWare");
 const verifyAdmin = require("../middleware/verifyAdmin");
@@ -101,7 +100,7 @@ router.delete("/members/:id", verifyToken, verifyAdmin, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    await UserRecipe.deleteMany({ owner: req.params.id });
+    await UserRecipe2.deleteMany({ owner: req.params.id });
 
     res.json({ message: "User deleted successfully" });
   } catch (err) {
@@ -115,7 +114,7 @@ router.delete("/members/:id", verifyToken, verifyAdmin, async (req, res) => {
 // GET all content
 router.get("/content", verifyToken, verifyAdmin, async (req, res) => {
   try {
-    const recipes = await UserRecipe.find()
+    const recipes = await UserRecipe2.find()
       .populate("owner", "username firstName lastName")
       .sort({ createdAt: -1 });
 
@@ -133,7 +132,7 @@ router.post("/content", verifyToken, verifyAdmin, async (req, res) => {
   try {
     const { name, ingredients, instructions, owner, image } = req.body;
 
-    const newRecipe = new UserRecipe({
+    const newRecipe = new UserRecipe2({
       name,
       ingredients,
       instructions,
@@ -154,7 +153,7 @@ router.post("/content", verifyToken, verifyAdmin, async (req, res) => {
 // EDIT content
 router.put("/content/:id", verifyToken, verifyAdmin, async (req, res) => {
   try {
-    const updatedRecipe = await UserRecipe.findByIdAndUpdate(
+    const updatedRecipe = await UserRecipe2.findByIdAndUpdate(
       req.params.id,
       {
         name: req.body.name,
@@ -181,7 +180,7 @@ router.put("/content/:id", verifyToken, verifyAdmin, async (req, res) => {
 // DELETE content
 router.delete("/content/:id", verifyToken, verifyAdmin, async (req, res) => {
   try {
-    const deletedRecipe = await UserRecipe.findByIdAndDelete(req.params.id);
+    const deletedRecipe = await UserRecipe2.findByIdAndDelete(req.params.id);
 
     if (!deletedRecipe) {
       return res.status(404).json({ message: "Content not found" });

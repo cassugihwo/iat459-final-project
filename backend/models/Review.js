@@ -2,9 +2,11 @@ const mongoose = require("mongoose");
 
 const reviewSchema = new mongoose.Schema(
   {
-    recipeId: { 
-      type: Number, 
-      required: true 
+    recipeId: {
+      type: Number,
+    },
+    userRecipeId: {
+      type: String,
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,

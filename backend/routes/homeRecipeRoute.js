@@ -6,7 +6,7 @@ router.get("/home-recipes", async (req, res) => {
     console.log("GET /api/home-recipes was called");
 
     const response = await fetch(
-      `https://api.spoonacular.com/recipes/complexSearch?number=10&addRecipeInformation=true&apiKey=${process.env.SPOONACULAR_API_KEY}`
+      `https://api.spoonacular.com/recipes/complexSearch?number=50&addRecipeInformation=true&apiKey=${process.env.SPOONACULAR_API_KEY}`
     );
 
     const contentType = response.headers.get("content-type");

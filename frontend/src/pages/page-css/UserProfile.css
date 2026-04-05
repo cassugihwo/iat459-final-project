@@ -17,7 +17,7 @@
     gap: 1.25rem;
 }
 
-/* ── Info card ── */
+/*Info card*/
 .up-info-card {
     background: #fff;
     border-radius: 20px;
@@ -37,8 +37,8 @@
 }
 
 .up-avatar-circle {
-    width: 9rem;
-    height: 9rem;
+    width: 6rem;
+    height: 6rem;
     border-radius: 50%;
     overflow: hidden;
     background: #e0d8d0;
@@ -90,25 +90,70 @@
     gap: 1rem;
 }
 
+.up-details-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.up-details-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.6rem;
+    flex-shrink: 0;
+}
+
 .up-username {
     font-family: "Passion One", sans-serif;
-    font-size: 1.8rem;
+    font-size: 2.4rem;
     color: var(--color-red0);
+    margin: 0;
+    line-height: 1;
+}
+
+.up-fullname {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #444;
     margin: 0;
 }
 
 .up-member-since {
     font-family: "Noto Sans", sans-serif;
     font-size: 0.85rem;
-    color: #888;
-    margin: 0.2rem 0;
+    color: #aaa;
+    margin: 0;
 }
 
-.up-fullname {
+.up-edit-input {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
+    border: 1.5px solid #e0d8d4;
+    border-radius: 8px;
+    outline: none;
+    background: #fff;
+    color: #333;
+    transition: border-color 0.15s;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.up-edit-input:focus {
+    border-color: var(--color-red1);
+}
+
+.up-edit-username {
     font-family: "Passion One", sans-serif;
-    font-size: 1.2rem;
-    color: var(--color-red1);
-    margin: 0;
+    font-size: 1.4rem;
+    color: var(--color-red0);
+}
+
+.up-edit-name-row {
+    display: flex;
+    gap: 0.6rem;
 }
 
 .up-edit-btn {
@@ -146,6 +191,18 @@
     flex-direction: column;
     align-items: center;
     gap: 0.3rem;
+    cursor: pointer;
+    transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+
+.up-stat-box:hover {
+    border-color: var(--color-red1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+}
+
+.up-stat-box:hover .up-stat-num {
+    color: var(--color-red0);
 }
 
 .up-stat-num {
@@ -202,17 +259,41 @@
     color: var(--color-red0);
 }
 
-/* ── Cards row (uses same recipe-card-container sizing) ── */
+/* ── Cards carousel ── */
+.up-carousel-wrapper {
+    overflow: hidden;
+}
+
 .up-cards-row {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 1.25rem;
-    --recipe-card-width: calc((100% - 3 * 1.25rem) / 4);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 0.75rem;
+    --recipe-card-width: 20rem;
+}
+
+.up-cards-row .recipe-card-container {
+    scroll-snap-align: start;
+}
+
+.up-cards-row::-webkit-scrollbar {
+    height: 5px;
+}
+
+.up-cards-row::-webkit-scrollbar-thumb {
+    background: #d6cfca;
+    border-radius: 999px;
+}
+
+.up-cards-row::-webkit-scrollbar-track {
+    background: transparent;
 }
 
 /* ── Add recipe placeholder — same size as recipe card ── */
 .up-add-card {
-    width: var(--recipe-card-width, calc((100% - 3 * 1.25rem) / 4));
+    width: var(--recipe-card-width, 20rem);
     min-height: 18rem;
     border: 2px dashed #d0c8c0;
     border-radius: 1.25rem;
@@ -288,13 +369,6 @@
     color: #fff;
 }
 
-/* ── Edit actions ── */
-.up-edit-actions {
-    display: flex;
-    gap: 0.6rem;
-    justify-content: flex-end;
-}
-
 .up-save-btn {
     padding: 0.45rem 1.25rem;
     border-radius: 999px;
@@ -318,16 +392,7 @@
 }
 
 /* ── Responsive ── */
-@media (max-width: 900px) {
-    .up-cards-row {
-        --recipe-card-width: calc((100% - 1.25rem) / 2);
-    }
-}
-
 @media (max-width: 600px) {
-    .up-cards-row {
-        --recipe-card-width: 100%;
-    }
     .up-info-card {
         flex-direction: column;
         align-items: center;

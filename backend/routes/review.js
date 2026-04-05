@@ -23,10 +23,50 @@ router.get("/bulk-ratings", async (req, res) => {
   }
 });
 
+// GET all reviews for a user recipe (public)
+router.get("/user-recipe/:userRecipeId", async (req, res) => {
+  try {
+    const reviews = await Review.find({ userRecipeId: req.params.userRecipeId })
+      .populate("owner", "avatar")
+      .sort({ createdAt: -1 });
+    res.json(reviews);
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
+// POST add a review for a user recipe (auth required)
+router.post("/user-recipe/:userRecipeId", verifyToken, async (req, res) => {
+  try {
+    const { rating, comment } = req.body;
+    if (!rating) {
+      return res.status(400).json({ message: "Rating is required." });
+    }
+
+    const user = await User.findById(req.userId).select("username");
+    if (!user) return res.status(404).json({ message: "User not found." });
+
+    const review = await Review.create({
+      userRecipeId: req.params.userRecipeId,
+      owner: req.userId,
+      username: user.username,
+      rating,
+      comment,
+    });
+
+    await review.populate("owner", "avatar");
+    res.status(201).json(review);
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
 // GET all reviews for a recipe (public)
 router.get("/:recipeId", async (req, res) => {
   try {
-    const reviews = await Review.find({ recipeId: req.params.recipeId }).sort({ createdAt: -1 });
+    const reviews = await Review.find({ recipeId: req.params.recipeId })
+      .populate("owner", "avatar")
+      .sort({ createdAt: -1 });
     res.json(reviews);
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
@@ -52,6 +92,7 @@ router.post("/:recipeId", verifyToken, async (req, res) => {
       comment,
     });
 
+    await review.populate("owner", "avatar");
     res.status(201).json(review);
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });

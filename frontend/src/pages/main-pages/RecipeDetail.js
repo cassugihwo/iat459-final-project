@@ -61,6 +61,7 @@ function RecipeDetail() {
   const [reviewError, setReviewError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [reviewsExpanded, setReviewsExpanded] = useState(false);
+  const [userAvatar, setUserAvatar] = useState("");
   const REVIEWS_PREVIEW = 3;
 
   useEffect(() => {
@@ -95,6 +96,16 @@ function RecipeDetail() {
     }
     fetchReviews();
   }, [id]);
+
+  useEffect(() => {
+    if (!token) return;
+    fetch("http://localhost:5001/api/auth/profile", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => { if (data?.avatar) setUserAvatar(data.avatar); })
+      .catch(() => {});
+  }, [token]);
 
   useEffect(() => {
     if (!token) return;
@@ -223,16 +234,16 @@ function RecipeDetail() {
                 <h1 className="rd-title">{recipe.title}</h1>
 
                 <div className="rd-meta">
-                  <span className="rd-chip highlight">⏱ {recipe.readyInMinutes} min</span>
+                  <span className="rd-chip highlight">{recipe.readyInMinutes} min</span>
                   <span className="rd-chip highlight">{difficulty}</span>
-                  <span className="rd-chip highlight">🍽 Serves {recipe.servings}</span>
+                  <span className="rd-chip highlight">Serves {recipe.servings}</span>
                   {recipe.cuisines[0] && <span className="rd-chip highlight">{recipe.cuisines[0]}</span>}
                   {recipe.dishTypes[0] && <span className="rd-chip highlight">{recipe.dishTypes[0]}</span>}
                   {recipe.diets[0] && <span className="rd-chip highlight">{recipe.diets[0]}</span>}
                 </div>
 
                 <div className="rd-body">
-                  {/* Ingredients — 2 columns: Name | Amount */}
+                  {/* Ingredients */}
                   <div className="rd-ingredients-section">
                     <h2 className="rd-section-title">Ingredients</h2>
                     <div className="rd-ingredients-columns">
@@ -316,10 +327,15 @@ function RecipeDetail() {
                       <div className="rd-review-list">
                         {(reviewsExpanded ? reviews : reviews.slice(0, REVIEWS_PREVIEW)).map((r) => {
                           const initials = r.username.slice(0, 2).toUpperCase();
+                          const avatar = r.owner?.avatar;
                           return (
                             <div key={r._id} className="rd-review-item">
                               <div className="rd-review-header">
-                                <div className="rd-review-avatar">{initials}</div>
+                                <div className="rd-review-avatar">
+                                  {avatar
+                                    ? <img src={avatar} alt={r.username} className="rd-review-avatar-img" />
+                                    : initials}
+                                </div>
                                 <div className="rd-review-meta">
                                   <span className="rd-review-username">{r.username}</span>
                                   <span className="rd-review-date">
@@ -357,7 +373,11 @@ function RecipeDetail() {
                   {token ? (
                     <div className="rd-review-item rd-review-form-card">
                       <div className="rd-review-header">
-                        <div className="rd-review-avatar">{user?.username?.slice(0, 2).toUpperCase()}</div>
+                        <div className="rd-review-avatar">
+                          {userAvatar
+                            ? <img src={userAvatar} alt={user?.username} className="rd-review-avatar-img" />
+                            : user?.username?.slice(0, 2).toUpperCase()}
+                        </div>
                         <div className="rd-review-meta">
                           <span className="rd-review-username">{user?.username}</span>
                           <span className="rd-review-date">Your review</span>

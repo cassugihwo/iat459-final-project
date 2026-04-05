@@ -1,16 +1,11 @@
 @import "App.css";
 
-.rd-page {
-    min-height: 100vh;
-    background-color: var(--color-white0);
-}
-
-/* Back button bar */
-.rd-back-bar {
+/* Back button */
+.mrd-back-bar {
     padding: 1.25rem 2rem 0;
 }
 
-.rd-back-btn {
+.mrd-back-btn {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
@@ -26,70 +21,90 @@
     transition: color 0.15s, gap 0.15s;
 }
 
-.rd-back-btn:hover {
+.mrd-back-btn:hover {
     color: var(--color-red0);
     gap: 0.65rem;
 }
 
-.rd-back-arrow {
+.mrd-back-arrow {
     font-size: 1.2rem;
     line-height: 1;
 }
 
+/* Loading */
+.mrd-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 40vh;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 1rem;
+    color: #888;
+}
+
+/* Content wrapper */
+.mrd-content {
+    max-width: 90vw;
+    margin: 0 auto;
+    padding: 2rem 3rem 4rem;
+}
+
 /* Hero image */
-.rd-hero {
+.mrd-hero {
     position: relative;
     width: 100%;
-    height: 38rem;
+    height: 30rem;
     overflow: hidden;
     border-radius: 16px;
     margin: 0 0 1.5rem;
 }
 
-.rd-hero img {
+.mrd-hero img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
 }
 
-/* Content wrapper */
-.rd-content {
-    max-width: 90vw;
-    margin: 0 auto;
-    padding: 2rem 3rem 4rem;
-}
-
-/* Title */
-.rd-fav-btn {
-    position: absolute;
-    top: 0.75rem;
-    right: 0.75rem;
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 50%;
-    border: none;
-    background: rgba(255, 255, 255, 0.92);
+.mrd-hero-placeholder {
+    width: 100%;
+    height: 100%;
+    background: var(--color-white1);
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.12);
-    transition: 0.2s ease;
-    z-index: 2;
+    border-radius: inherit;
 }
 
-.rd-fav-btn img {
-    width: 1rem;
-    height: auto;
+.mrd-hero-placeholder img {
+    width: auto;
+    max-width: 35%;
+    max-height: 50%;
+    opacity: 0.5;
+    object-fit: contain;
 }
 
-.rd-fav-btn:hover {
-    transform: scale(1.08);
-    background: #fff;
+/* Visibility badge */
+.mrd-vis-badge {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.25rem 0.8rem;
+    border-radius: 999px;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    pointer-events: none;
 }
 
-.rd-title {
+.mrd-vis-badge.public {
+    background: var(--color-red1);
+}
+
+/* Title */
+.mrd-title {
     font-family: "Passion One", sans-serif;
     font-size: 2.8rem;
     font-weight: 700;
@@ -98,15 +113,16 @@
     line-height: 1.1;
 }
 
-/* Meta chips */
-.rd-meta {
+/* Meta chips — all pills share the same style */
+.mrd-meta {
     display: flex;
     flex-wrap: wrap;
     gap: 0.6rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
-.rd-chip {
+.mrd-chip,
+.mrd-chip.highlight {
     display: inline-flex;
     align-items: center;
     gap: 0.3rem;
@@ -115,48 +131,63 @@
     font-family: "Noto Sans", sans-serif;
     font-size: 0.82rem;
     font-weight: 600;
-    background-color: var(--color-white1);
-    color: var(--color-red0);
-    border: 1.5px solid #e1d8d1;
-}
-
-.rd-chip.highlight {
     background-color: var(--color-red1);
     color: #fff;
-    border-color: var(--color-red1);
+    border: 1.5px solid var(--color-red1);
 }
 
-/* Tag pills (user recipe detail) */
-.rd-tag-pills {
+/* Owner row */
+.mrd-owner-row {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0.5rem 0 1.5rem;
 }
 
-.rd-tag-pill {
-    display: inline-flex;
+.mrd-owner-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.mrd-owner-initials {
+    background: #f0e6da;
+    display: flex;
     align-items: center;
-    padding: 0.35rem 0.9rem;
-    border-radius: 999px;
+    justify-content: center;
     font-family: "Noto Sans", sans-serif;
-    font-size: 0.82rem;
-    font-weight: 600;
-    background-color: var(--color-white1);
-    color: var(--color-red0);
-    border: 1.5px solid #e1d8d1;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-red1);
+}
+
+.mrd-owner-name {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #333;
+    margin: 0;
+}
+
+.mrd-owner-date {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.78rem;
+    color: #aaa;
+    margin: 0;
 }
 
 /* Two-column body */
-.rd-body {
+.mrd-body {
     display: grid;
     grid-template-columns: 1fr 1.6fr;
     gap: 3rem;
     align-items: start;
 }
 
-/* Section heading */
-.rd-section-title {
+/* Section headings */
+.mrd-section-title {
     font-family: "Passion One", sans-serif;
     font-size: 1.6rem;
     font-weight: 700;
@@ -165,19 +196,29 @@
     line-height: 1;
 }
 
-/* Ingredients */
-.rd-ingredients-columns {
+/* Ingredients — two-column layout */
+.mrd-ingredients-columns {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
 }
 
-.rd-ingredients-col {
+.mrd-ingredients-col {
     display: flex;
     flex-direction: column;
 }
 
-.rd-ingredients {
+.mrd-col-label {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-red1);
+    margin: 0 0 0.5rem;
+}
+
+.mrd-ingredients {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -186,7 +227,7 @@
     gap: 0.5rem;
 }
 
-.rd-ingredient-name {
+.mrd-ingredient-name {
     font-family: "Noto Sans", sans-serif;
     font-size: 0.9rem;
     font-weight: 500;
@@ -202,7 +243,7 @@
     }
 }
 
-.rd-ingredient-amount {
+.mrd-ingredient-amount {
     font-family: "Noto Sans", sans-serif;
     font-size: 0.9rem;
     color: #555;
@@ -213,19 +254,19 @@
 }
 
 /* Instructions */
-.rd-steps {
+.mrd-steps {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
 
-.rd-step {
+.mrd-step {
     display: flex;
     gap: 1rem;
     align-items: flex-start;
 }
 
-.rd-step-number {
+.mrd-step-number {
     flex-shrink: 0;
     width: 2rem;
     height: 2rem;
@@ -240,7 +281,7 @@
     justify-content: center;
 }
 
-.rd-step-text {
+.mrd-step-text {
     font-family: "Noto Sans", sans-serif;
     font-size: 0.92rem;
     color: #333;
@@ -248,40 +289,15 @@
     margin: 0;
 }
 
-/* Column labels */
-.rd-col-label {
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.78rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--color-red1);
-    margin: 0 0 0.5rem;
-}
-
-/* Average rating row */
-.rd-avg-rating {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-}
-
-.rd-avg-value {
-    font-family: "Noto Sans", sans-serif;
-    font-size: 1rem;
-    font-weight: 700;
-    color: #333;
-}
-
-.rd-review-count {
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.85rem;
-    color: #888;
+/* Reviews section */
+.mrd-reviews-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1.5px solid var(--color-white1);
 }
 
 /* Rating summary card */
-.rd-rating-summary {
+.mrd-rating-summary {
     display: flex;
     gap: 2.5rem;
     align-items: center;
@@ -291,7 +307,7 @@
     padding: 1.5rem 2rem;
 }
 
-.rd-rating-summary-left {
+.mrd-rating-summary-left {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -301,7 +317,7 @@
     padding-right: 2rem;
 }
 
-.rd-rating-big {
+.mrd-rating-big {
     font-family: "Noto Sans", sans-serif;
     font-size: 3.5rem;
     font-weight: 800;
@@ -309,20 +325,26 @@
     line-height: 1;
 }
 
-.rd-rating-bars {
+.mrd-review-count {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.85rem;
+    color: #888;
+}
+
+.mrd-rating-bars {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 0.45rem;
 }
 
-.rd-rating-bar-row {
+.mrd-rating-bar-row {
     display: flex;
     align-items: center;
     gap: 0.6rem;
 }
 
-.rd-bar-label {
+.mrd-bar-label {
     font-family: "Noto Sans", sans-serif;
     font-size: 0.85rem;
     font-weight: 600;
@@ -332,7 +354,7 @@
     flex-shrink: 0;
 }
 
-.rd-bar-track {
+.mrd-bar-track {
     flex: 1;
     height: 0.55rem;
     background: #ede8e4;
@@ -340,14 +362,14 @@
     overflow: hidden;
 }
 
-.rd-bar-fill {
+.mrd-bar-fill {
     height: 100%;
-    background: #c49a00;
+    background: var(--color-red1);
     border-radius: 999px;
     transition: width 0.4s ease;
 }
 
-.rd-bar-pct {
+.mrd-bar-pct {
     font-family: "Noto Sans", sans-serif;
     font-size: 0.8rem;
     color: #888;
@@ -356,60 +378,20 @@
     flex-shrink: 0;
 }
 
-/* Review avatar */
-.rd-review-avatar {
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 50%;
-    background-color: #f0e6da;
-    color: #9E3B3B;
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.85rem;
-    font-weight: 700;
+/* Stars */
+.review-stars {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    overflow: hidden;
-}
-
-.rd-review-avatar-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-}
-
-.rd-review-meta {
-    display: flex;
-    flex-direction: column;
     gap: 0.1rem;
 }
 
-/* Reviews section */
-.rd-reviews-section {
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 1.5px solid var(--color-white1);
-}
-
-/* Review form */
-.rd-review-form {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    background: var(--color-white1);
-    border-radius: 12px;
-    padding: 1.25rem;
-    margin-bottom: 2rem;
-}
-
-.rd-review-form-label {
-    font-family: "Noto Sans", sans-serif;
+.star-filled {
+    color: #c49a00;
     font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--color-red1);
-    margin: 0;
+}
+
+.star-empty {
+    color: #ddd;
+    font-size: 0.95rem;
 }
 
 .star-picker {
@@ -436,8 +418,111 @@
     transform: scale(1.15);
 }
 
-.rd-review-textarea {
+/* Review list */
+.mrd-no-reviews {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.9rem;
+    color: #aaa;
+}
+
+.mrd-review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.mrd-review-item {
+    background: #fff;
+    border: 1.5px solid var(--color-white1);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+}
+
+.mrd-review-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.6rem;
+}
+
+.mrd-review-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background-color: #f0e6da;
+    color: #9e3b3b;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.mrd-review-avatar-img {
     width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.mrd-review-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.mrd-review-username {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+.mrd-review-date {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.8rem;
+    color: #aaa;
+}
+
+.mrd-review-delete {
+    background: none;
+    border: none;
+    color: #ccc;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0 0.25rem;
+    line-height: 1;
+    transition: color 0.2s;
+    margin-left: auto;
+}
+
+.mrd-review-delete:hover {
+    color: #c0392b;
+}
+
+.mrd-review-comment {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.9rem;
+    color: #444;
+    line-height: 1.55;
+    margin: 0.5rem 0 0;
+}
+
+/* Review form card */
+.mrd-review-form-card {
+    margin-top: 1.5rem;
+}
+
+.mrd-review-login-card {
+    margin-top: 1.5rem;
+}
+
+.mrd-review-textarea {
+    width: 100%;
+    margin-top: 0.75rem;
     padding: 0.75rem;
     border: 1.5px solid #e0d8d4;
     border-radius: 8px;
@@ -449,19 +534,20 @@
     box-sizing: border-box;
 }
 
-.rd-review-textarea:focus {
+.mrd-review-textarea:focus {
     border-color: var(--color-red1);
 }
 
-.rd-review-error {
+.mrd-review-error {
     font-family: "Noto Sans", sans-serif;
     font-size: 0.85rem;
     color: #c0392b;
-    margin: 0;
+    margin: 0.4rem 0 0;
 }
 
-.rd-review-submit {
-    align-self: flex-start;
+.mrd-review-submit {
+    display: inline-block;
+    margin-top: 0.75rem;
     padding: 0.6rem 1.4rem;
     background-color: var(--color-red1);
     color: #fff;
@@ -474,23 +560,23 @@
     transition: background-color 0.2s;
 }
 
-.rd-review-submit:hover:not(:disabled) {
+.mrd-review-submit:hover:not(:disabled) {
     background-color: var(--color-red0);
 }
 
-.rd-review-submit:disabled {
+.mrd-review-submit:disabled {
     opacity: 0.6;
     cursor: not-allowed;
 }
 
-.rd-review-login {
+.mrd-review-login {
     font-family: "Noto Sans", sans-serif;
     font-size: 0.95rem;
     color: #888;
     margin: 0.25rem 0 0;
 }
 
-.rd-review-login-btn {
+.mrd-review-login-btn {
     background: none;
     border: none;
     color: var(--color-red1);
@@ -501,7 +587,7 @@
     text-decoration: underline;
 }
 
-.rd-reviews-toggle {
+.mrd-reviews-toggle {
     display: block;
     margin: 1rem auto 2rem;
     padding: 0.55rem 1.6rem;
@@ -516,115 +602,24 @@
     transition: background-color 0.2s, color 0.2s;
 }
 
-.rd-reviews-toggle:hover {
+.mrd-reviews-toggle:hover {
     background-color: var(--color-red1);
     color: #fff;
 }
 
-.rd-no-reviews {
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.9rem;
-    color: #aaa;
-}
-
-/* Review list */
-.rd-review-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.rd-review-item {
-    background: #fff;
-    border: 1.5px solid var(--color-white1);
-    border-radius: 10px;
-    padding: 1rem 1.25rem;
-}
-
-.rd-review-header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 0.6rem;
-}
-
-.review-stars {
-    display: flex;
-    gap: 0.1rem;
-}
-
-.star-filled {
-    color: #c49a00;
-    font-size: 0.95rem;
-}
-
-.star-empty {
-    color: #ddd;
-    font-size: 0.95rem;
-}
-
-.rd-review-username {
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.92rem;
-    font-weight: 700;
-    color: #1a1a1a;
-}
-
-.rd-review-date {
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.8rem;
-    color: #aaa;
-}
-
-.rd-review-delete {
-    background: none;
-    border: none;
-    color: #ccc;
-    font-size: 1.1rem;
-    cursor: pointer;
-    padding: 0 0.25rem;
-    line-height: 1;
-    transition: color 0.2s;
-}
-
-.rd-review-delete:hover {
-    color: #c0392b;
-}
-
-.rd-review-comment {
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.9rem;
-    color: #444;
-    line-height: 1.55;
-    margin: 0;
-}
-
-/* Loading / error */
-.rd-loading,
-.rd-error {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 40vh;
-    font-family: "Noto Sans", sans-serif;
-    font-size: 1rem;
-    color: #888;
-}
-
 /* Responsive */
 @media (max-width: 680px) {
-    .rd-body {
+    .mrd-body {
         grid-template-columns: 1fr;
         gap: 2rem;
     }
 
-
-    .rd-hero {
+    .mrd-hero {
         height: 16rem;
         border-radius: 10px;
     }
 
-    .rd-title {
+    .mrd-title {
         font-size: 2rem;
     }
 }

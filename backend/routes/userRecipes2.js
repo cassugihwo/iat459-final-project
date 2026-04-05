@@ -3,6 +3,18 @@ const router = express.Router();
 const UserRecipe2 = require("../models/UserRecipe2");
 const verifyToken = require("../middleware/authMiddleWare");
 
+// GET all public user recipes (no auth required)
+router.get("/public", async (req, res) => {
+  try {
+    const recipes = await UserRecipe2.find({ isPublic: true })
+      .populate("owner", "username")
+      .sort({ createdAt: -1 });
+    res.json(recipes);
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
 // GET all recipes for logged-in user only
 router.get("/", verifyToken, async (req, res) => {
   try {
@@ -27,6 +39,33 @@ router.get("/my-recipes", verifyToken, async (req, res) => {
   }
 });
 
+// GET single user recipe by id (public recipes open, private requires ownership)
+router.get("/:id", async (req, res) => {
+  try {
+    const recipe = await UserRecipe2.findById(req.params.id).populate("owner", "username avatar");
+    if (!recipe) return res.status(404).json({ message: "Recipe not found." });
+
+    if (!recipe.isPublic) {
+      const authHeader = req.headers.authorization;
+      if (!authHeader) return res.status(403).json({ message: "This recipe is private." });
+      try {
+        const jwt = require("jsonwebtoken");
+        const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : authHeader;
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || "fallbackSecret");
+        if (recipe.owner._id.toString() !== decoded.id) {
+          return res.status(403).json({ message: "This recipe is private." });
+        }
+      } catch {
+        return res.status(403).json({ message: "This recipe is private." });
+      }
+    }
+
+    res.json(recipe);
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
 // POST recipe for logged-in user only
 router.post("/", verifyToken, async (req, res) => {
   try {
@@ -36,6 +75,7 @@ router.post("/", verifyToken, async (req, res) => {
       ingredients: req.body.ingredients,
       instructions: req.body.instructions,
       owner: req.userId,
+      isPublic: req.body.isPublic === true,
     });
 
     await userRecipe.save();

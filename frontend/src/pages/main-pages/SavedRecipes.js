@@ -1,4 +1,5 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Trash2, Plus } from "lucide-react";
 import Toast from "components/toast/UI_Toast";
 import "pages/MainPage.css";
@@ -51,6 +52,7 @@ function isNumber(value) {
 function SavedRecipes() {
   const recipeVer = "user-recipes2";
   const { token } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const [userRecipes, setUserRecipes] = useState([]);
 
@@ -60,10 +62,15 @@ function SavedRecipes() {
   const [cookTime, setCookTime] = useState("");
   const [ingredients, setIngredients] = useState(emptyIngredients());
   const [instructionsList, setInstructionsList] = useState(emptyInstructions());
-  const [tag, setTag] = useState("");
+  const [tags, setTags] = useState([]);
+  const [tagInput, setTagInput] = useState("");
   const [imageBase64, setImageBase64] = useState("");
   const [imagePreview, setImagePreview] = useState("");
+  const [isPublic, setIsPublic] = useState(false);
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const [errors, setErrors] = useState("");
+  const privateRef = useRef(null);
+  const publicRef = useRef(null);
 
   useEffect(() => {
     async function fetchRecipes() {
@@ -105,9 +112,11 @@ function SavedRecipes() {
     setCookTime("");
     setIngredients(emptyIngredients());
     setInstructionsList(emptyInstructions());
-    setTag("");
+    setTags([]);
+    setTagInput("");
     setImageBase64("");
     setImagePreview("");
+    setIsPublic(false);
     setErrors("");
   }
 
@@ -155,13 +164,8 @@ function SavedRecipes() {
       return;
     }
 
-    const tags = tag
-      .split(",")
-      .map((t) => t.trim())
-      .filter(Boolean)
-      .join(", ");
-
-    const meta = `Serves: ${serves} | Cook: ${cookTime} min${tags ? ` | Tags: ${tags}` : ""}`;
+    const tagString = tags.join(", ");
+    const meta = `Serves: ${serves} | Cook: ${cookTime} min${tagString ? ` | Tags: ${tagString}` : ""}`;
     const joinedInstructions = filledInstructions.map(r => r.instruction).join("\n").trim();
     const fullInstructions = `${meta}\n\n${joinedInstructions}`;
 
@@ -174,6 +178,7 @@ function SavedRecipes() {
           image: imageBase64,
           ingredients: filledIngredients,
           instructions: fullInstructions,
+          isPublic,
         }),
       });
       if (!response.ok)
@@ -181,7 +186,9 @@ function SavedRecipes() {
       const newRecipe = await response.json();
       setUserRecipes((prev) => [...prev, newRecipe]);
       resetForm();
-      document.getElementById("UserRecipeList")?.scrollIntoView({ behavior: "smooth" });
+      setTimeout(() => {
+        (newRecipe.isPublic ? publicRef : privateRef).current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
     } catch (err) {
       console.error("Failed form submit:", err);
       setErrors(err.message);
@@ -190,7 +197,9 @@ function SavedRecipes() {
 
   }
 
-  async function handleDelete(id) {
+  async function confirmDelete() {
+    const id = confirmDeleteId;
+    setConfirmDeleteId(null);
     try {
       const response = await fetch(
         `http://localhost:5001/api/${recipeVer}/${id}`,
@@ -204,12 +213,25 @@ function SavedRecipes() {
       setUserRecipes((prev) => prev.filter((r) => r._id !== id));
     } catch (err) {
       console.error(err);
-      alert(err.message);
+      setErrors(err.message);
     }
   }
 
   return (
     <div className="home-page">
+      {confirmDeleteId && (
+        <div className="sr-confirm-overlay" onClick={() => setConfirmDeleteId(null)}>
+          <div className="sr-confirm-box" onClick={(e) => e.stopPropagation()}>
+            <p className="sr-confirm-title">Delete Recipe?</p>
+            <p className="sr-confirm-msg">This action cannot be undone.</p>
+            <div className="sr-confirm-actions">
+              <button className="sr-confirm-cancel" onClick={() => setConfirmDeleteId(null)}>Cancel</button>
+              <button className="sr-confirm-delete" onClick={confirmDelete}>Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="navbarHeader">
         <NavbarHeader />
       </div>
@@ -243,7 +265,7 @@ function SavedRecipes() {
           </div>
 
           <div className="sr-body">
-            {/* ── Add Recipe Form ── */}
+            {/* Add Recipe Form */}
             <section className="sr-form-section">
               <Toast message={errors} onClose={() => setErrors("")} />
 
@@ -260,38 +282,30 @@ function SavedRecipes() {
                   />
                 </div>
 
-                {/* Serves */}
-                <div className="sr-field">
-                  <label className="sr-label">Serves</label>
-                  <div className="sr-serves">
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
-                      <label
-                        key={n}
-                        className={`sr-serve-opt${serves === String(n) ? " active" : ""}`}
-                      >
-                        <input
-                          type="radio"
-                          name="serves"
-                          value={n}
-                          checked={serves === String(n)}
-                          onChange={(e) => setServes(e.target.value)}
-                        />
-                        {n}
-                      </label>
-                    ))}
+                {/* Serves + Cook time */}
+                <div className="sr-row">
+                  <div className="sr-field">
+                    <label className="sr-label">Serves</label>
+                    <input
+                      className="sr-input"
+                      type="number"
+                      min="1"
+                      value={serves}
+                      onChange={(e) => setServes(e.target.value)}
+                      placeholder="e.g. 4"
+                    />
                   </div>
-                </div>
-
-                {/* Cook time */}
-                <div className="sr-field">
-                  <label className="sr-label">Cook Time (mins)</label>
-                  <input
-                    className="sr-input"
-                    type="text"
-                    value={cookTime}
-                    onChange={(e) => setCookTime(e.target.value)}
-                    placeholder="e.g. 30"
-                  />
+                  <div className="sr-field">
+                    <label className="sr-label">Cook Time (mins)</label>
+                    <input
+                      className="sr-input"
+                      type="number"
+                      min="1"
+                      value={cookTime}
+                      onChange={(e) => setCookTime(e.target.value)}
+                      placeholder="e.g. 30"
+                    />
+                  </div>
                 </div>
 
                 {/* Ingredients table */}
@@ -442,28 +456,77 @@ function SavedRecipes() {
                   </button>
                 </div>
 
-                {/* Instructions (old) */}
-                {/* <div className="sr-field">
-                  <label className="sr-label">Instructions</label>
-                  <textarea
-                    className="sr-textarea"
-                    value={instructions}
-                    onChange={(e) => setInstructions(e.target.value)}
-                    placeholder="Write the cooking steps here..."
-                    rows={6}
-                  />
-                </div> */}
-
                 {/* Tags */}
                 <div className="sr-field">
                   <label className="sr-label">Tags</label>
-                  <input
-                    className="sr-input"
-                    type="text"
-                    value={tag}
-                    onChange={(e) => setTag(e.target.value)}
-                    placeholder="e.g. Vietnamese, Pasta, Vegan"
-                  />
+                  {tags.length > 0 && (
+                    <div className="sr-tags-list">
+                      {tags.map((t, i) => (
+                        <span key={i} className="sr-tag-chip">
+                          {t}
+                          <button
+                            type="button"
+                            className="sr-tag-remove"
+                            onClick={() => setTags((prev) => prev.filter((_, idx) => idx !== i))}
+                            aria-label={`Remove tag ${t}`}
+                          >×</button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <div className="sr-tag-input-row">
+                    <input
+                      className="sr-input"
+                      type="text"
+                      value={tagInput}
+                      onChange={(e) => setTagInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          const val = tagInput.trim();
+                          if (val && !tags.includes(val)) setTags((prev) => [...prev, val]);
+                          setTagInput("");
+                        }
+                      }}
+                      placeholder="e.g. Vietnamese"
+                    />
+                    <button
+                      type="button"
+                      className="sr-btn-add"
+                      onClick={() => {
+                        const val = tagInput.trim();
+                        if (val && !tags.includes(val)) setTags((prev) => [...prev, val]);
+                        setTagInput("");
+                      }}
+                    >
+                      <Plus size={16} />
+                      Add Tag
+                    </button>
+                  </div>
+                </div>
+
+                {/* Visibility */}
+                <div className="sr-field">
+                  <label className="sr-label">Visibility</label>
+                  <div className="sr-visibility">
+                    <button
+                      type="button"
+                      className={`sr-vis-opt${!isPublic ? " active" : ""}`}
+                      onClick={() => setIsPublic(false)}
+                    >
+                      Private
+                    </button>
+                    <button
+                      type="button"
+                      className={`sr-vis-opt${isPublic ? " active" : ""}`}
+                      onClick={() => setIsPublic(true)}
+                    >
+                      Public
+                    </button>
+                  </div>
+                  <p className="sr-vis-hint">
+                    {isPublic ? "Anyone can see this recipe." : "Only you can see this recipe."}
+                  </p>
                 </div>
 
                 {/* Image upload */}
@@ -505,53 +568,72 @@ function SavedRecipes() {
               </form>
             </section>
 
-            {/* ── Recipe List ── */}
+            {/* Recipe List */}
             <section className="sr-list-section">
-              <h3 id="UserRecipeList" className="sr-section-title">Your Recipes</h3>
+              <h3 id="UserRecipeList" className="sr-section-title">My Recipes</h3>
 
               {userRecipes.length === 0 ? (
                 <p className="sr-empty">No recipes yet. Add your first one!</p>
               ) : (
-                <div className="sr-list">
-                  {userRecipes.map((recipe) => {
-                    const cookMatch =
-                      recipe.instructions?.match(/Cook: (\d+) min/);
-                    const mins = cookMatch ? parseInt(cookMatch[1]) : null;
-                    const tagMatch =
-                      recipe.instructions?.match(/Tags: ([^\n]+)/);
-                    const tags = tagMatch
-                      ? tagMatch[1].split(",").map((t) => t.trim())
-                      : [];
-                    return (
-                      <div key={recipe._id} className="sr-card-wrapper">
-                        <RecipeCard
-                          title={recipe.name}
-                          image={recipe.image}
-                          cuisineType={tags[0] || null}
-                          dishType={tags[1] || null}
-                          readyInMinutes={mins}
-                          difficulty={
-                            mins == null
-                              ? null
-                              : mins <= 30
-                                ? "Easy"
-                                : mins <= 60
-                                  ? "Medium"
-                                  : "Hard"
-                          }
-                          hideHeart={true}
-                        />
-                        <button
-                          className="sr-btn-delete"
-                          onClick={() => handleDelete(recipe._id)}
-                          aria-label={`Delete ${recipe.name}`}
-                          title="Delete recipe"
-                        >
-                          ×
-                        </button>
+                <div className="sr-sections">
+                  {[
+                    { label: "Private", items: userRecipes.filter((r) => !r.isPublic), ref: privateRef },
+                    { label: "Public",  items: userRecipes.filter((r) =>  r.isPublic), ref: publicRef  },
+                  ].map(({ label, items, ref }) => (
+                    <div key={label} className="sr-section" ref={ref}>
+                      <div className="sr-section-header">
+                        <span className="sr-section-label">{label}</span>
+                        <div className="sr-section-line" />
+                        <span className="sr-section-count">
+                          {items.length} recipe{items.length !== 1 ? "s" : ""}
+                        </span>
                       </div>
-                    );
-                  })}
+
+                      {items.length === 0 ? (
+                        <p className="sr-empty">No {label.toLowerCase()} recipes yet.</p>
+                      ) : (
+                        <div className="sr-list-scroll">
+                        <div className="sr-list">
+                          {items.map((recipe) => {
+                            const cookMatch = recipe.instructions?.match(/Cook: (\d+) min/);
+                            const mins = cookMatch ? parseInt(cookMatch[1]) : null;
+                            const tagMatch = recipe.instructions?.match(/Tags: ([^\n]+)/);
+                            const tags = tagMatch
+                              ? tagMatch[1].split(",").map((t) => t.trim())
+                              : [];
+                            return (
+                              <div key={recipe._id} className="sr-card-wrapper">
+                                <RecipeCard
+                                  title={recipe.name}
+                                  image={recipe.image}
+                                  cuisineType={tags[0] || null}
+                                  dishType={tags[1] || null}
+                                  readyInMinutes={mins}
+                                  difficulty={
+                                    mins == null ? null
+                                      : mins <= 30 ? "Easy"
+                                      : mins <= 60 ? "Medium"
+                                      : "Hard"
+                                  }
+                                  hideHeart={true}
+                                  onClick={() => navigate(`/my-recipe/${recipe._id}`)}
+                                />
+                                <button
+                                  className="sr-btn-delete"
+                                  onClick={() => setConfirmDeleteId(recipe._id)}
+                                  aria-label={`Delete ${recipe.name}`}
+                                  title="Delete recipe"
+                                >
+                                  ×
+                                </button>
+                              </div>
+                            );
+                          })}
+                        </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
                 </div>
               )}
             </section>

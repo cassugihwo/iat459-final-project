@@ -1,23 +1,99 @@
 @import "App.css";
 
-.home-recipes-section {
-  padding: 0.5rem 2rem 4rem;
+.home-section {
+  padding: 0.5rem 2rem 3rem;
 }
 
-.home-recipes-section h3 {
+.home-section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.home-see-more {
+  flex-shrink: 0;
+  margin-top: 0.35rem;
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--color-red1);
+  background: transparent;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-red1);
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+
+.home-see-more:hover {
+  background: var(--color-red1);
+  color: #fff;
+}
+
+/* See-more card at end of favourites carousel */
+.home-fav-see-more-card {
+  flex-shrink: 0;
+  width: var(--recipe-card-width, 20rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  border-radius: 1.25rem;
+  border: 2px dashed var(--color-red1);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  min-height: 18rem;
+}
+
+.home-fav-see-more-card:hover {
+  background: #fdf0ed;
+  transform: translateY(-0.25rem);
+}
+
+.home-fav-see-more-arrow {
+  font-size: 2rem;
+  color: var(--color-red1);
+  line-height: 1;
+}
+
+.home-fav-see-more-label {
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-red1);
+}
+
+.home-section-title {
   font-family: "Passion One", sans-serif;
   font-size: 3.5rem;
   font-weight: 700;
   color: var(--color-red1);
-  margin: 0 0 0.3rem;
+  margin: 0 0 0.2rem;
   line-height: 1;
 }
 
-.home-recipes-section > p {
+.home-section-sub {
   font-family: "Noto Sans", sans-serif;
   font-size: 1rem;
   color: #333;
-  margin: 0 0 1.5rem;
+  margin: 0 0 1.25rem;
+}
+
+.home-featured-card {
+  display: flex;
+  justify-content: flex-start;
+  padding: 0.5rem 1.5rem;
+}
+
+.home-loading,
+.home-empty {
+  font-family: "Noto Sans", sans-serif;
+  font-size: 1rem;
+  color: #888;
+  padding: 1rem 2rem;
 }
 
 .recipe-carousel-wrapper {
@@ -41,52 +117,13 @@
   display: none;
 }
 
-.carousel-arrow {
-  flex-shrink: 0;
-  width: 2.75rem;
-  height: 2.75rem;
-  border-radius: 50%;
-  border: 0.125rem solid #9f3e3d;
-  background: #fffdfc;
-  color: #9f3e3d;
-  font-size: 1.8rem;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.1);
-  transition: 0.2s ease;
-  z-index: 2;
-}
-
-.carousel-arrow:hover {
-  background: #9f3e3d;
-  color: white;
-  transform: scale(1.05);
-}
-
-.carousel-arrow-left {
-  margin-right: 0.8rem;
-}
-
-.carousel-arrow-right {
-  margin-left: 0.8rem;
-}
 
 .recipe-filter-section {
   margin: 0 0 2rem;
 }
 
-.recipe-filter-title {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #8f4a4a;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 0.75rem;
-}
 
+/* Filter pill */
 .recipe-filter-pills {
   display: flex;
   gap: 0.6rem;
@@ -104,17 +141,19 @@
   padding: 0.45rem 1.1rem;
   border: 0.125rem solid #e4d8c8;
   border-radius: 999px;
-  background: #f4efe7;
+  background:transparent;
   color: #5c0000;
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
   transition: 0.2s ease;
   white-space: nowrap;
+  transform: border 0.2s ease;
 }
 
 .recipe-filter-pill:hover {
   transform: translateY(-1px);
+  border: 0.125rem solid #9f3e3d;
 }
 
 .recipe-filter-pill.active {

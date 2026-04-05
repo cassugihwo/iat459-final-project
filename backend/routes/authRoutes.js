@@ -96,13 +96,19 @@ router.get("/profile", verifyToken, async (req, res) => {
   }
 });
 
-// PUT update profile (bio + links)
+// PUT update profile
 router.put("/profile", verifyToken, async (req, res) => {
   try {
-    const { bio, links, avatar } = req.body;
+    const { bio, links, avatar, firstName, lastName, username } = req.body;
+
+    if (username) {
+      const existing = await User.findOne({ username, _id: { $ne: req.userId } });
+      if (existing) return res.status(400).json({ message: "Username already taken." });
+    }
+
     const user = await User.findByIdAndUpdate(
       req.userId,
-      { bio, links, avatar },
+      { bio, links, avatar, ...(firstName && { firstName }), ...(lastName && { lastName }), ...(username && { username }) },
       { new: true }
     ).select("-password");
     res.json(user);
