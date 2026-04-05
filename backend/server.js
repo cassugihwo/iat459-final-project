@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 
 const userRecipeRoutes = require("./routes/userRecipes");
+const userRecipe2Routes = require("./routes/userRecipes2");
 const authRoutes = require("./routes/authRoutes");
 const homeRecipesRoutes = require("./routes/homeRecipeRoute");
 const adminRoutes = require("./routes/adminRoutes");
@@ -19,6 +20,7 @@ app.use(express.json({ limit: "10mb" }));
 app.use("/api", homeRecipesRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/user-recipes", userRecipeRoutes);
+app.use("/api/user-recipes2", userRecipe2Routes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/favourites", favouriteRoutes);
 

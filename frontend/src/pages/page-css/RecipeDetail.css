@@ -168,13 +168,17 @@
 .rd-ingredient-name {
     font-family: "Noto Sans", sans-serif;
     font-size: 0.9rem;
-    font-weight: 600;
+    font-weight: 500;
     text-transform: capitalize;
-    color: var(--color-red1);
+    color: #333;
     padding: 0.5rem 0.75rem;
     border-radius: 8px;
     background-color: #fff;
     border: 1px solid var(--color-white1);
+    span {
+        font-weight: 650;
+        color: var(--color-red1);
+    }
 }
 
 .rd-ingredient-amount {

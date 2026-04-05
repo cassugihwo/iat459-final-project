@@ -28,6 +28,8 @@ function RecipeDetail() {
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Failed to load recipe.");
         setRecipe(data);
+        console.log("Fetched recipe detail:");
+        console.log(data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -126,21 +128,32 @@ function RecipeDetail() {
                     onClick={handleToggleFavourite}
                     aria-label="Save as favourite"
                   >
-                    <img src={isFavourited ? Icon_heart_filled : Icon_heart_empty} alt="Favourite" />
+                    <img
+                      src={isFavourited ? Icon_heart_filled : Icon_heart_empty}
+                      alt="Favourite"
+                    />
                   </button>
                 </div>
 
                 <h1 className="rd-title">{recipe.title}</h1>
 
                 <div className="rd-meta">
-                  <span className="rd-chip highlight">⏱ {recipe.readyInMinutes} min</span>
+                  <span className="rd-chip highlight">
+                    ⏱ {recipe.readyInMinutes} min
+                  </span>
                   <span className="rd-chip highlight">{difficulty}</span>
-                  <span className="rd-chip highlight">🍽 Serves {recipe.servings}</span>
+                  <span className="rd-chip highlight">
+                    🍽 Serves {recipe.servings}
+                  </span>
                   {recipe.cuisines[0] && (
-                    <span className="rd-chip highlight">{recipe.cuisines[0]}</span>
+                    <span className="rd-chip highlight">
+                      {recipe.cuisines[0]}
+                    </span>
                   )}
                   {recipe.dishTypes[0] && (
-                    <span className="rd-chip highlight">{recipe.dishTypes[0]}</span>
+                    <span className="rd-chip highlight">
+                      {recipe.dishTypes[0]}
+                    </span>
                   )}
                   {recipe.diets[0] && (
                     <span className="rd-chip highlight">{recipe.diets[0]}</span>
@@ -148,7 +161,8 @@ function RecipeDetail() {
                 </div>
 
                 <div className="rd-body">
-                  <div className="rd-ingredients-section">
+                  {/* Ingredients section (original) */}
+                  {/* <div className="rd-ingredients-section">
                     <div className="rd-ingredients-columns">
                       <div className="rd-ingredients-col">
                         <h2 className="rd-section-title">Ingredients</h2>
@@ -167,12 +181,32 @@ function RecipeDetail() {
                         </ul>
                       </div>
                     </div>
+                  </div> */}
+
+                  {/* Ingredients new */}
+                  <div className="rd-ingredients-section">
+                      <div className="rd-ingredients-col">
+                        <h2 className="rd-section-title">Ingredients</h2>
+                        <ul className="rd-ingredients">
+                          {recipe.ingredients.map((ing) => (
+                            <li key={ing.id} className="rd-ingredient-name">
+                              {`${ing.amount} ${ing.unit} `}<span>{ing.name}</span>
+                              
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                   </div>
 
                   <div className="rd-instructions-section">
                     <h2 className="rd-section-title">Instructions</h2>
                     {recipe.steps.length === 0 ? (
-                      <p style={{ color: "#888", fontFamily: "Noto Sans, sans-serif" }}>
+                      <p
+                        style={{
+                          color: "#888",
+                          fontFamily: "Noto Sans, sans-serif",
+                        }}
+                      >
                         No instructions available.
                       </p>
                     ) : (

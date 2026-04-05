@@ -6,6 +6,12 @@ function UI_Navbar() {
   const navigate = useNavigate();
   const { user } = useAuth();
 
+  function getMemberOnlyLinkClass(isActive) {
+    return [isActive ? "selected" : "", !user ? "member-only-link" : ""]
+      .filter(Boolean)
+      .join(" ");
+  }
+
   function handleMemberNavigation(path, featureName, event) {
     if (!user) {
       event.preventDefault();
@@ -39,37 +45,46 @@ function UI_Navbar() {
         <li>
           <NavLink
             to="/pantry"
-            className={({ isActive }) => (isActive ? "selected" : "")}
+            className={({ isActive }) => getMemberOnlyLinkClass(isActive)}
             onClick={(event) =>
               handleMemberNavigation("/pantry", "Favourite Recipes", event)
             }
           >
             Favourite Recipes
           </NavLink>
+          {!user && (
+            <span className="member-only-tooltip">Log in to access feature</span>
+          )}
         </li>
 
         <li>
           <NavLink
             to="/saved-recipes"
-            className={({ isActive }) => (isActive ? "selected" : "")}
+            className={({ isActive }) => getMemberOnlyLinkClass(isActive)}
             onClick={(event) =>
               handleMemberNavigation("/saved-recipes", "Add Your Recipes", event)
             }
           >
             Add Your Recipes
           </NavLink>
+          {!user && (
+            <span className="member-only-tooltip">Log in to access feature</span>
+          )}
         </li>
 
         <li>
           <NavLink
             to="/meal-plan"
-            className={({ isActive }) => (isActive ? "selected" : "")}
+            className={({ isActive }) => getMemberOnlyLinkClass(isActive)}
             onClick={(event) =>
               handleMemberNavigation("/meal-plan", "Your Meal Plan", event)
             }
           >
             Your Meal Plan
           </NavLink>
+          {!user && (
+            <span className="member-only-tooltip">Log in to access feature</span>
+          )}
         </li>
       </ul>
     </div>

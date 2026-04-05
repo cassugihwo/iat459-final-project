@@ -1,3 +1,4 @@
+
 .sr-body {
     max-width: 90%;
     margin: 0 auto;
@@ -108,7 +109,11 @@
     color: #fff;
 }
 
-/*Ingredients table*/
+/*table*/
+.rd-step-number {
+    margin-left: 8px;
+    margin-top: 8px;
+}
 .sr-table-wrapper {
     overflow-x: auto;
     border-radius: 12px;
@@ -118,6 +123,50 @@
 .sr-table {
     width: 100%;
     border-collapse: collapse;
+}
+
+.sr-btn-add {
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.85rem;
+    background-color: transparent;
+    color: var(--color-red1);
+    border: none;
+    border-radius: 10px;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: fit-content;
+    &:hover {
+        background-color: var(--color-red1);
+        color: var(--color-white0);
+    }
+}
+
+.sr-instruction-row > td {
+    vertical-align: top;
+    text-align: center;
+}
+/* Show trash button only on row hover in ingredients table */
+.sr-ingredient-row .sr-btn-trash, .sr-instruction-row .sr-btn-trash {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+.sr-ingredient-row:hover .sr-btn-trash, .sr-instruction-row:hover .sr-btn-trash {
+    opacity: 1;
+    pointer-events: auto;
+}
+.sr-btn-trash {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #c00;
+    padding: 0.2em 0.4em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .sr-table th {
