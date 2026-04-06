@@ -6,7 +6,7 @@ const UserRecipe2 = require("../models/UserRecipe2");
 const verifyToken = require("../middleware/authMiddleWare");
 const verifyAdmin = require("../middleware/verifyAdmin");
 
-// GET all members
+// Get all members
 router.get("/members", verifyToken, verifyAdmin, async (req, res) => {
   try {
     const users = await User.find({}, "-password").sort({ createdAt: -1 });
@@ -19,79 +19,94 @@ router.get("/members", verifyToken, verifyAdmin, async (req, res) => {
   }
 });
 
-// SUSPEND member
-router.patch("/members/:id/suspend", verifyToken, verifyAdmin, async (req, res) => {
-  try {
-    const user = await User.findByIdAndUpdate(
-      req.params.id,
-      { isSuspended: true },
-      { new: true }
-    ).select("-password");
+// Suspend member
+router.patch(
+  "/members/:id/suspend",
+  verifyToken,
+  verifyAdmin,
+  async (req, res) => {
+    try {
+      const user = await User.findByIdAndUpdate(
+        req.params.id,
+        { isSuspended: true },
+        { new: true },
+      ).select("-password");
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      res.json({ message: "User suspended successfully", user });
+    } catch (err) {
+      res.status(500).json({
+        message: "Failed to suspend user",
+        error: err.message,
+      });
     }
+  },
+);
 
-    res.json({ message: "User suspended successfully", user });
-  } catch (err) {
-    res.status(500).json({
-      message: "Failed to suspend user",
-      error: err.message,
-    });
-  }
-});
+// Unsuspend member
+router.patch(
+  "/members/:id/unsuspend",
+  verifyToken,
+  verifyAdmin,
+  async (req, res) => {
+    try {
+      const user = await User.findByIdAndUpdate(
+        req.params.id,
+        { isSuspended: false },
+        { new: true },
+      ).select("-password");
 
-// UNSUSPEND member
-router.patch("/members/:id/unsuspend", verifyToken, verifyAdmin, async (req, res) => {
-  try {
-    const user = await User.findByIdAndUpdate(
-      req.params.id,
-      { isSuspended: false },
-      { new: true }
-    ).select("-password");
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      res.json({ message: "User unsuspended successfully", user });
+    } catch (err) {
+      res.status(500).json({
+        message: "Failed to unsuspend user",
+        error: err.message,
+      });
     }
+  },
+);
 
-    res.json({ message: "User unsuspended successfully", user });
-  } catch (err) {
-    res.status(500).json({
-      message: "Failed to unsuspend user",
-      error: err.message,
-    });
-  }
-});
+// Change member role
+router.patch(
+  "/members/:id/role",
+  verifyToken,
+  verifyAdmin,
+  async (req, res) => {
+    try {
+      const { role } = req.body;
 
-// CHANGE member role
-router.patch("/members/:id/role", verifyToken, verifyAdmin, async (req, res) => {
-  try {
-    const { role } = req.body;
+      if (!role || !["admin", "user"].includes(role)) {
+        return res.status(400).json({ message: "Invalid role" });
+      }
 
-    if (!role || !["admin", "user"].includes(role)) {
-      return res.status(400).json({ message: "Invalid role" });
+      const user = await User.findByIdAndUpdate(
+        req.params.id,
+        { role },
+        { new: true, runValidators: true },
+      ).select("-password");
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      res.json({ message: "User role updated successfully", user });
+    } catch (err) {
+      res.status(500).json({
+        message: "Failed to update role",
+        error: err.message,
+      });
     }
+  },
+);
 
-    const user = await User.findByIdAndUpdate(
-      req.params.id,
-      { role },
-      { new: true, runValidators: true }
-    ).select("-password");
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.json({ message: "User role updated successfully", user });
-  } catch (err) {
-    res.status(500).json({
-      message: "Failed to update role",
-      error: err.message,
-    });
-  }
-});
-
-// DELETE member
+// Delete member
 router.delete("/members/:id", verifyToken, verifyAdmin, async (req, res) => {
   try {
     const deletedUser = await User.findByIdAndDelete(req.params.id);
@@ -111,7 +126,7 @@ router.delete("/members/:id", verifyToken, verifyAdmin, async (req, res) => {
   }
 });
 
-// GET all content
+// Get all content
 router.get("/content", verifyToken, verifyAdmin, async (req, res) => {
   try {
     const recipes = await UserRecipe2.find()
@@ -127,7 +142,7 @@ router.get("/content", verifyToken, verifyAdmin, async (req, res) => {
   }
 });
 
-// ADD content
+// Add content
 router.post("/content", verifyToken, verifyAdmin, async (req, res) => {
   try {
     const { name, ingredients, instructions, owner, image } = req.body;
@@ -150,7 +165,7 @@ router.post("/content", verifyToken, verifyAdmin, async (req, res) => {
   }
 });
 
-// EDIT content
+// Edit content
 router.put("/content/:id", verifyToken, verifyAdmin, async (req, res) => {
   try {
     const updatedRecipe = await UserRecipe2.findByIdAndUpdate(
@@ -161,7 +176,7 @@ router.put("/content/:id", verifyToken, verifyAdmin, async (req, res) => {
         instructions: req.body.instructions,
         image: req.body.image,
       },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     if (!updatedRecipe) {
@@ -177,7 +192,7 @@ router.put("/content/:id", verifyToken, verifyAdmin, async (req, res) => {
   }
 });
 
-// DELETE content
+// Delete content
 router.delete("/content/:id", verifyToken, verifyAdmin, async (req, res) => {
   try {
     const deletedRecipe = await UserRecipe2.findByIdAndDelete(req.params.id);

@@ -2,6 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Trash2, Plus } from "lucide-react";
 import Toast from "components/toast/UI_Toast";
+import ConfirmDeleteForm from "components/confirm/ConfirmDeleteForm";
 import "pages/MainPage.css";
 import "pages/page-css/RecipeDetail.css";
 import "pages/page-css/SavedRecipes.css";
@@ -15,6 +16,7 @@ import leftDish from "assets/bg image/left.png";
 import centerDish from "assets/bg image/center.png";
 import rightDish from "assets/bg image/right.png";
 
+//Measurement units for ingredient input
 const MEASUREMENT_UNITS = [
   "",
   "g",
@@ -30,7 +32,6 @@ const MEASUREMENT_UNITS = [
   "piece",
 ];
 
-
 function emptyIngredients() {
   return Array.from({ length: 4 }, () => ({
     amount: "",
@@ -38,7 +39,6 @@ function emptyIngredients() {
     name: "",
   }));
 }
-
 
 function emptyInstructions() {
   return [{ instruction: "" }];
@@ -77,7 +77,10 @@ function SavedRecipes() {
       try {
         const response = await fetch(`http://localhost:5001/api/${recipeVer}`, {
           method: "GET",
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         });
         if (!response.ok) throw new Error("Failed to fetch recipes.");
         const data = await response.json();
@@ -158,7 +161,9 @@ function SavedRecipes() {
       return;
     }
 
-    const filledInstructions = instructionsList.filter((r) => r.instruction.trim());
+    const filledInstructions = instructionsList.filter((r) =>
+      r.instruction.trim(),
+    );
     if (!filledInstructions.length) {
       setErrors("At least one instruction step is required");
       return;
@@ -166,13 +171,19 @@ function SavedRecipes() {
 
     const tagString = tags.join(", ");
     const meta = `Serves: ${serves} | Cook: ${cookTime} min${tagString ? ` | Tags: ${tagString}` : ""}`;
-    const joinedInstructions = filledInstructions.map(r => r.instruction).join("\n").trim();
+    const joinedInstructions = filledInstructions
+      .map((r) => r.instruction)
+      .join("\n")
+      .trim();
     const fullInstructions = `${meta}\n\n${joinedInstructions}`;
 
     try {
       const response = await fetch(`http://localhost:5001/api/${recipeVer}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
           name: name.trim(),
           image: imageBase64,
@@ -187,14 +198,15 @@ function SavedRecipes() {
       setUserRecipes((prev) => [...prev, newRecipe]);
       resetForm();
       setTimeout(() => {
-        (newRecipe.isPublic ? publicRef : privateRef).current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        (newRecipe.isPublic ? publicRef : privateRef).current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
       }, 100);
     } catch (err) {
       console.error("Failed form submit:", err);
       setErrors(err.message);
     }
-    
-
   }
 
   async function confirmDelete() {
@@ -220,16 +232,12 @@ function SavedRecipes() {
   return (
     <div className="home-page">
       {confirmDeleteId && (
-        <div className="sr-confirm-overlay" onClick={() => setConfirmDeleteId(null)}>
-          <div className="sr-confirm-box" onClick={(e) => e.stopPropagation()}>
-            <p className="sr-confirm-title">Delete Recipe?</p>
-            <p className="sr-confirm-msg">This action cannot be undone.</p>
-            <div className="sr-confirm-actions">
-              <button className="sr-confirm-cancel" onClick={() => setConfirmDeleteId(null)}>Cancel</button>
-              <button className="sr-confirm-delete" onClick={confirmDelete}>Delete</button>
-            </div>
-          </div>
-        </div>
+        <ConfirmDeleteForm
+          title="Delete Recipe?"
+          message="This action cannot be undone."
+          onConfirm={confirmDelete}
+          onCancel={() => setConfirmDeleteId(null)}
+        />
       )}
 
       <div className="navbarHeader">
@@ -403,7 +411,10 @@ function SavedRecipes() {
                       ])
                     }
                   >
-                    <Plus size={18} style={{ marginRight: 6, verticalAlign: "middle" }} />
+                    <Plus
+                      size={18}
+                      style={{ marginRight: 6, verticalAlign: "middle" }}
+                    />
                     Add Ingredient
                   </button>
                 </div>
@@ -420,7 +431,9 @@ function SavedRecipes() {
                           value={row.instruction}
                           onChange={(e) => {
                             const newList = instructionsList.map((row, idx) =>
-                              idx === i ? { ...row, instruction: e.target.value } : row
+                              idx === i
+                                ? { ...row, instruction: e.target.value }
+                                : row,
                             );
                             setInstructionsList(newList);
                           }}
@@ -432,9 +445,11 @@ function SavedRecipes() {
                             type="button"
                             className="sr-btn-trash"
                             onClick={() => {
-                              const newList = instructionsList.filter((_, idx) => idx !== i);
+                              const newList = instructionsList.filter(
+                                (_, idx) => idx !== i,
+                              );
                               setInstructionsList(newList);
-                              }}
+                            }}
                             tabIndex="-1"
                             aria-label="Remove step"
                           >
@@ -448,7 +463,10 @@ function SavedRecipes() {
                     type="button"
                     className="sr-btn-add"
                     onClick={() =>
-                      setInstructionsList((prev) => [...prev, { instruction: "" }])
+                      setInstructionsList((prev) => [
+                        ...prev,
+                        { instruction: "" },
+                      ])
                     }
                   >
                     <Plus size={16} />
@@ -467,9 +485,15 @@ function SavedRecipes() {
                           <button
                             type="button"
                             className="sr-tag-remove"
-                            onClick={() => setTags((prev) => prev.filter((_, idx) => idx !== i))}
+                            onClick={() =>
+                              setTags((prev) =>
+                                prev.filter((_, idx) => idx !== i),
+                              )
+                            }
                             aria-label={`Remove tag ${t}`}
-                          >×</button>
+                          >
+                            ×
+                          </button>
                         </span>
                       ))}
                     </div>
@@ -484,7 +508,8 @@ function SavedRecipes() {
                         if (e.key === "Enter") {
                           e.preventDefault();
                           const val = tagInput.trim();
-                          if (val && !tags.includes(val)) setTags((prev) => [...prev, val]);
+                          if (val && !tags.includes(val))
+                            setTags((prev) => [...prev, val]);
                           setTagInput("");
                         }
                       }}
@@ -495,7 +520,8 @@ function SavedRecipes() {
                       className="sr-btn-add"
                       onClick={() => {
                         const val = tagInput.trim();
-                        if (val && !tags.includes(val)) setTags((prev) => [...prev, val]);
+                        if (val && !tags.includes(val))
+                          setTags((prev) => [...prev, val]);
                         setTagInput("");
                       }}
                     >
@@ -525,7 +551,9 @@ function SavedRecipes() {
                     </button>
                   </div>
                   <p className="sr-vis-hint">
-                    {isPublic ? "Anyone can see this recipe." : "Only you can see this recipe."}
+                    {isPublic
+                      ? "Anyone can see this recipe."
+                      : "Only you can see this recipe."}
                   </p>
                 </div>
 
@@ -570,15 +598,25 @@ function SavedRecipes() {
 
             {/* Recipe List */}
             <section className="sr-list-section">
-              <h3 id="UserRecipeList" className="sr-section-title">My Recipes</h3>
+              <h3 id="UserRecipeList" className="sr-section-title">
+                My Recipes
+              </h3>
 
               {userRecipes.length === 0 ? (
                 <p className="sr-empty">No recipes yet. Add your first one!</p>
               ) : (
                 <div className="sr-sections">
                   {[
-                    { label: "Private", items: userRecipes.filter((r) => !r.isPublic), ref: privateRef },
-                    { label: "Public",  items: userRecipes.filter((r) =>  r.isPublic), ref: publicRef  },
+                    {
+                      label: "Private",
+                      items: userRecipes.filter((r) => !r.isPublic),
+                      ref: privateRef,
+                    },
+                    {
+                      label: "Public",
+                      items: userRecipes.filter((r) => r.isPublic),
+                      ref: publicRef,
+                    },
                   ].map(({ label, items, ref }) => (
                     <div key={label} className="sr-section" ref={ref}>
                       <div className="sr-section-header">
@@ -590,46 +628,62 @@ function SavedRecipes() {
                       </div>
 
                       {items.length === 0 ? (
-                        <p className="sr-empty">No {label.toLowerCase()} recipes yet.</p>
+                        <p className="sr-empty">
+                          No {label.toLowerCase()} recipes yet.
+                        </p>
                       ) : (
                         <div className="sr-list-scroll">
-                        <div className="sr-list">
-                          {items.map((recipe) => {
-                            const cookMatch = recipe.instructions?.match(/Cook: (\d+) min/);
-                            const mins = cookMatch ? parseInt(cookMatch[1]) : null;
-                            const tagMatch = recipe.instructions?.match(/Tags: ([^\n]+)/);
-                            const tags = tagMatch
-                              ? tagMatch[1].split(",").map((t) => t.trim())
-                              : [];
-                            return (
-                              <div key={recipe._id} className="sr-card-wrapper">
-                                <RecipeCard
-                                  title={recipe.name}
-                                  image={recipe.image}
-                                  cuisineType={tags[0] || null}
-                                  dishType={tags[1] || null}
-                                  readyInMinutes={mins}
-                                  difficulty={
-                                    mins == null ? null
-                                      : mins <= 30 ? "Easy"
-                                      : mins <= 60 ? "Medium"
-                                      : "Hard"
-                                  }
-                                  hideHeart={true}
-                                  onClick={() => navigate(`/my-recipe/${recipe._id}`)}
-                                />
-                                <button
-                                  className="sr-btn-delete"
-                                  onClick={() => setConfirmDeleteId(recipe._id)}
-                                  aria-label={`Delete ${recipe.name}`}
-                                  title="Delete recipe"
+                          <div className="sr-list">
+                            {items.map((recipe) => {
+                              const cookMatch =
+                                recipe.instructions?.match(/Cook: (\d+) min/);
+                              const mins = cookMatch
+                                ? parseInt(cookMatch[1])
+                                : null;
+                              const tagMatch =
+                                recipe.instructions?.match(/Tags: ([^\n]+)/);
+                              const tags = tagMatch
+                                ? tagMatch[1].split(",").map((t) => t.trim())
+                                : [];
+                              return (
+                                <div
+                                  key={recipe._id}
+                                  className="sr-card-wrapper"
                                 >
-                                  ×
-                                </button>
-                              </div>
-                            );
-                          })}
-                        </div>
+                                  <RecipeCard
+                                    title={recipe.name}
+                                    image={recipe.image}
+                                    cuisineType={tags[0] || null}
+                                    dishType={tags[1] || null}
+                                    readyInMinutes={mins}
+                                    difficulty={
+                                      mins == null
+                                        ? null
+                                        : mins <= 30
+                                          ? "Easy"
+                                          : mins <= 60
+                                            ? "Medium"
+                                            : "Hard"
+                                    }
+                                    hideHeart={true}
+                                    onClick={() =>
+                                      navigate(`/my-recipe/${recipe._id}`)
+                                    }
+                                  />
+                                  <button
+                                    className="sr-btn-delete"
+                                    onClick={() =>
+                                      setConfirmDeleteId(recipe._id)
+                                    }
+                                    aria-label={`Delete ${recipe.name}`}
+                                    title="Delete recipe"
+                                  >
+                                    ×
+                                  </button>
+                                </div>
+                              );
+                            })}
+                          </div>
                         </div>
                       )}
                     </div>

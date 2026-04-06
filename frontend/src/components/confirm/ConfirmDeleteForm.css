@@ -1,0 +1,79 @@
+.cdm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cdm-box {
+  background: #fff;
+  border-radius: 16px;
+  padding: 2rem;
+  width: 420px;
+  max-width: 90vw;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cdm-title {
+  font-family: "Passion One", sans-serif;
+  font-size: 2.3rem;
+  font-weight: 700;
+  color: #c0392b;
+  margin: 0;
+}
+
+.cdm-msg {
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.9rem;
+  color: #0b0a0a;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.cdm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.cdm-cancel {
+  padding: 0.5rem 1.25rem;
+  border-radius: 8px;
+  border: 1.5px solid #ddd;
+  background: transparent;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.cdm-cancel:hover {
+  border-color: #aaa;
+  color: #333;
+}
+
+.cdm-delete {
+  padding: 0.5rem 1.25rem;
+  border-radius: 8px;
+  border: none;
+  background: #c0392b;
+  color: #fff;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.cdm-delete:hover {
+  background: #2e0b0b;
+}

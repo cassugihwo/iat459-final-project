@@ -1,5 +1,6 @@
 @import "App.css";
 
+/* for UI_NavbarHeader.js (Navbar with logo and auth buttons) */
 .navbarHeader-container {
     position: fixed;
     z-index: 1000;

@@ -4,6 +4,7 @@ const router = express.Router();
 
 const apiKey = process.env.REACT_APP_API_KEY;
 
+// Test route to verify Spoonacular API integration
 router.get("/test", async (req, res) => {
   try {
     const response = await fetch(
@@ -16,7 +17,9 @@ router.get("/test", async (req, res) => {
     res.json(data);
   } catch (err) {
     console.error("Error fetching from Spoonacular API:", err);
-    res.status(500).json({ error: "GYAHHH Failed to fetch from Spoonacular API" });
+    res
+      .status(500)
+      .json({ error: "GYAHHH Failed to fetch from Spoonacular API" });
   }
 });
 

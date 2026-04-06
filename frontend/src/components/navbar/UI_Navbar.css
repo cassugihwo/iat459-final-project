@@ -2,97 +2,102 @@
 
 /* for UI_Navbar.js */
 .navbar-container {
-    ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        gap: 10px;
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  ul li {
+    all: unset;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: block;
+    position: relative;
+    text-decoration: none;
+  }
+
+  a {
+    padding: 5px 14px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-family: "Noto Sans", sans-serif;
+    font-weight: 700;
+    color: var(--color-red1);
+    text-decoration: none;
+    transition:
+      color 0.18s ease,
+      opacity 0.18s ease;
+
+    &:hover {
+      color: #4e1c1c;
     }
 
-    ul li {
-        all: unset;
-        box-sizing: border-box;
-        cursor: pointer;
-        display: block;
-        position: relative;
-        text-decoration: none;
+    &.selected {
+      background-color: var(--color-red1);
+      color: var(--color-white0);
+      padding: 10px 28px;
+      border-radius: 999px;
     }
 
-    a {
-        padding: 5px 14px;
-        border-radius: 15px;
-        cursor: pointer;
-        font-family: "Noto Sans", sans-serif;
-        font-weight: 700;
-        color: var(--color-red1);
-        text-decoration: none;
-        transition: color 0.18s ease, opacity 0.18s ease;
-
-        &:hover {
-            color: #4e1c1c;
-        }
-
-        &.selected {
-            background-color: var(--color-red1);
-            color: var(--color-white0);
-            padding: 10px 28px;
-            border-radius: 999px;
-        }
-
-        &.selected:hover {
-            color: var(--color-white0);
-        }
-
-        &.member-only-link {
-            opacity: 0.58;
-        }
-
-        &.member-only-link:hover,
-        &.member-only-link:focus-visible {
-            opacity: 0.82;
-        }
-
-        &.selected.member-only-link {
-            opacity: 0.72;
-        }
+    &.selected:hover {
+      color: var(--color-white0);
     }
 
-    .member-only-tooltip {
-        position: absolute;
-        left: 50%;
-        bottom: calc(100% + 8px);
-        transform: translateX(-50%) translateY(4px);
-        background-color: rgba(29, 16, 16, 0.95);
-        color: var(--color-white0);
-        padding: 6px 10px;
-        border-radius: 8px;
-        font-family: "Noto Sans", sans-serif;
-        font-size: 0.75rem;
-        font-weight: 600;
-        line-height: 1.2;
-        white-space: nowrap;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.18s ease, transform 0.18s ease;
-        z-index: 10;
+    &.member-only-link {
+      opacity: 0.58;
     }
 
-    .member-only-tooltip::after {
-        content: "";
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-        border-width: 5px;
-        border-style: solid;
-        border-color: rgba(29, 16, 16, 0.95) transparent transparent transparent;
+    &.member-only-link:hover,
+    &.member-only-link:focus-visible {
+      opacity: 0.82;
     }
 
-    li:hover .member-only-link + .member-only-tooltip,
-    li:focus-within .member-only-link + .member-only-tooltip {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
+    &.selected.member-only-link {
+      opacity: 0.72;
     }
+  }
+
+  /* Tooltip for member-only links */
+  .member-only-tooltip {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 8px);
+    transform: translateX(-50%) translateY(4px);
+    background-color: rgba(29, 16, 16, 0.95);
+    color: var(--color-white0);
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      opacity 0.18s ease,
+      transform 0.18s ease;
+    z-index: 10;
+  }
+
+  .member-only-tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgba(29, 16, 16, 0.95) transparent transparent transparent;
+  }
+
+  li:hover .member-only-link + .member-only-tooltip,
+  li:focus-within .member-only-link + .member-only-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 }

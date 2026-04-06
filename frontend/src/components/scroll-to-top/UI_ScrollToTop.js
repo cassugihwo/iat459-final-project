@@ -17,7 +17,9 @@ function UI_ScrollToTop() {
   return (
     <button
       className="scroll-to-top"
-      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      onClick={() => window.scrollTo({ 
+        top: 0, behavior: "smooth" 
+      })}
       aria-label="Scroll to top"
     >
       <span className="scroll-to-top-icon" />

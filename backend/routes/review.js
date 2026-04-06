@@ -3,8 +3,7 @@ const router = express.Router();
 const Review = require("../models/Review");
 const User = require("../models/User");
 const verifyToken = require("../middleware/authMiddleWare");
-
-// GET average ratings for multiple recipes (public)
+// Get average ratings for recipes (public)
 router.get("/bulk-ratings", async (req, res) => {
   try {
     const ids = (req.query.ids || "").split(",").map(Number).filter(Boolean);
@@ -14,7 +13,12 @@ router.get("/bulk-ratings", async (req, res) => {
     ids.forEach((id) => {
       const recipeReviews = reviews.filter((r) => r.recipeId === id);
       result[id] = recipeReviews.length
-        ? parseFloat((recipeReviews.reduce((s, r) => s + r.rating, 0) / recipeReviews.length).toFixed(1))
+        ? parseFloat(
+            (
+              recipeReviews.reduce((s, r) => s + r.rating, 0) /
+              recipeReviews.length
+            ).toFixed(1),
+          )
         : 0;
     });
     res.json(result);
@@ -23,7 +27,7 @@ router.get("/bulk-ratings", async (req, res) => {
   }
 });
 
-// GET all reviews for a user recipe (public)
+// Get all reviews for a user recipe (public)
 router.get("/user-recipe/:userRecipeId", async (req, res) => {
   try {
     const reviews = await Review.find({ userRecipeId: req.params.userRecipeId })
@@ -35,7 +39,7 @@ router.get("/user-recipe/:userRecipeId", async (req, res) => {
   }
 });
 
-// POST add a review for a user recipe (auth required)
+// Post add a review for a user recipe (auth required)
 router.post("/user-recipe/:userRecipeId", verifyToken, async (req, res) => {
   try {
     const { rating, comment } = req.body;
@@ -61,7 +65,7 @@ router.post("/user-recipe/:userRecipeId", verifyToken, async (req, res) => {
   }
 });
 
-// GET all reviews for a recipe (public)
+// Get all reviews for a recipe (public)
 router.get("/:recipeId", async (req, res) => {
   try {
     const reviews = await Review.find({ recipeId: req.params.recipeId })
@@ -73,7 +77,7 @@ router.get("/:recipeId", async (req, res) => {
   }
 });
 
-// POST add a new review (auth required)
+// Post add a new review (auth required)
 router.post("/:recipeId", verifyToken, async (req, res) => {
   try {
     const { rating, comment } = req.body;
@@ -99,7 +103,7 @@ router.post("/:recipeId", verifyToken, async (req, res) => {
   }
 });
 
-// DELETE a specific review by its _id (owner only)
+// Delete a specific review by its _id (owner only)
 router.delete("/:reviewId", verifyToken, async (req, res) => {
   try {
     const review = await Review.findById(req.params.reviewId);
