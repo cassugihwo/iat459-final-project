@@ -38,12 +38,10 @@ function UI_RecipeCard({
           </div>
         )}
 
-        {rating !== null && (
+        {rating !== null && rating !== undefined && (
           <div className="recipe-rating-pill">
             <span className="recipe-rating-star">★</span>
-            <span className="recipe-rating-value">
-              {rating > 0 ? rating : "0"}
-            </span>
+            <span className="recipe-rating-value">{rating}</span>
           </div>
         )}
       </div>

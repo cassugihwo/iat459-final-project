@@ -38,6 +38,7 @@ function Home() {
   const [communityType, setCommunityType] = useState("All");
   const [favType, setFavType] = useState("All");
   const [ratings, setRatings] = useState({});
+  const [communityRatings, setCommunityRatings] = useState({});
 
   useEffect(() => {
     if (!token) return;
@@ -45,9 +46,19 @@ function Home() {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((r) => (r.ok ? r.json() : []))
-      .then((data) => {
+      .then(async (data) => {
         setFavouriteIds(new Set(data.map((f) => f.recipeId)));
         setUserFavourites(data);
+        if (data.length) {
+          const ids = data.map((f) => f.recipeId).join(",");
+          const rRes = await fetch(
+            `http://localhost:5001/api/reviews/bulk-ratings?ids=${ids}`,
+          );
+          if (rRes.ok) {
+            const favRatings = await rRes.json();
+            setRatings((prev) => ({ ...prev, ...favRatings }));
+          }
+        }
       })
       .catch(() => {});
   }, [token]);
@@ -63,13 +74,22 @@ function Home() {
         const communityData = communityRes.ok ? await communityRes.json() : [];
         setRecipes(homeData);
         setCommunityRecipes(communityData);
+        const fetches = [];
         if (homeData.length) {
-          const ids = homeData.map((r) => r.id).join(",");
-          const rRes = await fetch(
-            `http://localhost:5001/api/reviews/bulk-ratings?ids=${ids}`,
+          fetches.push(
+            fetch(`http://localhost:5001/api/reviews/bulk-ratings?ids=${homeData.map((r) => r.id).join(",")}`)
+              .then((r) => r.ok ? r.json() : {})
+              .then((data) => setRatings((prev) => ({ ...prev, ...data })))
           );
-          if (rRes.ok) setRatings(await rRes.json());
         }
+        if (communityData.length) {
+          fetches.push(
+            fetch(`http://localhost:5001/api/reviews/bulk-user-ratings?ids=${communityData.map((r) => r._id).join(",")}`)
+              .then((r) => r.ok ? r.json() : {})
+              .then(setCommunityRatings)
+          );
+        }
+        await Promise.all(fetches);
       } catch (err) {
         console.error("Home fetch error:", err);
       } finally {
@@ -355,7 +375,7 @@ function Home() {
                                     : "Hard"
                               }
                               isFavourited={true}
-                              rating={ratings[fav.recipeId] ?? null}
+                              rating={ratings[fav.recipeId] ?? 0}
                               onClick={() =>
                                 navigate(`/recipe/${fav.recipeId}`)
                               }
@@ -429,7 +449,7 @@ function Home() {
                               : "Hard"
                         }
                         isFavourited={favouriteIds.has(recipe.id)}
-                        rating={ratings[recipe.id] ?? null}
+                        rating={ratings[recipe.id] ?? 0}
                         onClick={() => navigate(`/recipe/${recipe.id}`)}
                         onFavourite={() => handleSaveFavourite(recipe)}
                       />
@@ -480,7 +500,7 @@ function Home() {
                               : "Hard"
                         }
                         isFavourited={favouriteIds.has(recipe.id)}
-                        rating={ratings[recipe.id] ?? null}
+                        rating={ratings[recipe.id] ?? 0}
                         onClick={() => navigate(`/recipe/${recipe.id}`)}
                         onFavourite={() => handleSaveFavourite(recipe)}
                       />
@@ -535,7 +555,7 @@ function Home() {
                                   : "Hard"
                             }
                             isFavourited={favouriteIds.has(recipe.id)}
-                            rating={ratings[recipe.id] ?? null}
+                            rating={ratings[recipe.id] ?? 0}
                             onClick={() => navigate(`/recipe/${recipe.id}`)}
                             onFavourite={() => handleSaveFavourite(recipe)}
                           />
@@ -610,6 +630,7 @@ function Home() {
                                       : "Hard"
                               }
                               hideHeart={true}
+                              rating={communityRatings[recipe._id] ?? 0}
                               onClick={() =>
                                 navigate(`/my-recipe/${recipe._id}`)
                               }
@@ -664,7 +685,7 @@ function Home() {
                               : "Hard"
                         }
                         isFavourited={favouriteIds.has(recipe.id)}
-                        rating={ratings[recipe.id] ?? null}
+                        rating={ratings[recipe.id] ?? 0}
                         onClick={() => navigate(`/recipe/${recipe.id}`)}
                         onFavourite={() => handleSaveFavourite(recipe)}
                       />

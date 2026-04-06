@@ -27,6 +27,30 @@ router.get("/bulk-ratings", async (req, res) => {
   }
 });
 
+// Get average ratings for user recipes in bulk (public)
+router.get("/bulk-user-ratings", async (req, res) => {
+  try {
+    const ids = (req.query.ids || "").split(",").filter(Boolean);
+    if (!ids.length) return res.json({});
+    const reviews = await Review.find({ userRecipeId: { $in: ids } });
+    const result = {};
+    ids.forEach((id) => {
+      const recipeReviews = reviews.filter((r) => r.userRecipeId === id);
+      result[id] = recipeReviews.length
+        ? parseFloat(
+            (
+              recipeReviews.reduce((s, r) => s + r.rating, 0) /
+              recipeReviews.length
+            ).toFixed(1),
+          )
+        : 0;
+    });
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
 // Get all reviews for a user recipe (public)
 router.get("/user-recipe/:userRecipeId", async (req, res) => {
   try {

@@ -58,6 +58,14 @@
     height: 100%;
 }
 
+.up-avatar-initials {
+    font-family: "Passion One", sans-serif;
+    font-size: 2rem;
+    color: var(--color-red1);
+    line-height: 1;
+    user-select: none;
+}
+
 .up-upload-btn {
     padding: 0.35rem 0.9rem;
     border-radius: 8px;

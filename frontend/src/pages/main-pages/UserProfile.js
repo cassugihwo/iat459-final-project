@@ -174,21 +174,9 @@ function UserProfile() {
                             className="up-avatar-img"
                           />
                         ) : (
-                          <svg
-                            viewBox="0 0 100 100"
-                            fill="none"
-                            className="up-avatar-svg"
-                          >
-                            <circle cx="50" cy="50" r="50" fill="#e0d8d0" />
-                            <circle cx="50" cy="38" r="18" fill="#b0a89e" />
-                            <ellipse
-                              cx="50"
-                              cy="82"
-                              rx="28"
-                              ry="20"
-                              fill="#b0a89e"
-                            />
-                          </svg>
+                          <span className="up-avatar-initials">
+                            {profile?.username?.slice(0, 2).toUpperCase()}
+                          </span>
                         )}
                       </div>
                       {editMode && (
