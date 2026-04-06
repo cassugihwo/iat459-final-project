@@ -84,7 +84,7 @@
     border-radius: 90px 90px 0 0;
     background-color: var(--color-white0);
     z-index: 2;
-    overflow: hidden;
+    overflow: visible;
     /* grows to fill everything below 63vh */
     min-height: calc(100vh - 63vh);
     display: flex;
