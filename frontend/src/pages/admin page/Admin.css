@@ -5,8 +5,12 @@
 .admin-layout h4 {
   font-family: "Passion One", sans-serif;
 }
-
 /* Layout */
+
+.admin-layout h1{
+  font-size: 3rem;
+}
+
 .admin-layout {
   display: flex;
   min-height: 100vh;
