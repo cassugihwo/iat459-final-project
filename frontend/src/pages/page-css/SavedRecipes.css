@@ -407,6 +407,7 @@
 .sr-card-wrapper {
     position: relative;
     width: 100%;
+    overflow: hidden;
 }
 
 .sr-card-wrapper .recipe-card-container {
@@ -421,8 +422,17 @@
     top: calc(9rem - 1.25rem);
 }
 
+.sr-card-wrapper .recipe-desc {
+    min-width: 0;
+    overflow: hidden;
+}
+
 .sr-card-wrapper .recipe-desc h3 {
-    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    max-width: 100%;
 }
 
 .sr-btn-delete {
@@ -617,19 +627,6 @@
 
 
 /* ── Scrollbar ── */
-.sr-list-scroll::-webkit-scrollbar {
-    width: 5px;
-}
-
-.sr-list-scroll::-webkit-scrollbar-thumb {
-    background: #d6cfca;
-    border-radius: 999px;
-}
-
-.sr-list-scroll::-webkit-scrollbar-track {
-    background: transparent;
-}
-
 /* ── Responsive ── */
 @media (max-width: 900px) {
     .sr-body {
