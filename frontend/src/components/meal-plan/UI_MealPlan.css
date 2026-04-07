@@ -1,8 +1,8 @@
 @import "App.css";
 
 :root {
-    --recipe-card-width: 12.5rem;
-    --recipe-card-border-radius: 1.25rem;
+    --mps-recipe-card-width: 12.5rem;
+    --mps-recipe-card-border-radius: 1.25rem;
 }
 
 .mps-body {
@@ -130,11 +130,11 @@
 
 .mps-recipe-card-container {
     background-color: var(--color-white0);
-    border-radius: var(--recipe-card-border-radius);
+    border-radius: var(--mps-recipe-card-border-radius);
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: var(--recipe-card-width);
+    max-width: var(--mps-recipe-card-width);
     flex-shrink: 0;
     cursor: pointer;
     border: 0.125rem solid var(--color-white1);
