@@ -7,7 +7,7 @@ import Logo from "assets/logo/logo-full.png";
 import UIMealPlanModal from "./UI_MealPlanModal";
 
 function UI_MealPlanSchedule() {
-  const [editSelectedSchedule] = useState(false);
+  const [editSelectedSchedule, setEditSelectedSchedule] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   function RecipeCard({
@@ -145,15 +145,14 @@ function UI_MealPlanSchedule() {
   }
 
   return (
-    <div className="mps-body">
-      <h2>Your Meal Plan</h2>
+    <div>
       <h3>Test Meal Plan</h3>
-      <button>
+      <button onClick={() => {
+        setEditSelectedSchedule((prev) => !prev);
+      }}>
         {editSelectedSchedule ? "Finish Editing" : "Edit Schedule"}
       </button>
-      <button onClick={() => setIsModalOpen(true)}>
-        Test Button
-      </button>
+      <button onClick={() => setIsModalOpen(true)}>Test Button</button>
       <div className="mps-wrapper">
         <div className="mps-container">
           {renderDay("Monday")}
@@ -163,18 +162,6 @@ function UI_MealPlanSchedule() {
           {renderDay("Friday")}
           {renderDay("Saturday")}
           {renderDay("Sunday")}
-        </div>
-      </div>
-      <h2>Your Schedules</h2>
-      <div className="mps-carousel-wrapper">
-        <div className="mps-carousel">
-          <MealPlanScheduleCard title="Week 1 Plan" />
-          <MealPlanScheduleCard title="Week 2 Plan" />
-          <MealPlanScheduleCard title="Week 3 Plan" />
-          <MealPlanScheduleCard title="Week 4 Plan" />
-          <MealPlanScheduleCard title="Week 4 Plan" />
-          <MealPlanScheduleCard title="Week 4 Plan" />
-          <MealPlanScheduleCard title="Week 4 Plan" />
         </div>
       </div>
       <UIMealPlanModal
