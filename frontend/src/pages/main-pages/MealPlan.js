@@ -1,8 +1,3 @@
-import { useState } from "react";
-import "pages/MainPage.css";
-import "pages/page-css/MealPlan.css";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "context/AuthContext";
 import Navbar from "components/navbar/UI_Navbar";
 import NavbarHeader from "components/navbar/UI_NavbarHeader";
 import Footer from "components/footer/UI_Footer";

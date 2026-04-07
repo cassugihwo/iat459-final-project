@@ -1,4 +1,16 @@
+/* Global: Passion One for all headings inside admin */
+.admin-layout h1,
+.admin-layout h2,
+.admin-layout h3,
+.admin-layout h4 {
+  font-family: "Passion One", sans-serif;
+}
 /* Layout */
+
+.admin-layout h1{
+  font-size: 3rem;
+}
+
 .admin-layout {
   display: flex;
   min-height: 100vh;
@@ -192,7 +204,7 @@
   font-weight: 700;
   color: #570000;
   margin: 0 0 0.2rem;
-  font-family: "Noto Sans", sans-serif;
+  font-family: "Passion One", sans-serif;
 }
 
 .admin-page-sub {
@@ -494,3 +506,180 @@
 .action-btn.danger:hover {
   background: rgba(192, 57, 43, 0.2);
 }
+
+.action-btn.view {
+  background: rgba(46, 11, 11, 0.08);
+  color: #2e0b0b;
+}
+
+.action-btn.view:hover {
+  background: rgba(46, 11, 11, 0.16);
+}
+
+.recipe-row-clickable {
+  cursor: pointer;
+}
+
+.recipe-row-clickable:hover td {
+  background: #f0ebe6;
+}
+
+/* Modal overlay */
+.admin-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+.admin-modal {
+  width: 480px;
+  max-width: 95vw;
+  height: 100vh;
+  background: #fff;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 1.75rem;
+  gap: 1.25rem;
+  box-shadow: -4px 0 24px rgba(0,0,0,0.12);
+}
+
+.admin-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.admin-modal-title {
+  font-family: "Passion One", sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #2e0b0b;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.admin-modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #888;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.admin-modal-close:hover {
+  color: #c0392b;
+}
+
+.admin-modal-img {
+  display: block;
+  width: 100%;
+  height: 14rem;
+  object-fit: cover;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.admin-modal-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.admin-modal-chip {
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background: #f0ebe6;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #2e0b0b;
+}
+
+.admin-modal-owner {
+  font-size: 0.875rem;
+  color: #333;
+}
+
+.admin-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.admin-modal-section h3 {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #9e3b3b;
+  margin: 0 0 0.75rem;
+}
+
+.admin-modal-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.admin-modal-list li {
+  font-size: 0.875rem;
+  color: #333;
+  padding: 0.4rem 0.6rem;
+  background: #faf7f5;
+  border-radius: 6px;
+}
+
+.admin-modal-step {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.admin-modal-step-num {
+  flex-shrink: 0;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: #2e0b0b;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-modal-step p {
+  font-size: 0.875rem;
+  color: #333;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.admin-modal-img-placeholder {
+  display: flex;
+  width: 100%;
+  height: 14rem;
+  border-radius: 12px;
+  background: #f0ebe6;
+  align-items: center;
+  justify-content: center;
+  color: #bbb;
+  font-size: 0.85rem;
+  font-weight: 600;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+

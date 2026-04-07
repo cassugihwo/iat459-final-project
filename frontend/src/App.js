@@ -9,7 +9,6 @@ import Pantry from "pages/main-pages/Pantry";
 import SavedRecipes from "pages/main-pages/SavedRecipes";
 import FindRecipes from "pages/main-pages/FindRecipes";
 import MealPlan from "pages/main-pages/MealPlan";
-import MemberOnly from "pages/main-pages/MemberOnly";
 import RecipeDetail from "pages/main-pages/RecipeDetail";
 import MyRecipeDetails from "pages/main-pages/MyRecipeDetails";
 import UserProfile from "pages/main-pages/UserProfile";
@@ -17,6 +16,7 @@ import ProtectedRoute from "protectedRoute/ProtectedRoute";
 import AdminProtectedRoute from "protectedRoute/AdminProtectedRoute";
 import Admin from "pages/admin page/Admin";
 
+// The App component defines the main routes of the application, separating public and protected routes. It also includes a ScrollToTop component to ensure the page scrolls to the top on route changes.
 export default function App() {
   return (
     <>
@@ -30,7 +30,6 @@ export default function App() {
       <Route path="/signup" element={<Signup />} />
       <Route path="/home" element={<Home />} />
       <Route path="/find-recipes" element={<FindRecipes />} />
-      <Route path="/member-only" element={<MemberOnly />} />
       <Route path="/recipe/:id" element={<RecipeDetail />} />
       <Route path="/my-recipe/:id" element={<MyRecipeDetails />} />
 

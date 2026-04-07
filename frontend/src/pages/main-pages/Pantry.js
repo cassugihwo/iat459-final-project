@@ -18,6 +18,7 @@ function Pantry() {
   const [loading, setLoading] = useState(true);
   const [ratings, setRatings] = useState({});
 
+  // Fetches the user's favourite recipes
   useEffect(() => {
     async function fetchFavourites() {
       try {
@@ -29,7 +30,9 @@ function Pantry() {
         setFavourites(data);
         if (data.length) {
           const ids = data.map((f) => f.recipeId).join(",");
-          const rRes = await fetch(`http://localhost:5001/api/reviews/bulk-ratings?ids=${ids}`);
+          const rRes = await fetch(
+            `http://localhost:5001/api/reviews/bulk-ratings?ids=${ids}`,
+          );
           if (rRes.ok) setRatings(await rRes.json());
         }
       } catch (err) {
@@ -41,6 +44,7 @@ function Pantry() {
     fetchFavourites();
   }, [token]);
 
+  // Handles removing a recipe from favourites
   async function handleRemove(recipeId) {
     try {
       await fetch("http://localhost:5001/api/favourites/toggle", {
@@ -57,8 +61,11 @@ function Pantry() {
     }
   }
 
+  // Group favourites by dish type for display
   const grouped = favourites.reduce((acc, fav) => {
-    const key = fav.dishType ? fav.dishType.charAt(0).toUpperCase() + fav.dishType.slice(1) : "Other";
+    const key = fav.dishType
+      ? fav.dishType.charAt(0).toUpperCase() + fav.dishType.slice(1)
+      : "Other";
     if (!acc[key]) acc[key] = [];
     acc[key].push(fav);
     return acc;
@@ -113,7 +120,9 @@ function Pantry() {
                   <div className="fr-section-header">
                     <span className="fr-section-label">{category}</span>
                     <div className="fr-section-line" />
-                    <span className="fr-section-count">{items.length} saved</span>
+                    <span className="fr-section-count">
+                      {items.length} saved
+                    </span>
                   </div>
                   <div className="fr-list">
                     {items.map((fav) => (
@@ -128,8 +137,8 @@ function Pantry() {
                             fav.readyInMinutes <= 30
                               ? "Easy"
                               : fav.readyInMinutes <= 60
-                              ? "Medium"
-                              : "Hard"
+                                ? "Medium"
+                                : "Hard"
                           }
                           isFavourited={true}
                           rating={ratings[fav.recipeId] ?? null}

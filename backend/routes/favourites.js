@@ -3,7 +3,7 @@ const router = express.Router();
 const Favourite = require("../models/Favourite");
 const verifyToken = require("../middleware/authMiddleWare");
 
-// GET all favourites for logged-in user
+// Get all favourites for logged-in user
 router.get("/", verifyToken, async (req, res) => {
   try {
     const favourites = await Favourite.find({ owner: req.userId }).sort({
@@ -15,7 +15,7 @@ router.get("/", verifyToken, async (req, res) => {
   }
 });
 
-// POST toggle favourite (add if not saved, remove if already saved)
+// Post toggle favourite (add if not saved, remove if already saved)
 router.post("/toggle", verifyToken, async (req, res) => {
   try {
     const { recipeId, title, image, cuisineType, dishType, readyInMinutes } =

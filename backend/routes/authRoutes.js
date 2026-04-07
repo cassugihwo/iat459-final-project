@@ -6,7 +6,7 @@ const verifyToken = require("../middleware/authMiddleWare");
 
 const router = express.Router();
 
-// REGISTER
+// Register/ Signup
 router.post("/register", async (req, res) => {
   try {
     const { firstName, lastName, username, password } = req.body;
@@ -39,7 +39,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// LOGIN
+// Login
 router.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -75,7 +75,7 @@ router.post("/login", async (req, res) => {
         role: user.role,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "1d" }
+      { expiresIn: "1d" },
     );
 
     res.json({ token });
@@ -85,7 +85,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// GET profile
+// Get profile
 router.get("/profile", verifyToken, async (req, res) => {
   try {
     const user = await User.findById(req.userId).select("-password");
@@ -99,17 +99,26 @@ router.get("/profile", verifyToken, async (req, res) => {
 // PUT update profile
 router.put("/profile", verifyToken, async (req, res) => {
   try {
-    const { bio, links, avatar, firstName, lastName, username } = req.body;
+    const { avatar, firstName, lastName, username } = req.body;
 
     if (username) {
-      const existing = await User.findOne({ username, _id: { $ne: req.userId } });
-      if (existing) return res.status(400).json({ message: "Username already taken." });
+      const existing = await User.findOne({
+        username,
+        _id: { $ne: req.userId },
+      });
+      if (existing)
+        return res.status(400).json({ message: "Username already taken." });
     }
 
     const user = await User.findByIdAndUpdate(
       req.userId,
-      { bio, links, avatar, ...(firstName && { firstName }), ...(lastName && { lastName }), ...(username && { username }) },
-      { new: true }
+      {
+        avatar,
+        ...(firstName && { firstName }),
+        ...(lastName && { lastName }),
+        ...(username && { username }),
+      },
+      { new: true },
     ).select("-password");
     res.json(user);
   } catch (err) {

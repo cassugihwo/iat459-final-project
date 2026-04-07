@@ -3,7 +3,7 @@ const router = express.Router();
 const UserRecipe2 = require("../models/UserRecipe2");
 const verifyToken = require("../middleware/authMiddleWare");
 
-// GET all public user recipes (no auth required)
+// Get all public user recipes (no auth required)
 router.get("/public", async (req, res) => {
   try {
     const recipes = await UserRecipe2.find({ isPublic: true })
@@ -15,7 +15,7 @@ router.get("/public", async (req, res) => {
   }
 });
 
-// GET all recipes for logged-in user only
+// Get all recipes for logged-in user only
 router.get("/", verifyToken, async (req, res) => {
   try {
     const userRecipes = await UserRecipe2.find({ owner: req.userId }).sort({
@@ -27,7 +27,7 @@ router.get("/", verifyToken, async (req, res) => {
   }
 });
 
-// GET personalized recipes
+// Get personalized recipes
 router.get("/my-recipes", verifyToken, async (req, res) => {
   try {
     const userRecipes = await UserRecipe2.find({ owner: req.userId }).sort({
@@ -39,19 +39,28 @@ router.get("/my-recipes", verifyToken, async (req, res) => {
   }
 });
 
-// GET single user recipe by id (public recipes open, private requires ownership)
+// Get single user recipe by id (public recipes open, private requires ownership)
 router.get("/:id", async (req, res) => {
   try {
-    const recipe = await UserRecipe2.findById(req.params.id).populate("owner", "username avatar");
+    const recipe = await UserRecipe2.findById(req.params.id).populate(
+      "owner",
+      "username avatar",
+    );
     if (!recipe) return res.status(404).json({ message: "Recipe not found." });
 
     if (!recipe.isPublic) {
       const authHeader = req.headers.authorization;
-      if (!authHeader) return res.status(403).json({ message: "This recipe is private." });
+      if (!authHeader)
+        return res.status(403).json({ message: "This recipe is private." });
       try {
         const jwt = require("jsonwebtoken");
-        const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : authHeader;
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || "fallbackSecret");
+        const token = authHeader.startsWith("Bearer ")
+          ? authHeader.slice(7)
+          : authHeader;
+        const decoded = jwt.verify(
+          token,
+          process.env.JWT_SECRET || "fallbackSecret",
+        );
         if (recipe.owner._id.toString() !== decoded.id) {
           return res.status(403).json({ message: "This recipe is private." });
         }
@@ -66,7 +75,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// POST recipe for logged-in user only
+// Post recipe for logged-in user only
 router.post("/", verifyToken, async (req, res) => {
   try {
     const userRecipe = new UserRecipe2({
@@ -81,11 +90,13 @@ router.post("/", verifyToken, async (req, res) => {
     await userRecipe.save();
     res.status(201).json(userRecipe);
   } catch (err) {
-    res.status(400).json({ message: "Error saving recipe", error: err.message });
+    res
+      .status(400)
+      .json({ message: "Error saving recipe", error: err.message });
   }
 });
 
-// DELETE route, only owner can delete
+// Delete recipe by owner
 router.delete("/:id", verifyToken, async (req, res) => {
   try {
     const userRecipe = await UserRecipe2.findById(req.params.id);

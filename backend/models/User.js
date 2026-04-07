@@ -32,9 +32,9 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    bio: { type: String, default: "" },
-    links: { type: [String], default: [] },
-    avatar: { type: String, default: "" },
+    avatar: { 
+      type: String, default: "" 
+    },
   },
   { timestamps: true }
 );

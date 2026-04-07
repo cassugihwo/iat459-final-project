@@ -11,16 +11,26 @@ const favouriteSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    title: { type: String },
-    image: { type: String },
-    cuisineType: { type: String },
-    dishType: { type: String },
-    readyInMinutes: { type: Number },
+    title: { 
+      type: String 
+    },
+    image: { 
+      type: String 
+    },
+    cuisineType: { 
+      type: String 
+    },
+    dishType: { 
+      type: String 
+    },
+    readyInMinutes: { 
+      type: Number 
+    },
   },
   { timestamps: true }
 );
 
-// Each user can only save a recipe once
+// Ensure a user can only have one favourite per recipe
 favouriteSchema.index({ owner: 1, recipeId: 1 }, { unique: true });
 
 module.exports = mongoose.model("Favourite", favouriteSchema);

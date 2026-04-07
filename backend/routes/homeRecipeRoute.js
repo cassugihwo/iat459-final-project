@@ -1,12 +1,13 @@
 const express = require("express");
 const router = express.Router();
 
+// Handles fetching recipes for the home page, as well as fetching recipe details and searching by ingredients.
 router.get("/home-recipes", async (req, res) => {
   try {
     console.log("GET /api/home-recipes was called");
 
     const response = await fetch(
-      `https://api.spoonacular.com/recipes/complexSearch?number=50&addRecipeInformation=true&apiKey=${process.env.SPOONACULAR_API_KEY}`
+      `https://api.spoonacular.com/recipes/complexSearch?number=50&addRecipeInformation=true&apiKey=${process.env.SPOONACULAR_API_KEY}`,
     );
 
     const contentType = response.headers.get("content-type");
@@ -48,15 +49,18 @@ router.get("/home-recipes", async (req, res) => {
   }
 });
 
+// Get recipe details by ID
 router.get("/recipes/:id", async (req, res) => {
   try {
     const response = await fetch(
-      `https://api.spoonacular.com/recipes/${req.params.id}/information?apiKey=${process.env.SPOONACULAR_API_KEY}`
+      `https://api.spoonacular.com/recipes/${req.params.id}/information?apiKey=${process.env.SPOONACULAR_API_KEY}`,
     );
     const data = await response.json();
 
     if (!response.ok) {
-      return res.status(response.status).json({ error: "Spoonacular API error", details: data });
+      return res
+        .status(response.status)
+        .json({ error: "Spoonacular API error", details: data });
     }
 
     const detail = {
@@ -75,32 +79,40 @@ router.get("/recipes/:id", async (req, res) => {
         unit: ing.unit,
         original: ing.original,
       })),
-      steps: data.analyzedInstructions?.[0]?.steps?.map((s) => ({
-        number: s.number,
-        step: s.step,
-      })) || [],
+      steps:
+        data.analyzedInstructions?.[0]?.steps?.map((s) => ({
+          number: s.number,
+          step: s.step,
+        })) || [],
     };
 
     res.json(detail);
   } catch (error) {
     console.error("Error fetching recipe detail:", error);
-    res.status(500).json({ error: "Failed to fetch recipe detail", details: error.message });
+    res
+      .status(500)
+      .json({ error: "Failed to fetch recipe detail", details: error.message });
   }
 });
 
+// Search recipes by ingredients
 router.get("/find-by-ingredients", async (req, res) => {
   try {
     const { ingredients } = req.query;
     if (!ingredients) {
-      return res.status(400).json({ error: "ingredients query param is required" });
+      return res
+        .status(400)
+        .json({ error: "ingredients query param is required" });
     }
 
     const findRes = await fetch(
-      `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${encodeURIComponent(ingredients)}&number=100&ranking=1&ignorePantry=true&apiKey=${process.env.SPOONACULAR_API_KEY}`
+      `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${encodeURIComponent(ingredients)}&number=100&ranking=1&ignorePantry=true&apiKey=${process.env.SPOONACULAR_API_KEY}`,
     );
     const findData = await findRes.json();
     if (!findRes.ok) {
-      return res.status(findRes.status).json({ error: "Spoonacular API request failed", details: findData });
+      return res
+        .status(findRes.status)
+        .json({ error: "Spoonacular API request failed", details: findData });
     }
 
     if (!findData.length) return res.json([]);
@@ -117,14 +129,16 @@ router.get("/find-by-ingredients", async (req, res) => {
     await Promise.all(
       chunks.map(async (chunk) => {
         const infoRes = await fetch(
-          `https://api.spoonacular.com/recipes/informationBulk?ids=${chunk.join(",")}&apiKey=${process.env.SPOONACULAR_API_KEY}`
+          `https://api.spoonacular.com/recipes/informationBulk?ids=${chunk.join(",")}&apiKey=${process.env.SPOONACULAR_API_KEY}`,
         );
         if (!infoRes.ok) return;
         const infoData = await infoRes.json();
         if (Array.isArray(infoData)) {
-          infoData.forEach((r) => { infoMap[r.id] = r; });
+          infoData.forEach((r) => {
+            infoMap[r.id] = r;
+          });
         }
-      })
+      }),
     );
 
     const cleaned = findData
@@ -137,26 +151,32 @@ router.get("/find-by-ingredients", async (req, res) => {
           usedIngredientCount: recipe.usedIngredientCount,
           missedIngredientCount: recipe.missedIngredientCount,
           usedIngredients: (recipe.usedIngredients || []).map((i) => i.name),
-          missedIngredients: (recipe.missedIngredients || []).map((i) => i.name),
+          missedIngredients: (recipe.missedIngredients || []).map(
+            (i) => i.name,
+          ),
           readyInMinutes: info.readyInMinutes || null,
           cuisine: info.cuisines?.[0] || null,
           dietary: info.diets?.[0] || null,
           dishType: info.dishTypes?.[0] || null,
         };
       })
-      .filter((r) =>
-        r.title &&
-        r.title.trim() !== "" &&
-        r.image &&
-        r.image.startsWith("http") &&
-        r.readyInMinutes &&
-        r.readyInMinutes > 0
+      .filter(
+        (r) =>
+          r.title &&
+          r.title.trim() !== "" &&
+          r.image &&
+          r.image.startsWith("http") &&
+          r.readyInMinutes &&
+          r.readyInMinutes > 0,
       );
 
     res.json(cleaned);
   } catch (error) {
     console.error("Error fetching by ingredients:", error);
-    res.status(500).json({ error: "Failed to fetch recipes by ingredients", details: error.message });
+    res.status(500).json({
+      error: "Failed to fetch recipes by ingredients",
+      details: error.message,
+    });
   }
 });
 

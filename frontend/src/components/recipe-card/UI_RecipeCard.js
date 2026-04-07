@@ -8,6 +8,7 @@ import Icon_heart_filled from "assets/icons/icon-heart-filled-red.svg";
 import Logo from "assets/logo/logo-full.png";
 
 function UI_RecipeCard({
+  // Recipe info
   title,
   image,
   cuisineType,
@@ -37,12 +38,10 @@ function UI_RecipeCard({
           </div>
         )}
 
-        {rating !== null && (
+        {rating !== null && rating !== undefined && (
           <div className="recipe-rating-pill">
             <span className="recipe-rating-star">★</span>
-            <span className="recipe-rating-value">
-              {rating > 0 ? rating : "0"}
-            </span>
+            <span className="recipe-rating-value">{rating}</span>
           </div>
         )}
       </div>
@@ -74,27 +73,38 @@ function UI_RecipeCard({
 
       <div className="recipe-desc">
         {categories.length > 0 && (
-          <p className="recipe-categories">{categories.join(" · ").toUpperCase()}</p>
+          <p className="recipe-categories">
+            {categories.join(" · ").toUpperCase()}
+          </p>
         )}
         <h3>{title || "Dish Name"}</h3>
         <div className="recipe-meta-row">
           <div className="time">
-            <img className="icon-cooktime" src={Icon_timer} aria-hidden="true" alt="" />
+            <img
+              className="icon-cooktime"
+              src={Icon_timer}
+              aria-hidden="true"
+              alt=""
+            />
             <span>{readyInMinutes ? `${readyInMinutes} min` : "20 min"}</span>
           </div>
-          {difficulty && <span className="recipe-difficulty">{difficulty}</span>}
+          {difficulty && (
+            <span className="recipe-difficulty">{difficulty}</span>
+          )}
         </div>
 
         {(usedIngredients?.length > 0 || missedIngredients?.length > 0) && (
           <ul className="recipe-ingredients-list">
             {usedIngredients?.map((ing) => (
               <li key={ing} className="ingredient-match">
-                <span className="ingredient-icon">✓</span>{ing}
+                <span className="ingredient-icon">✓</span>
+                {ing}
               </li>
             ))}
             {missedIngredients?.map((ing) => (
               <li key={ing} className="ingredient-miss">
-                <span className="ingredient-icon">✕</span>{ing}
+                <span className="ingredient-icon">✕</span>
+                {ing}
               </li>
             ))}
           </ul>

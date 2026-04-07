@@ -41,12 +41,6 @@ function Home() {
 
   const recipesOfWeek = filteredRecipes.slice(0, 6);
 
-  const chickenRecipes = filteredRecipes
-    .filter((recipe) =>
-      recipe.ingredients?.toLowerCase().includes("chicken")
-    )
-    .slice(0, 6);
-
   function toggleSaveRecipe(id) {
     if (!user) {
       navigate("/login");
@@ -54,7 +48,9 @@ function Home() {
     }
 
     setSavedRecipeIds((prev) =>
-      prev.includes(id) ? prev.filter((recipeId) => recipeId !== id) : [...prev, id]
+      prev.includes(id)
+        ? prev.filter((recipeId) => recipeId !== id)
+        : [...prev, id],
     );
   }
 
@@ -116,7 +112,10 @@ function Home() {
                 Logout
               </button>
             ) : (
-              <button className="toolbar-btn" onClick={() => navigate("/login")}>
+              <button
+                className="toolbar-btn"
+                onClick={() => navigate("/login")}
+              >
                 Log In
               </button>
             )}
@@ -148,8 +147,6 @@ function Home() {
               ))}
             </div>
           </section>
-
-          
         </div>
         <Footer />
       </div>

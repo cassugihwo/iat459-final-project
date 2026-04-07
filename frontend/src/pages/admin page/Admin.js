@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "context/AuthContext";
 import logo from "assets/logo/logo-noslogan-light.png";
+import ConfirmDeleteForm from "components/confirm/ConfirmDeleteForm";
 import "./Admin.css";
 
+// Admin console for managing users and content
 const VIEWS = {
   DASHBOARD: "dashboard",
   RECIPES: "recipes",
@@ -11,6 +13,7 @@ const VIEWS = {
   SUSPENDED: "suspended",
 };
 
+// Helper to format time since a date (e.g. "5m ago")
 function timeAgo(dateStr) {
   const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000);
   if (diff < 60) return `${diff}s ago`;
@@ -19,6 +22,7 @@ function timeAgo(dateStr) {
   return `${Math.floor(diff / 86400)}d ago`;
 }
 
+// Simple initials generator for user avatars
 function getInitials(username = "") {
   return username.slice(0, 2).toUpperCase();
 }
@@ -32,13 +36,16 @@ export default function Admin() {
   const [content, setContent] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
-
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(null); 
   useEffect(() => {
     Promise.all([fetchMembers(), fetchContent()]).finally(() =>
       setLoading(false),
     );
-  }, []);
+  }, []);  // eslint-disable-line react-hooks/exhaustive-deps
 
+
+// Fetch all members from the server
   async function fetchMembers() {
     try {
       const res = await fetch("http://localhost:5001/api/admin/members", {
@@ -52,6 +59,7 @@ export default function Admin() {
     }
   }
 
+  // Fetch all user-submitted recipes from the server
   async function fetchContent() {
     try {
       const res = await fetch("http://localhost:5001/api/admin/content", {
@@ -64,7 +72,7 @@ export default function Admin() {
       setContent([]);
     }
   }
-
+// Suspend or unsuspend a user
   async function suspendUser(id, isSuspended) {
     try {
       const action = isSuspended ? "unsuspend" : "suspend";
@@ -91,7 +99,7 @@ export default function Admin() {
       alert(error.message);
     }
   }
-
+// Change a user's role between admin and user
   async function changeRole(id, currentRole) {
     try {
       const newRole = currentRole === "admin" ? "user" : "admin";
@@ -120,45 +128,39 @@ export default function Admin() {
     }
   }
 
+  // Permanently delete a user and all their content
   async function deleteUser(id) {
     try {
-      if (!window.confirm("Delete this user and all their recipes?")) return;
-
       const res = await fetch(`http://localhost:5001/api/admin/members/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (!res.ok) {
-        throw new Error("Failed to delete user.");
-      }
+      if (!res.ok) throw new Error("Failed to delete user.");
 
       await fetchMembers();
       await fetchContent();
+      setConfirmDelete(null);
 
-      if (view === VIEWS.SUSPENDED) {
-        setView(VIEWS.MEMBERS);
-      }
+      if (view === VIEWS.SUSPENDED) setView(VIEWS.MEMBERS);
     } catch (error) {
       console.error(error);
       alert(error.message);
     }
   }
 
+  // Permanently delete a user-submitted recipe
   async function deleteRecipe(id) {
     try {
-      if (!window.confirm("Delete this recipe?")) return;
-
       const res = await fetch(`http://localhost:5001/api/admin/content/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (!res.ok) {
-        throw new Error("Failed to delete recipe.");
-      }
+      if (!res.ok) throw new Error("Failed to delete recipe.");
 
       await fetchContent();
+      setConfirmDelete(null);
     } catch (error) {
       console.error(error);
       alert(error.message);
@@ -175,6 +177,7 @@ export default function Admin() {
       m.lastName?.toLowerCase().includes(search.toLowerCase()),
   );
 
+// Only show suspended members in the Suspended view
   const filteredSuspendedMembers = members.filter(
     (m) =>
       m.isSuspended &&
@@ -196,7 +199,7 @@ export default function Admin() {
           <img src={logo} alt="YumMeal" className="admin-brand-logo" />
           <span className="admin-brand-sub">Admin Console</span>
           <span className="admin-role-badge">
-            {user?.role === "admin" ? "Superadmin" : user?.role}
+            {user?.role === "admin" ? "SuperAdmin" : user?.role}
           </span>
         </div>
 
@@ -436,10 +439,16 @@ export default function Admin() {
                           <td className="recipe-name-cell">{r.name}</td>
                           <td>@{r.owner?.username || "unknown"}</td>
                           <td className="muted">{timeAgo(r.createdAt)}</td>
-                          <td>
+                          <td className="actions-cell">
+                            <button
+                              className="action-btn view"
+                              onClick={() => setSelectedRecipe(r)}
+                            >
+                              View
+                            </button>
                             <button
                               className="action-btn danger"
-                              onClick={() => deleteRecipe(r._id)}
+                              onClick={() => setConfirmDelete({ id: r._id, name: r.name, type: "recipe" })}
                             >
                               Delete
                             </button>
@@ -519,7 +528,7 @@ export default function Admin() {
 
                             <button
                               className="action-btn danger"
-                              onClick={() => deleteUser(m._id)}
+                              onClick={() => setConfirmDelete({ id: m._id, name: m.username, type: "user" })}
                             >
                               Delete
                             </button>
@@ -595,7 +604,7 @@ export default function Admin() {
 
                             <button
                               className="action-btn danger"
-                              onClick={() => deleteUser(m._id)}
+                              onClick={() => setConfirmDelete({ id: m._id, name: m.username, type: "user" })}
                             >
                               Delete
                             </button>
@@ -610,6 +619,105 @@ export default function Admin() {
           </>
         )}
       </main>
+
+      {selectedRecipe && (
+        <RecipeDetailModal
+          recipe={selectedRecipe}
+          onClose={() => setSelectedRecipe(null)}
+        />
+      )}
+
+      {confirmDelete && (
+        <ConfirmDeleteForm
+          title={confirmDelete.type === "recipe" ? "Delete Recipe" : "Delete Account"}
+          message={
+            confirmDelete.type === "recipe"
+              ? <>Are you sure you want to delete <strong>{confirmDelete.name}</strong>? This cannot be undone.</>
+              : <>Are you sure you want to delete <strong>@{confirmDelete.name}</strong>? This will also remove all their recipes and cannot be undone.</>
+          }
+          onConfirm={() =>
+            confirmDelete.type === "recipe"
+              ? deleteRecipe(confirmDelete.id)
+              : deleteUser(confirmDelete.id)
+          }
+          onCancel={() => setConfirmDelete(null)}
+        />
+      )}
+
+    </div>
+  );
+}
+
+function parseRecipe(recipe) {
+  const lines = (recipe.instructions || "").split("\n");
+  const metaLine = lines[0] || "";
+  const servesMatch = metaLine.match(/Serves:\s*(\d+)/);
+  const cookMatch = metaLine.match(/Cook:\s*(\d+)\s*min/);
+  const tagMatch = metaLine.match(/Tags:\s*([^|]+)/);
+  const serves = servesMatch ? servesMatch[1] : null;
+  const cookTime = cookMatch ? cookMatch[1] : null;
+  const tags = tagMatch ? tagMatch[1].split(",").map((t) => t.trim()).filter(Boolean) : [];
+  const steps = lines.slice(2).map((l) => l.trim()).filter(Boolean);
+  const ingredients = (recipe.ingredients || "").split(",").map((i) => i.trim()).filter(Boolean);
+  return { serves, cookTime, tags, steps, ingredients };
+}
+
+function RecipeDetailModal({ recipe, onClose }) {
+  const parsed = parseRecipe(recipe);
+  const createdDate = recipe.createdAt
+    ? new Date(recipe.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
+    : "";
+
+  return (
+    <div className="admin-modal-overlay" onClick={onClose}>
+      <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="admin-modal-header">
+          <h2 className="admin-modal-title">{recipe.name}</h2>
+          <button className="admin-modal-close" onClick={onClose}>×</button>
+        </div>
+
+        {recipe.image
+          ? <img src={recipe.image} alt={recipe.name} className="admin-modal-img" />
+          : <div className="admin-modal-img-placeholder"><span>No image</span></div>
+        }
+
+        <div className="admin-modal-meta">
+          <span className={`badge ${recipe.isPublic ? "active" : "suspended"}`}>
+            {recipe.isPublic ? "Public" : "Private"}
+          </span>
+          {parsed.serves && <span className="admin-modal-chip">Serves {parsed.serves}</span>}
+          {parsed.cookTime && <span className="admin-modal-chip">{parsed.cookTime} min</span>}
+          {parsed.tags.map((t) => <span key={t} className="admin-modal-chip">{t}</span>)}
+        </div>
+
+        <div className="admin-modal-owner">
+          <strong>@{recipe.owner?.username || "unknown"}</strong>
+          <span className="muted"> · {createdDate}</span>
+        </div>
+
+        <div className="admin-modal-body">
+          <div className="admin-modal-section">
+            <h3>Ingredients</h3>
+            <ul className="admin-modal-list">
+              {parsed.ingredients.length === 0
+                ? <li className="muted">No ingredients listed.</li>
+                : parsed.ingredients.map((ing, i) => <li key={i}>{ing}</li>)}
+            </ul>
+          </div>
+
+          <div className="admin-modal-section">
+            <h3>Instructions</h3>
+            {parsed.steps.length === 0
+              ? <p className="muted">No instructions provided.</p>
+              : parsed.steps.map((step, i) => (
+                <div key={i} className="admin-modal-step">
+                  <span className="admin-modal-step-num">{i + 1}</span>
+                  <p>{step}</p>
+                </div>
+              ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
