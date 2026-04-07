@@ -9,6 +9,7 @@ const homeRecipesRoutes = require("./routes/homeRecipeRoute");
 const adminRoutes = require("./routes/adminRoutes");
 const favouriteRoutes = require("./routes/favourites");
 const reviewRoutes = require("./routes/review");
+const mealPlanRoutes = require("./routes/mealPlans");
 const verifyToken = require("./middleware/authMiddleWare");
 
 const app = express();
@@ -23,6 +24,7 @@ app.use("/api/user-recipes2", userRecipe2Routes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/favourites", favouriteRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/meal-plans", mealPlanRoutes);
 
 const uri = process.env.MONGO_URI;
 

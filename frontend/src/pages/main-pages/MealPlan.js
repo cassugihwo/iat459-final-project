@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "pages/MainPage.css";
+import "pages/page-css/MealPlan.css";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "context/AuthContext";
 import Navbar from "components/navbar/UI_Navbar";
@@ -9,6 +10,7 @@ import logo from "assets/logo/logo-full.png";
 import leftDish from "assets/bg image/left.png";
 import centerDish from "assets/bg image/center.png";
 import rightDish from "assets/bg image/right.png";
+import UI_MealPlanSchedule from "components/meal-plan/UI_MealPlanSchedule";
 
 function MealPlan(props) {
   return (
@@ -49,8 +51,9 @@ function MealPlan(props) {
 
             </div>
           </div>
-
-          <p>placeholder text here</p>
+          <div className="mp-body">
+            <UI_MealPlanSchedule />
+          </div>         
 
         </div>
         <Footer />

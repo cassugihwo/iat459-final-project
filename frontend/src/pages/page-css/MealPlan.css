@@ -1,0 +1,6 @@
+.mp-body {
+    margin: 1rem 1.25rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 3rem;
+}
