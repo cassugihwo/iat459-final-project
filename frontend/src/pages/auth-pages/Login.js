@@ -5,6 +5,7 @@ import { loginUser } from "services/authService";
 import { useAuth } from "context/AuthContext";
 import Toast from "components/toast/UI_Toast";
 import "./AuthPages.css";
+import "remixicon/fonts/remixicon.css";
 import logo from "assets/logo/logo-noslogan.png";
 
 function Login() {
@@ -13,6 +14,7 @@ function Login() {
     password: "",
   });
   const [error, setError] = useState("");
+  const [suspended, setSuspended] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -34,17 +36,42 @@ function Login() {
       const decoded = jwtDecode(data.token);
       navigate(decoded.role === "admin" ? "/admin" : "/home");
     } catch (err) {
-      setError(err.message);
+      if (err.message?.toLowerCase().includes("suspended")) {
+        setSuspended(true);
+      } else {
+        setError(err.message);
+      }
     }
   }
 
   return (
     <div className="auth-page">
       <Toast message={error} onClose={() => setError("")} />
+
+      {suspended && (
+        <div className="suspended-overlay" onClick={() => setSuspended(false)}>
+          <div className="suspended-box" onClick={(e) => e.stopPropagation()}>
+            <div className="suspended-icon">
+              <i class="ri-close-circle-line"></i>
+            </div>
+            <h3 className="suspended-title">Account Suspended</h3>
+            <p className="suspended-msg">
+              Your account has been suspended. Please contact support if you
+              believe this is a mistake.
+            </p>
+            <button
+              className="suspended-btn"
+              onClick={() => setSuspended(false)}
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
       <div className="bg-base"></div>
       <div className="bg-blob"></div>
       <div className="bg-emoji">🍅</div>
-      <div className="bg-emoji-top">🍅</div>      
+      <div className="bg-emoji-top">🍅</div>
       <div className="auth-left">
         <img src={logo} alt="YumMeal logo" />
         <p className="introduce">Find your next Yum!</p>

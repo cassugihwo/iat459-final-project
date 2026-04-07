@@ -32,7 +32,12 @@ function Signup() {
       setError("You must agree to the Terms of Service and Privacy Policy.");
       return;
     }
-    if (!formData.firstName || !formData.lastName || !formData.username || !formData.password) {
+    if (
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.username ||
+      !formData.password
+    ) {
       setError("Please fill in all required fields.");
       return;
     }
@@ -51,7 +56,7 @@ function Signup() {
       <div className="bg-base"></div>
       <div className="bg-blob"></div>
       <div className="bg-emoji">🍅</div>
-      <div className="bg-emoji-top">🍅</div>            
+      <div className="bg-emoji-top">🍅</div>
       <div className="auth-left">
         <img src={logo} alt="YumMeal logo" />
         <p className="introduce">Find your next Yum!</p>

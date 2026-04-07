@@ -29,7 +29,7 @@ router.patch(
       const user = await User.findByIdAndUpdate(
         req.params.id,
         { isSuspended: true },
-        { new: true },
+        { returnDocument: "after" },
       ).select("-password");
 
       if (!user) {
@@ -56,7 +56,7 @@ router.patch(
       const user = await User.findByIdAndUpdate(
         req.params.id,
         { isSuspended: false },
-        { new: true },
+        { returnDocument: "after" },
       ).select("-password");
 
       if (!user) {
@@ -89,7 +89,7 @@ router.patch(
       const user = await User.findByIdAndUpdate(
         req.params.id,
         { role },
-        { new: true, runValidators: true },
+        { returnDocument: "after", runValidators: true },
       ).select("-password");
 
       if (!user) {
@@ -176,7 +176,7 @@ router.put("/content/:id", verifyToken, verifyAdmin, async (req, res) => {
         instructions: req.body.instructions,
         image: req.body.image,
       },
-      { new: true, runValidators: true },
+      { returnDocument: "after", runValidators: true },
     );
 
     if (!updatedRecipe) {

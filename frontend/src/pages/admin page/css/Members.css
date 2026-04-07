@@ -1,0 +1,15 @@
+.members-col-member {
+  width: 30%;
+}
+.members-col-role {
+  width: 10%;
+}
+.members-col-status {
+  width: 12%;
+}
+.members-col-joined {
+  width: 13%;
+}
+.members-col-actions {
+  width: 35%;
+}

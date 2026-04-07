@@ -1,6 +1,6 @@
-import "./ConfirmDeleteForm.css";
+import "./Confirmation.css";
 
-function ConfirmDeleteForm({ title, message, onConfirm, onCancel }) {
+function Confirmation({ title, message, onConfirm, onCancel, confirmLabel = "Delete" }) {
   return (
     <div className="cdm-overlay" onClick={onCancel}>
       <div className="cdm-box" onClick={(e) => e.stopPropagation()}>
@@ -8,11 +8,11 @@ function ConfirmDeleteForm({ title, message, onConfirm, onCancel }) {
         <p className="cdm-msg">{message}</p>
         <div className="cdm-actions">
           <button className="cdm-cancel" onClick={onCancel}>Cancel</button>
-          <button className="cdm-delete" onClick={onConfirm}>Delete</button>
+          <button className="cdm-delete" onClick={() => { onConfirm(); onCancel(); }}>{confirmLabel}</button>
         </div>
       </div>
     </div>
   );
 }
 
-export default ConfirmDeleteForm;
+export default Confirmation;

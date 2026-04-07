@@ -1,0 +1,115 @@
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.stat-card {
+  background: #fff;
+  border: 1px solid #e1dad7;
+  border-radius: 14px;
+  padding: 1.4rem 1.5rem;
+  cursor: pointer;
+  transition:
+    border-color 0.18s,
+    box-shadow 0.18s,
+    transform 0.18s;
+}
+
+.stat-card:hover {
+  border-color: #9e3b3b;
+  box-shadow: 0 4px 18px rgba(158, 59, 59, 0.12);
+  transform: translateY(-2px);
+}
+
+.stat-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-red0);
+  opacity: 0.7;
+  margin-bottom: 0.5rem;
+  transition:
+    color 0.18s,
+    opacity 0.18s;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #9e3b3b;
+  line-height: 1;
+  transition: color 0.18s;
+}
+
+.stat-card:hover .stat-value {
+  color: #570000;
+  opacity: 1;
+}
+
+.stat-note {
+  font-size: 0.75rem;
+  margin-top: 0.4rem;
+  color: #9e3b3b;
+  opacity: 0.6;
+}
+
+.stat-note.red {
+  color: #570000;
+  opacity: 1;
+}
+
+.admin-panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #570000;
+}
+
+.view-all-btn {
+  background: #f6f1ed;
+  border: 1px solid #e1dad7;
+  color: #9e3b3b;
+  border-radius: 8px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.8rem;
+  font-family: "Noto Sans", sans-serif;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.view-all-btn:hover {
+  background: #e1dad7;
+  color: #570000;
+}
+
+.admin-panels .admin-table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.admin-panels .recipe-name-cell {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 0;
+}
+
+.dash-col-recipe {
+  width: 50%;
+}
+.dash-col-owner {
+  width: 30%;
+}
+.dash-col-when {
+  width: 20%;
+}

@@ -14,73 +14,72 @@ import MyRecipeDetails from "pages/main-pages/MyRecipeDetails";
 import UserProfile from "pages/main-pages/UserProfile";
 import ProtectedRoute from "protectedRoute/ProtectedRoute";
 import AdminProtectedRoute from "protectedRoute/AdminProtectedRoute";
-import Admin from "pages/admin page/Admin";
+import Admin from "pages/admin page/MainAdmin";
 
 // The App component defines the main routes of the application, separating public and protected routes. It also includes a ScrollToTop component to ensure the page scrolls to the top on route changes.
 export default function App() {
   return (
     <>
-    <ScrollToTop />
-    <Routes>
-      {/* default page */}
-      <Route path="/" element={<Navigate to="/home" replace />} />
+      <ScrollToTop />
+      <Routes>
+        {/* default page */}
+        <Route path="/" element={<Navigate to="/home" replace />} />
 
-      {/* public routes */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/home" element={<Home />} />
-      <Route path="/find-recipes" element={<FindRecipes />} />
-      <Route path="/recipe/:id" element={<RecipeDetail />} />
-      <Route path="/my-recipe/:id" element={<MyRecipeDetails />} />
+        {/* public routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/find-recipes" element={<FindRecipes />} />
+        <Route path="/recipe/:id" element={<RecipeDetail />} />
+        <Route path="/my-recipe/:id" element={<MyRecipeDetails />} />
 
-      <Route
-        path="/profile"
-        element={
-          <ProtectedRoute>
-            <UserProfile />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <UserProfile />
+            </ProtectedRoute>
+          }
+        />
 
-      {/* protected member routes */}
-      <Route
-        path="/pantry"
-        element={
-          <ProtectedRoute>
-            <Pantry />
-          </ProtectedRoute>
-        }
-      />
+        {/* protected member routes */}
+        <Route
+          path="/pantry"
+          element={
+            <ProtectedRoute>
+              <Pantry />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route
-        path="/saved-recipes"
-        element={
-          <ProtectedRoute>
-            <SavedRecipes />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/saved-recipes"
+          element={
+            <ProtectedRoute>
+              <SavedRecipes />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route
-        path="/meal-plan"
-        element={
-          <ProtectedRoute>
-            <MealPlan />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/meal-plan"
+          element={
+            <ProtectedRoute>
+              <MealPlan />
+            </ProtectedRoute>
+          }
+        />
 
-      {/* admin routes will go here */}
-      <Route
-        path="/admin"
-        element={
-          <AdminProtectedRoute>
-            <Admin />
-          </AdminProtectedRoute>
-        }
-      />
-    </Routes>
+        {/* admin routes will go here */}
+        <Route
+          path="/admin"
+          element={
+            <AdminProtectedRoute>
+              <Admin />
+            </AdminProtectedRoute>
+          }
+        />
+      </Routes>
     </>
-
   );
 }

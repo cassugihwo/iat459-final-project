@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "context/AuthContext";
 import Navbar from "components/navbar/UI_Navbar";
@@ -11,12 +11,14 @@ import rightDish from "assets/bg image/right.png";
 import Footer from "components/footer/UI_Footer";
 import "pages/page-css/Home.css";
 
+//For recipe of day
 function getDayOfYear() {
   const now = new Date();
   const start = new Date(now.getFullYear(), 0, 0);
   return Math.floor((now - start) / 86400000);
 }
 
+//For recipe of week
 function getWeekOfYear() {
   return Math.floor(getDayOfYear() / 7);
 }
@@ -24,14 +26,14 @@ function getWeekOfYear() {
 function Home() {
   const { user, token } = useAuth();
   const navigate = useNavigate();
-  const teamCarouselRef = useRef(null);
-
   const [recipes, setRecipes] = useState([]);
-  const [communityRecipes, setCommunityRecipes] = useState([]);
+
+  //loading state when fetching data
   const [loading, setLoading] = useState(true);
+
+  const [communityRecipes, setCommunityRecipes] = useState([]);
   const [favouriteIds, setFavouriteIds] = useState(new Set());
   const [userFavourites, setUserFavourites] = useState([]);
-  const [selectedType, setSelectedType] = useState("All");
   const [dayType, setDayType] = useState("All");
   const [weekType, setWeekType] = useState("All");
   const [topType, setTopType] = useState("All");
@@ -39,6 +41,9 @@ function Home() {
   const [favType, setFavType] = useState("All");
   const [ratings, setRatings] = useState({});
   const [communityRatings, setCommunityRatings] = useState({});
+  const [teamRecipes, setTeamRecipes] = useState([]);
+  const [teamRatings, setTeamRatings] = useState({});
+  const [filter, setFilter] = useState("All");
 
   useEffect(() => {
     if (!token) return;
@@ -77,16 +82,20 @@ function Home() {
         const fetches = [];
         if (homeData.length) {
           fetches.push(
-            fetch(`http://localhost:5001/api/reviews/bulk-ratings?ids=${homeData.map((r) => r.id).join(",")}`)
-              .then((r) => r.ok ? r.json() : {})
-              .then((data) => setRatings((prev) => ({ ...prev, ...data })))
+            fetch(
+              `http://localhost:5001/api/reviews/bulk-ratings?ids=${homeData.map((r) => r.id).join(",")}`,
+            )
+              .then((r) => (r.ok ? r.json() : {}))
+              .then((data) => setRatings((prev) => ({ ...prev, ...data }))),
           );
         }
         if (communityData.length) {
           fetches.push(
-            fetch(`http://localhost:5001/api/reviews/bulk-user-ratings?ids=${communityData.map((r) => r._id).join(",")}`)
-              .then((r) => r.ok ? r.json() : {})
-              .then(setCommunityRatings)
+            fetch(
+              `http://localhost:5001/api/reviews/bulk-user-ratings?ids=${communityData.map((r) => r._id).join(",")}`,
+            )
+              .then((r) => (r.ok ? r.json() : {}))
+              .then(setCommunityRatings),
           );
         }
         await Promise.all(fetches);
@@ -98,7 +107,21 @@ function Home() {
     }
     fetchAll();
   }, []);
-
+  useEffect(() => {
+    fetch("http://localhost:5001/api/team-recipes")
+      .then((r) => (r.ok ? r.json() : []))
+      .then(async (data) => {
+        setTeamRecipes(data);
+        if (data.length) {
+          const ids = data.map((r) => r._id).join(",");
+          const rRes = await fetch(
+            `http://localhost:5001/api/reviews/bulk-user-ratings?ids=${ids}`,
+          );
+          if (rRes.ok) setTeamRatings(await rRes.json());
+        }
+      })
+      .catch(() => {});
+  }, []);
   async function handleSaveFavourite(recipe) {
     if (!user) {
       navigate("/member-only", { state: { featureName: "Save as Favourite" } });
@@ -156,25 +179,6 @@ function Home() {
       return getRotatingSlice(recipes, weekStart + DAY_COUNT, WEEK_COUNT);
     return getRotatingSlice(recipes, weekStart, WEEK_COUNT);
   }, [recipes]);
-
-  const filterOptions = useMemo(() => {
-    const types = [
-      ...new Set(
-        recipes
-          .map((r) => r.dishType)
-          .filter(Boolean)
-          .map((t) => t.trim()),
-      ),
-    ];
-    return ["All", ...types];
-  }, [recipes]);
-
-  const filteredTeamRecipes = useMemo(() => {
-    if (selectedType === "All") return recipes;
-    return recipes.filter(
-      (r) => r.dishType?.toLowerCase() === selectedType.toLowerCase(),
-    );
-  }, [recipes, selectedType]);
 
   const topRatedRecipes = useMemo(() => {
     return [...recipes]
@@ -282,6 +286,19 @@ function Home() {
     );
   }, [userFavourites, favType]);
 
+  const filterOptions = useMemo(() => {
+    const types = [
+      ...new Set(teamRecipes.map((r) => r.cuisineType).filter(Boolean)),
+    ];
+    return ["All", ...types];
+  }, [teamRecipes]);
+
+  const filtered = useMemo(() => {
+    if (filter === "All") return teamRecipes;
+    return teamRecipes.filter((r) => r.cuisineType === filter);
+  }, [teamRecipes, filter]);
+
+  if (teamRecipes.length === 0) return null;
   return (
     <div className="home-page">
       <div className="navbarHeader">
@@ -406,7 +423,6 @@ function Home() {
                   )}
                 </section>
               )}
-
               {/* Recipe of the Day */}
               <section className="home-section">
                 <div className="home-section-header">
@@ -457,7 +473,6 @@ function Home() {
                   </div>
                 </div>
               </section>
-
               {/* Recipe of the Week */}
               <section className="home-section">
                 <div className="home-section-header">
@@ -508,7 +523,6 @@ function Home() {
                   </div>
                 </div>
               </section>
-
               {/* Most Favourite Recipes */}
               <section className="home-section">
                 <div className="home-section-header">
@@ -565,7 +579,6 @@ function Home() {
                   </>
                 )}
               </section>
-
               {/* From Our Community */}
               <section className="home-section">
                 <div className="home-section-header">
@@ -642,57 +655,53 @@ function Home() {
                   </>
                 )}
               </section>
-
-              {/* YumMeal Team Picks */}
+              {/* YumMeal Team Recipes */}
               <section className="home-section">
                 <div className="home-section-header">
                   <div>
                     <h3 className="home-section-title">YumMeal Team Recipes</h3>
                     <p className="home-section-sub">
-                      Recommended recipes from the YumMeal team
+                      Recipes crafted by the YumMeal team
                     </p>
                   </div>
                 </div>
-                <div className="recipe-filter-section">
-                  <div className="recipe-filter-pills">
-                    {filterOptions.map((type) => (
-                      <button
-                        key={type}
-                        type="button"
-                        className={`recipe-filter-pill${selectedType === type ? " active" : ""}`}
-                        onClick={() => setSelectedType(type)}
-                      >
-                        {type}
-                      </button>
-                    ))}
+
+                {filterOptions.length > 1 && (
+                  <div className="recipe-filter-section">
+                    <div className="recipe-filter-pills">
+                      {filterOptions.map((type) => (
+                        <button
+                          key={type}
+                          type="button"
+                          className={`recipe-filter-pill${filter === type ? " active" : ""}`}
+                          onClick={() => setFilter(type)}
+                        >
+                          {type}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
+
                 <div className="recipe-carousel-wrapper">
-                  <div className="recipe-carousel" ref={teamCarouselRef}>
-                    {filteredTeamRecipes.map((recipe) => (
+                  <div className="recipe-carousel">
+                    {filtered.map((recipe) => (
                       <RecipeCard
-                        key={recipe.id}
-                        title={recipe.title}
-                        image={recipe.image}
+                        key={recipe._id}
+                        title={recipe.name}
+                        image={recipe.image || null}
                         cuisineType={recipe.cuisineType}
                         dishType={recipe.dishType}
                         readyInMinutes={recipe.readyInMinutes}
-                        difficulty={
-                          recipe.readyInMinutes <= 30
-                            ? "Easy"
-                            : recipe.readyInMinutes <= 60
-                              ? "Medium"
-                              : "Hard"
-                        }
-                        isFavourited={favouriteIds.has(recipe.id)}
-                        rating={ratings[recipe.id] ?? 0}
-                        onClick={() => navigate(`/recipe/${recipe.id}`)}
-                        onFavourite={() => handleSaveFavourite(recipe)}
+                        difficulty={recipe.difficulty}
+                        hideHeart={true}
+                        rating={teamRatings[recipe._id] ?? 0}
+                        onClick={() => navigate(`/team-recipe/${recipe._id}`)}
                       />
                     ))}
                   </div>
                 </div>
-              </section>
+              </section>{" "}
             </>
           )}
         </div>

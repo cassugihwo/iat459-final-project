@@ -1,0 +1,661 @@
+import { useState } from "react";
+import "remixicon/fonts/remixicon.css";
+import { timeAgo } from "./Utils";
+import "pages/page-css/SavedRecipes.css";
+import "./css/UserRecipes.css";
+import "./css/TeamRecipes.css";
+
+function TeamRecipeDetailModal({ recipe, onClose }) {
+  const ingredients = (recipe.ingredients || "")
+    .split(",")
+    .map((i) => i.trim())
+    .filter(Boolean);
+  const steps = (recipe.instructions || "")
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean);
+  const createdDate = recipe.createdAt
+    ? new Date(recipe.createdAt).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : "";
+
+  return (
+    <div className="admin-modal-overlay" onClick={onClose}>
+      <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="admin-modal-header">
+          <h2 className="admin-modal-title">{recipe.name}</h2>
+          <button className="admin-modal-close" onClick={onClose}>
+            ×
+          </button>
+        </div>
+
+        {recipe.image ? (
+          <img
+            src={recipe.image}
+            alt={recipe.name}
+            className="admin-modal-img"
+          />
+        ) : (
+          <div className="admin-modal-img-placeholder">
+            <span>No image</span>
+          </div>
+        )}
+
+        <div className="admin-modal-meta">
+          {recipe.cuisineType && (
+            <span className="admin-modal-chip">{recipe.cuisineType}</span>
+          )}
+          {recipe.dishType && (
+            <span className="admin-modal-chip">{recipe.dishType}</span>
+          )}
+          {recipe.readyInMinutes && (
+            <span className="admin-modal-chip">
+              {recipe.readyInMinutes} min
+            </span>
+          )}
+          {recipe.difficulty && (
+            <span className="admin-modal-chip">{recipe.difficulty}</span>
+          )}
+        </div>
+
+        <div className="admin-modal-owner">
+          <span className="muted">Added {createdDate}</span>
+        </div>
+
+        <div className="admin-modal-body">
+          <div className="admin-modal-section">
+            <h3>Ingredients</h3>
+            <ul className="admin-modal-list">
+              {ingredients.length === 0 ? (
+                <li className="muted">No ingredients listed.</li>
+              ) : (
+                ingredients.map((ing, i) => <li key={i}>{ing}</li>)
+              )}
+            </ul>
+          </div>
+
+          <div className="admin-modal-section">
+            <h3>Instructions</h3>
+            {steps.length === 0 ? (
+              <p className="muted">No instructions provided.</p>
+            ) : (
+              steps.map((step, i) => (
+                <div key={i} className="admin-modal-step">
+                  <span className="admin-modal-step-num">{i + 1}</span>
+                  <p>{step}</p>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const MEASUREMENT_UNITS = [
+  "",
+  "g",
+  "kg",
+  "lb",
+  "ml",
+  "l",
+  "oz",
+  "tsp",
+  "tbsp",
+  "cup",
+  "pinch",
+  "piece",
+];
+
+function emptyIngredients() {
+  return Array.from({ length: 4 }, () => ({ amount: "", unit: "", name: "" }));
+}
+
+function emptyInstructions() {
+  return [{ instruction: "" }];
+}
+
+function isNumber(value) {
+  const v = value.trim();
+  return v === "" || !Number.isNaN(Number(v));
+}
+
+const EMPTY_FORM = {
+  name: "",
+  serves: "",
+  cookTime: "",
+  ingredients: emptyIngredients(),
+  instructionsList: emptyInstructions(),
+  tags: [],
+  tagInput: "",
+  imageBase64: "",
+  imagePreview: "",
+};
+
+export default function AdminTeamRecipes({
+  teamRecipes,
+  token,
+  onRefresh,
+  setPendingAction,
+  deleteTeamRecipe,
+}) {
+  const [form, setForm] = useState(EMPTY_FORM);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
+
+  function setField(field, value) {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  }
+
+  function handleImageChange(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setField("imageBase64", reader.result);
+      setField("imagePreview", reader.result);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function handleIngredientChange(index, field, value) {
+    setForm((prev) => ({
+      ...prev,
+      ingredients: prev.ingredients.map((row, i) =>
+        i === index ? { ...row, [field]: value } : row,
+      ),
+    }));
+  }
+
+  function resetForm() {
+    setForm(EMPTY_FORM);
+    setError("");
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setError("");
+
+    if (!form.name.trim()) {
+      setError("Recipe name is required.");
+      return;
+    }
+    if (!form.cookTime.trim()) {
+      setError("Cook time is required.");
+      return;
+    }
+    if (!isNumber(form.cookTime)) {
+      setError("Cook time must be a number.");
+      return;
+    }
+
+    for (let i = 0; i < form.ingredients.length; i++) {
+      if (!isNumber(form.ingredients[i].amount)) {
+        setError(`Ingredient ${i + 1} quantity must be a number.`);
+        return;
+      }
+    }
+
+    const filledIngredients = form.ingredients
+      .filter((r) => r.amount || r.unit || r.name)
+      .map((r) => [r.amount, r.unit, r.name].filter(Boolean).join(" "))
+      .join(", ");
+
+    if (!filledIngredients) {
+      setError("At least one ingredient is required.");
+      return;
+    }
+
+    const filledInstructions = form.instructionsList.filter((r) =>
+      r.instruction.trim(),
+    );
+    if (!filledInstructions.length) {
+      setError("At least one instruction step is required.");
+      return;
+    }
+
+    const cookTimeNum = Number(form.cookTime);
+    const difficulty =
+      cookTimeNum <= 30 ? "Easy" : cookTimeNum <= 60 ? "Medium" : "Hard";
+    const cuisineType = form.tags[0] || "";
+    const dishType = form.tags[1] || "";
+    const joinedInstructions = filledInstructions
+      .map((r) => r.instruction)
+      .join("\n")
+      .trim();
+
+    setSaving(true);
+    try {
+      const res = await fetch("http://localhost:5001/api/team-recipes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: form.name.trim(),
+          image: form.imageBase64,
+          ingredients: filledIngredients,
+          instructions: joinedInstructions,
+          cuisineType,
+          dishType,
+          readyInMinutes: cookTimeNum || null,
+          difficulty,
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || "Failed to create recipe.");
+      }
+      resetForm();
+      onRefresh();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className="tr-layout">
+      {/* Create Form */}
+      <div className="tr-form-panel">
+        <h2 className="tr-form-title">Add Recipe</h2>
+
+        <section className="sr-form-section tr-form-section-override">
+          {error && <p className="tr-error">{error}</p>}
+
+          <form className="sr-form" onSubmit={handleSubmit}>
+            {/* Recipe Name */}
+            <div className="sr-field">
+              <label className="sr-label">Recipe Name *</label>
+              <input
+                className="sr-input"
+                type="text"
+                value={form.name}
+                onChange={(e) => setField("name", e.target.value)}
+                placeholder="Recipe Name"
+              />
+            </div>
+
+            {/* Serves + Cook Time */}
+            <div className="sr-row">
+              <div className="sr-field">
+                <label className="sr-label">Serves</label>
+                <input
+                  className="sr-input"
+                  type="number"
+                  min="1"
+                  value={form.serves}
+                  onChange={(e) => setField("serves", e.target.value)}
+                  placeholder="e.g. 4"
+                />
+              </div>
+              <div className="sr-field">
+                <label className="sr-label">Cook Time (mins) *</label>
+                <input
+                  className="sr-input"
+                  type="number"
+                  min="1"
+                  value={form.cookTime}
+                  onChange={(e) => setField("cookTime", e.target.value)}
+                  placeholder="e.g. 30"
+                />
+              </div>
+            </div>
+
+            {/* Ingredients */}
+            <div className="sr-field">
+              <label className="sr-label">Ingredients</label>
+              <div className="sr-table-wrapper">
+                <table className="sr-table">
+                  <thead>
+                    <tr>
+                      <th>Quantity</th>
+                      <th>Measurement</th>
+                      <th>Item</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {form.ingredients.map((row, i) => (
+                      <tr key={i} className="sr-ingredient-row">
+                        <td>
+                          <input
+                            className="sr-input"
+                            type="text"
+                            value={row.amount}
+                            onChange={(e) =>
+                              handleIngredientChange(
+                                i,
+                                "amount",
+                                e.target.value,
+                              )
+                            }
+                            placeholder="0"
+                          />
+                        </td>
+                        <td>
+                          <select
+                            className="sr-select"
+                            value={row.unit}
+                            onChange={(e) =>
+                              handleIngredientChange(i, "unit", e.target.value)
+                            }
+                          >
+                            {MEASUREMENT_UNITS.map((u, j) => (
+                              <option key={j} value={u}>
+                                {u || "—"}
+                              </option>
+                            ))}
+                          </select>
+                        </td>
+                        <td>
+                          <input
+                            className="sr-input"
+                            type="text"
+                            value={row.name}
+                            onChange={(e) =>
+                              handleIngredientChange(i, "name", e.target.value)
+                            }
+                            placeholder="Ingredient name"
+                          />
+                        </td>
+                        <td>
+                          <button
+                            type="button"
+                            className="sr-btn-trash"
+                            onClick={() =>
+                              setForm((prev) => ({
+                                ...prev,
+                                ingredients: prev.ingredients.filter(
+                                  (_, idx) => idx !== i,
+                                ),
+                              }))
+                            }
+                            tabIndex="-1"
+                            aria-label="Remove ingredient"
+                          >
+                            <i className="ri-delete-bin-line" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <button
+                type="button"
+                className="sr-btn-add"
+                onClick={() =>
+                  setForm((prev) => ({
+                    ...prev,
+                    ingredients: [
+                      ...prev.ingredients,
+                      { amount: "", unit: "", name: "" },
+                    ],
+                  }))
+                }
+              >
+                <i className="ri-add-line tr-btn-icon" />
+                Add Ingredient
+              </button>
+            </div>
+
+            {/* Instructions */}
+            <div className="sr-field">
+              <label className="sr-label">Instructions</label>
+              <div className="sr-steps-list">
+                {form.instructionsList.map((row, i) => (
+                  <div key={i} className="sr-step-row">
+                    <span className="sr-step-num">{i + 1}</span>
+                    <textarea
+                      className="sr-textarea sr-step-textarea"
+                      value={row.instruction}
+                      onChange={(e) =>
+                        setForm((prev) => ({
+                          ...prev,
+                          instructionsList: prev.instructionsList.map(
+                            (r, idx) =>
+                              idx === i
+                                ? { ...r, instruction: e.target.value }
+                                : r,
+                          ),
+                        }))
+                      }
+                      placeholder={`Describe step ${i + 1}...`}
+                      rows={2}
+                    />
+                    {form.instructionsList.length > 1 && (
+                      <button
+                        type="button"
+                        className="sr-btn-trash"
+                        onClick={() =>
+                          setForm((prev) => ({
+                            ...prev,
+                            instructionsList: prev.instructionsList.filter(
+                              (_, idx) => idx !== i,
+                            ),
+                          }))
+                        }
+                        tabIndex="-1"
+                        aria-label="Remove step"
+                      >
+                        <i className="ri-delete-bin-line" />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <button
+                type="button"
+                className="sr-btn-add"
+                onClick={() =>
+                  setForm((prev) => ({
+                    ...prev,
+                    instructionsList: [
+                      ...prev.instructionsList,
+                      { instruction: "" },
+                    ],
+                  }))
+                }
+              >
+                <i className="ri-add-line tr-btn-icon" />
+                Add Step
+              </button>
+            </div>
+
+            {/* Tags */}
+            <div className="sr-field">
+              <label className="sr-label">Tags (Optional)</label>
+              {form.tags.length > 0 && (
+                <div className="sr-tags-list">
+                  {form.tags.map((t, i) => (
+                    <span key={i} className="sr-tag-chip">
+                      {t}
+                      <button
+                        type="button"
+                        className="sr-tag-remove"
+                        onClick={() =>
+                          setForm((prev) => ({
+                            ...prev,
+                            tags: prev.tags.filter((_, idx) => idx !== i),
+                          }))
+                        }
+                        aria-label={`Remove tag ${t}`}
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+              <div className="sr-tag-input-row">
+                <input
+                  className="sr-input"
+                  type="text"
+                  value={form.tagInput}
+                  onChange={(e) => setField("tagInput", e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      const val = form.tagInput.trim();
+                      if (val && !form.tags.includes(val))
+                        setForm((prev) => ({
+                          ...prev,
+                          tags: [...prev.tags, val],
+                          tagInput: "",
+                        }));
+                      else setField("tagInput", "");
+                    }
+                  }}
+                  placeholder="e.g. Italian"
+                />
+                <button
+                  type="button"
+                  className="sr-btn-add"
+                  onClick={() => {
+                    const val = form.tagInput.trim();
+                    if (val && !form.tags.includes(val))
+                      setForm((prev) => ({
+                        ...prev,
+                        tags: [...prev.tags, val],
+                        tagInput: "",
+                      }));
+                    else setField("tagInput", "");
+                  }}
+                >
+                  <i className="ri-add-line tr-btn-icon" />
+                  Add Tag
+                </button>
+              </div>
+            </div>
+
+            {/* Image upload */}
+            <div className="sr-field">
+              <label className="sr-label">Recipe Image (Optional)</label>
+              <label className="sr-image-upload">
+                {form.imagePreview ? (
+                  <img
+                    src={form.imagePreview}
+                    alt="Preview"
+                    className="sr-image-preview"
+                  />
+                ) : (
+                  <span className="sr-image-placeholder">
+                    Click to upload an image
+                  </span>
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  hidden
+                />
+              </label>
+            </div>
+
+            <div className="sr-actions">
+              <button className="sr-btn-save" type="submit" disabled={saving}>
+                {saving ? "Adding..." : "Add Recipe"}
+              </button>
+              <button
+                className="sr-btn-clear"
+                type="button"
+                onClick={resetForm}
+              >
+                Clear
+              </button>
+            </div>
+          </form>
+        </section>
+      </div>
+
+      {/* Existing Team Recipes Table */}
+      <div className="tr-table-col">
+        <h2 className="tr-form-title">Team Recipes</h2>
+        <div className="admin-panel full">
+          <table className="admin-table recipes-table">
+            <colgroup>
+              <col className="tr-col-name" />
+              <col className="tr-col-cuisine" />
+              <col className="tr-col-dish" />
+              <col className="tr-col-time" />
+              <col className="tr-col-added" />
+              <col className="tr-col-actions" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th>Recipe</th>
+                <th>Cuisine</th>
+                <th>Dish Type</th>
+                <th>Time</th>
+                <th>Added</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {teamRecipes.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="empty-row">
+                    No team recipes yet. Add one above.
+                  </td>
+                </tr>
+              ) : (
+                teamRecipes.map((r) => (
+                  <tr key={r._id}>
+                    <td className="recipe-name-cell">{r.name}</td>
+                    <td>{r.cuisineType || <span className="muted">—</span>}</td>
+                    <td>{r.dishType || <span className="muted">—</span>}</td>
+                    <td className="muted">
+                      {r.readyInMinutes ? `${r.readyInMinutes} min` : "—"}
+                    </td>
+                    <td className="muted">{timeAgo(r.createdAt)}</td>
+                    <td className="actions-cell">
+                      <button
+                        className="action-btn view"
+                        onClick={() => setSelectedRecipe(r)}
+                      >
+                        View
+                      </button>
+                      <button
+                        className="action-btn danger"
+                        onClick={() =>
+                          setPendingAction({
+                            title: "Delete Team Recipe",
+                            message: (
+                              <>
+                                Permanently delete <strong>{r.name}</strong>? It
+                                will be removed from the home page.
+                              </>
+                            ),
+                            confirmLabel: "Delete",
+                            onConfirm: () => deleteTeamRecipe(r._id),
+                          })
+                        }
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {selectedRecipe && (
+        <TeamRecipeDetailModal
+          recipe={selectedRecipe}
+          onClose={() => setSelectedRecipe(null)}
+        />
+      )}
+    </div>
+  );
+}

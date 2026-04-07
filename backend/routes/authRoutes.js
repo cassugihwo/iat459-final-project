@@ -118,7 +118,7 @@ router.put("/profile", verifyToken, async (req, res) => {
         ...(lastName && { lastName }),
         ...(username && { username }),
       },
-      { new: true },
+      { returnDocument: "after" },
     ).select("-password");
     res.json(user);
   } catch (err) {

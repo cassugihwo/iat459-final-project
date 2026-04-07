@@ -15,7 +15,6 @@ import rightDish from "assets/bg image/right.png";
 import MealPlanSchedule from "components/meal-plan/UI_MealPlanSchedule";
 
 function MealPlan(props) {
-
   function MealPlanScheduleCard({ title = "Placeholder Meal Plan Title" }) {
     return (
       <div className="mps-mealplan-card">
@@ -64,7 +63,7 @@ function MealPlan(props) {
           <div className="mp-body">
             <div className="mps-body">
               <h2>Your Meal Plan</h2>
-                <MealPlanSchedule/>
+              <MealPlanSchedule />
               <h2>Your Schedules</h2>
               <div className="mps-carousel-wrapper">
                 <div className="mps-carousel">

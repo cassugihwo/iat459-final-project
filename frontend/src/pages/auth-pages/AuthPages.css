@@ -322,3 +322,66 @@ body {
   }
 }
 
+
+/* Suspended account modal */
+.suspended-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.suspended-box {
+  background: #fff;
+  border-radius: 16px;
+  padding: 2.5rem 2rem;
+  max-width: 380px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
+  text-align: center;
+}
+
+.suspended-icon {
+  font-size: 3rem;
+  color: #c0392b;
+  line-height: 1;
+}
+
+.suspended-title {
+  font-family: "Passion One", sans-serif;
+  font-size: 1.5rem;
+  color: #570000;
+  margin: 0;
+}
+
+.suspended-msg {
+  font-size: 0.9rem;
+  color: #555;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.suspended-btn {
+  margin-top: 0.5rem;
+  padding: 0.55rem 2rem;
+  background: #570000;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.suspended-btn:hover {
+  background: #2e0b0b;
+}

@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Trash2, Plus } from "lucide-react";
 import Toast from "components/toast/UI_Toast";
-import ConfirmDeleteForm from "components/confirm/ConfirmDeleteForm";
+import Confirmation from "components/confirm/Confirmation";
 import "pages/MainPage.css";
 import "pages/page-css/RecipeDetail.css";
 import "pages/page-css/SavedRecipes.css";
@@ -232,7 +232,7 @@ function SavedRecipes() {
   return (
     <div className="home-page">
       {confirmDeleteId && (
-        <ConfirmDeleteForm
+        <Confirmation
           title="Delete Recipe?"
           message="This action cannot be undone."
           onConfirm={confirmDelete}

@@ -1,419 +1,424 @@
 @import "App.css";
 
 .up-loading {
-    font-family: "Noto Sans", sans-serif;
-    font-size: 1rem;
-    color: #888;
-    text-align: center;
-    padding: 4rem;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 1rem;
+  color: #888;
+  text-align: center;
+  padding: 4rem;
 }
 
 .up-wrapper {
-    max-width: 1300px;
-    margin: 0 auto;
-    padding: 2rem 2rem 4rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 2rem 2rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
 /*Info card*/
 .up-info-card {
-    background: #fff;
-    border-radius: 20px;
-    border: 1.5px solid var(--color-white1);
-    padding: 2rem 2.5rem;
-    display: flex;
-    gap: 2rem;
-    align-items: flex-start;
+  background: #fff;
+  border-radius: 20px;
+  border: 1.5px solid var(--color-white1);
+  padding: 2rem 2.5rem;
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
 }
 
 .up-avatar-col {
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .up-avatar-circle {
-    width: 6rem;
-    height: 6rem;
-    border-radius: 50%;
-    overflow: hidden;
-    background: #e0d8d0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  width: 6rem;
+  height: 6rem;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #e0d8d0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .up-avatar-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .up-avatar-svg {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .up-avatar-initials {
-    font-family: "Passion One", sans-serif;
-    font-size: 2rem;
-    color: var(--color-red1);
-    line-height: 1;
-    user-select: none;
+  font-family: "Passion One", sans-serif;
+  font-size: 2rem;
+  color: var(--color-red1);
+  line-height: 1;
+  user-select: none;
 }
 
 .up-upload-btn {
-    padding: 0.35rem 0.9rem;
-    border-radius: 8px;
-    border: 1.5px solid var(--color-white1);
-    background: transparent;
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: #555;
-    cursor: pointer;
-    transition: 0.15s ease;
+  padding: 0.35rem 0.9rem;
+  border-radius: 8px;
+  border: 1.5px solid var(--color-white1);
+  background: transparent;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+  transition: 0.15s ease;
 }
 
 .up-upload-btn:hover {
-    border-color: var(--color-red1);
-    color: var(--color-red1);
+  border-color: var(--color-red1);
+  color: var(--color-red1);
 }
 
 .up-details {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .up-details-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
 }
 
 .up-details-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
 }
 
 .up-details-actions {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 0.6rem;
-    flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.6rem;
+  flex-shrink: 0;
 }
 
 .up-username {
-    font-family: "Passion One", sans-serif;
-    font-size: 2.4rem;
-    color: var(--color-red0);
-    margin: 0;
-    line-height: 1;
+  font-family: "Passion One", sans-serif;
+  font-size: 2.4rem;
+  color: var(--color-red0);
+  margin: 0;
+  line-height: 1;
 }
 
 .up-fullname {
-    font-family: "Noto Sans", sans-serif;
-    font-size: 1rem;
-    font-weight: 600;
-    color: #444;
-    margin: 0;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #444;
+  margin: 0;
 }
 
 .up-member-since {
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.85rem;
-    color: #aaa;
-    margin: 0;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.85rem;
+  color: #aaa;
+  margin: 0;
 }
 
 .up-edit-input {
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.9rem;
-    padding: 0.5rem 0.75rem;
-    border: 1.5px solid #e0d8d4;
-    border-radius: 8px;
-    outline: none;
-    background: #fff;
-    color: #333;
-    transition: border-color 0.15s;
-    width: 100%;
-    box-sizing: border-box;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.9rem;
+  padding: 0.5rem 0.75rem;
+  border: 1.5px solid #e0d8d4;
+  border-radius: 8px;
+  outline: none;
+  background: #fff;
+  color: #333;
+  transition: border-color 0.15s;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .up-edit-input:focus {
-    border-color: var(--color-red1);
+  border-color: var(--color-red1);
 }
 
 .up-edit-username {
-    font-family: "Passion One", sans-serif;
-    font-size: 1.4rem;
-    color: var(--color-red0);
+  font-family: "Passion One", sans-serif;
+  font-size: 1.4rem;
+  color: var(--color-red0);
 }
 
 .up-edit-name-row {
-    display: flex;
-    gap: 0.6rem;
+  display: flex;
+  gap: 0.6rem;
 }
 
 .up-edit-btn {
-    padding: 0.45rem 1.1rem;
-    border-radius: 8px;
-    border: 1.5px solid var(--color-white1);
-    background: transparent;
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #555;
-    cursor: pointer;
-    transition: 0.15s ease;
-    white-space: nowrap;
+  padding: 0.45rem 1.1rem;
+  border-radius: 8px;
+  border: 1.5px solid var(--color-white1);
+  background: transparent;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+  transition: 0.15s ease;
+  white-space: nowrap;
 }
 
 .up-edit-btn:hover {
-    border-color: var(--color-red1);
-    color: var(--color-red1);
+  border-color: var(--color-red1);
+  color: var(--color-red1);
 }
 
 /* ── Stats row ── */
 .up-stats-row {
-    display: flex;
-    gap: 1rem;
+  display: flex;
+  gap: 1rem;
 }
 
 .up-stat-box {
-    flex: 1;
-    background: #fff;
-    border-radius: 16px;
-    border: 1.5px solid var(--color-white1);
-    padding: 1.25rem 1rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.3rem;
-    cursor: pointer;
-    transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+  flex: 1;
+  background: #fff;
+  border-radius: 16px;
+  border: 1.5px solid var(--color-white1);
+  padding: 1.25rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    transform 0.15s,
+    box-shadow 0.15s;
 }
 
 .up-stat-box:hover {
-    border-color: var(--color-red1);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+  border-color: var(--color-red1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
 }
 
 .up-stat-box:hover .up-stat-num {
-    color: var(--color-red0);
+  color: var(--color-red0);
 }
 
 .up-stat-num {
-    font-family: "Passion One", sans-serif;
-    font-size: 2rem;
-    color: var(--color-red1);
-    line-height: 1;
+  font-family: "Passion One", sans-serif;
+  font-size: 2rem;
+  color: var(--color-red1);
+  line-height: 1;
 }
 
 .up-stat-label {
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.8rem;
-    color: #888;
-    text-align: center;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.8rem;
+  color: #888;
+  text-align: center;
 }
 
 /* ── Section cards ── */
 .up-section-card {
-    background: #fff;
-    border-radius: 16px;
-    border: 1.5px solid var(--color-white1);
-    padding: 1.5rem 2rem 1.75rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    scroll-margin-top: 5rem;
+  background: #fff;
+  border-radius: 16px;
+  border: 1.5px solid var(--color-white1);
+  padding: 1.5rem 2rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  scroll-margin-top: 5rem;
 }
 
 .up-section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .up-section-title {
-    font-family: "Passion One", sans-serif;
-    font-size: 1.3rem;
-    color: var(--color-red1);
-    margin: 0;
+  font-family: "Passion One", sans-serif;
+  font-size: 1.3rem;
+  color: var(--color-red1);
+  margin: 0;
 }
 
 .up-section-action {
-    background: none;
-    border: none;
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.875rem;
-    font-weight: 700;
-    color: var(--color-red1);
-    cursor: pointer;
-    transition: color 0.15s;
-    padding: 0;
+  background: none;
+  border: none;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-red1);
+  cursor: pointer;
+  transition: color 0.15s;
+  padding: 0;
 }
 
 .up-section-action:hover {
-    color: var(--color-red0);
+  color: var(--color-red0);
 }
 
 /* ── Cards carousel ── */
 .up-carousel-wrapper {
-    overflow: hidden;
+  overflow: hidden;
 }
 
 .up-cards-row {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 1.25rem;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    padding-bottom: 0.75rem;
-    --recipe-card-width: 20rem;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 1.25rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 0.75rem;
+  --recipe-card-width: 20rem;
 }
 
 .up-cards-row .recipe-card-container {
-    scroll-snap-align: start;
+  scroll-snap-align: start;
 }
 
 .up-cards-row::-webkit-scrollbar {
-    height: 5px;
+  height: 5px;
 }
 
 .up-cards-row::-webkit-scrollbar-thumb {
-    background: #d6cfca;
-    border-radius: 999px;
+  background: #d6cfca;
+  border-radius: 999px;
 }
 
 .up-cards-row::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
 
-/* ── Add recipe placeholder — same size as recipe card ── */
+/*Add recipe placeholder*/
 .up-add-card {
-    width: var(--recipe-card-width, 20rem);
-    min-height: 18rem;
-    border: 2px dashed #d0c8c0;
-    border-radius: 1.25rem;
-    background: transparent;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    transition: border-color 0.15s, background 0.15s;
-    flex-shrink: 0;
+  width: var(--recipe-card-width, 20rem);
+  min-height: 18rem;
+  border: 2px dashed #d0c8c0;
+  border-radius: 1.25rem;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+  flex-shrink: 0;
 }
 
 .up-add-card:hover {
-    border-color: var(--color-red1);
-    background: #fdf5f3;
+  border-color: var(--color-red1);
+  background: #fdf5f3;
 }
 
 .up-add-card-icon {
-    font-size: 2rem;
-    color: #ccc;
-    line-height: 1;
-    transition: color 0.15s;
+  font-size: 2rem;
+  color: #ccc;
+  line-height: 1;
+  transition: color 0.15s;
 }
 
 .up-add-card:hover .up-add-card-icon {
-    color: var(--color-red1);
+  color: var(--color-red1);
 }
 
 .up-add-card-label {
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.9rem;
-    color: #bbb;
-    transition: color 0.15s;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.9rem;
+  color: #bbb;
+  transition: color 0.15s;
 }
 
 .up-add-card:hover .up-add-card-label {
-    color: var(--color-red1);
+  color: var(--color-red1);
 }
 
-/* ── Empty states ── */
+/*Empty states*/
 .up-empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 1.5rem 0 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.5rem 0 0.5rem;
 }
 
 .up-empty-text {
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.9rem;
-    color: #aaa;
-    margin: 0;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.9rem;
+  color: #aaa;
+  margin: 0;
 }
 
 .up-empty-action {
-    padding: 0.45rem 1.25rem;
-    border-radius: 999px;
-    border: 1.5px solid var(--color-red1);
-    background: transparent;
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--color-red1);
-    cursor: pointer;
-    transition: 0.15s ease;
+  padding: 0.45rem 1.25rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--color-red1);
+  background: transparent;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-red1);
+  cursor: pointer;
+  transition: 0.15s ease;
 }
 
 .up-empty-action:hover {
-    background: var(--color-red1);
-    color: #fff;
+  background: var(--color-red1);
+  color: #fff;
 }
 
 .up-save-btn {
-    padding: 0.45rem 1.25rem;
-    border-radius: 999px;
-    border: none;
-    background: var(--color-red1);
-    color: #fff;
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.875rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.15s;
+  padding: 0.45rem 1.25rem;
+  border-radius: 999px;
+  border: none;
+  background: var(--color-red1);
+  color: #fff;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
 }
 
 .up-save-btn:hover {
-    background: var(--color-red0);
+  background: var(--color-red0);
 }
 
 .up-save-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
-/* ── Responsive ── */
+/*Responsive*/
 @media (max-width: 600px) {
-    .up-info-card {
-        flex-direction: column;
-        align-items: center;
-        padding: 1.5rem;
-    }
+  .up-info-card {
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem;
+  }
 
-    .up-details-top {
-        flex-direction: column;
-        gap: 1rem;
-    }
+  .up-details-top {
+    flex-direction: column;
+    gap: 1rem;
+  }
 
-    .up-stats-row {
-        flex-direction: column;
-    }
+  .up-stats-row {
+    flex-direction: column;
+  }
 }
