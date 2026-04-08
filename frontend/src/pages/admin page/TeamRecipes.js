@@ -2,8 +2,20 @@ import { useState } from "react";
 import "remixicon/fonts/remixicon.css";
 import { timeAgo } from "./Utils";
 import "pages/page-css/SavedRecipes.css";
+import "pages/page-css/MyRecipeDetail.css";
 import "./css/UserRecipes.css";
 import "./css/TeamRecipes.css";
+import logo from "assets/logo/logo-full.png";
+
+function parseIngredient(str) {
+  const match = str.match(
+    /^(\d[\d/.\s]*(?:cups?|tbsp?|tsp?|oz|lbs?|g|kg|ml|l|cloves?|pieces?|slices?|cans?|bunches?|handful|pinch|dash|to taste)?)\s+(.+)/i,
+  );
+  if (match) {
+    return { amount: match[1].trim(), name: match[2].trim() };
+  }
+  return { amount: "—", name: str };
+}
 
 function TeamRecipeDetailModal({ recipe, onClose }) {
   const ingredients = (recipe.ingredients || "")
@@ -14,6 +26,9 @@ function TeamRecipeDetailModal({ recipe, onClose }) {
     .split("\n")
     .map((l) => l.trim())
     .filter(Boolean);
+  const tags = recipe.tags?.length
+    ? recipe.tags
+    : [recipe.cuisineType, recipe.dishType].filter(Boolean);
   const createdDate = recipe.createdAt
     ? new Date(recipe.createdAt).toLocaleDateString("en-US", {
         year: "numeric",
@@ -25,69 +40,120 @@ function TeamRecipeDetailModal({ recipe, onClose }) {
   return (
     <div className="admin-modal-overlay" onClick={onClose}>
       <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
+        {/* Close button */}
         <div className="admin-modal-header">
-          <h2 className="admin-modal-title">{recipe.name}</h2>
+          <div />
           <button className="admin-modal-close" onClick={onClose}>
             ×
           </button>
         </div>
 
-        {recipe.image ? (
-          <img
-            src={recipe.image}
-            alt={recipe.name}
-            className="admin-modal-img"
-          />
-        ) : (
-          <div className="admin-modal-img-placeholder">
-            <span>No image</span>
-          </div>
-        )}
+        {/* Hero image */}
+        <div className="mrd-hero" style={{ margin: 0, height: "16rem" }}>
+          {recipe.image ? (
+            <img src={recipe.image} alt={recipe.name} />
+          ) : (
+            <div className="mrd-hero-placeholder">
+              <img src={logo} alt="YumMeal" />
+            </div>
+          )}
+        </div>
 
-        <div className="admin-modal-meta">
-          {recipe.cuisineType && (
-            <span className="admin-modal-chip">{recipe.cuisineType}</span>
-          )}
-          {recipe.dishType && (
-            <span className="admin-modal-chip">{recipe.dishType}</span>
-          )}
+        {/* Title */}
+        <h1 className="mrd-title" style={{ marginTop: "1rem" }}>
+          {recipe.name}
+        </h1>
+
+        {/* Meta chips */}
+        <div className="mrd-meta">
           {recipe.readyInMinutes && (
-            <span className="admin-modal-chip">
+            <span className="mrd-chip highlight">
               {recipe.readyInMinutes} min
             </span>
           )}
           {recipe.difficulty && (
-            <span className="admin-modal-chip">{recipe.difficulty}</span>
+            <span className="mrd-chip highlight">{recipe.difficulty}</span>
           )}
+          {tags.map((tag, i) => (
+            <span key={i} className="mrd-chip">
+              {tag}
+            </span>
+          ))}
         </div>
 
-        <div className="admin-modal-owner">
-          <span className="muted">Added {createdDate}</span>
+        {/* Author + Date */}
+        <div className="mrd-owner-row">
+          <div className="mrd-owner-avatar mrd-owner-initials">YM</div>
+          <div>
+            <p className="mrd-owner-name">YumMeal Team</p>
+            <p className="mrd-owner-date">Created {createdDate}</p>
+          </div>
         </div>
 
-        <div className="admin-modal-body">
-          <div className="admin-modal-section">
-            <h3>Ingredients</h3>
-            <ul className="admin-modal-list">
-              {ingredients.length === 0 ? (
-                <li className="muted">No ingredients listed.</li>
-              ) : (
-                ingredients.map((ing, i) => <li key={i}>{ing}</li>)
-              )}
-            </ul>
+        {/* Description */}
+        {recipe.description && (
+          <p
+            style={{
+              fontFamily: "Noto Sans, sans-serif",
+              fontSize: "0.95rem",
+              color: "#555",
+              lineHeight: "1.6",
+              margin: "0",
+            }}
+          >
+            {recipe.description}
+          </p>
+        )}
+
+        {/* Body: ingredients + instructions */}
+        <div className="mrd-body">
+          <div className="mrd-ingredients-section">
+            <h2 className="mrd-section-title">Ingredients</h2>
+            {ingredients.length === 0 ? (
+              <p style={{ color: "#888", fontFamily: "Noto Sans, sans-serif" }}>
+                No ingredients listed.
+              </p>
+            ) : (
+              <div className="mrd-ingredients-columns">
+                <div className="mrd-ingredients-col">
+                  <p className="mrd-col-label">Item</p>
+                  <ul className="mrd-ingredients">
+                    {ingredients.map((ing, i) => (
+                      <li key={i} className="mrd-ingredient-name">
+                        <span>{parseIngredient(ing).name}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="mrd-ingredients-col">
+                  <p className="mrd-col-label">Amount</p>
+                  <ul className="mrd-ingredients">
+                    {ingredients.map((ing, i) => (
+                      <li key={i} className="mrd-ingredient-amount">
+                        {parseIngredient(ing).amount}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
           </div>
 
-          <div className="admin-modal-section">
-            <h3>Instructions</h3>
+          <div className="mrd-instructions-section">
+            <h2 className="mrd-section-title">Instructions</h2>
             {steps.length === 0 ? (
-              <p className="muted">No instructions provided.</p>
+              <p style={{ color: "#888", fontFamily: "Noto Sans, sans-serif" }}>
+                No instructions provided.
+              </p>
             ) : (
-              steps.map((step, i) => (
-                <div key={i} className="admin-modal-step">
-                  <span className="admin-modal-step-num">{i + 1}</span>
-                  <p>{step}</p>
-                </div>
-              ))
+              <div className="mrd-steps">
+                {steps.map((step, i) => (
+                  <div key={i} className="mrd-step">
+                    <span className="mrd-step-number">{i + 1}</span>
+                    <p className="mrd-step-text">{step}</p>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         </div>
@@ -222,8 +288,6 @@ export default function AdminTeamRecipes({
     const cookTimeNum = Number(form.cookTime);
     const difficulty =
       cookTimeNum <= 30 ? "Easy" : cookTimeNum <= 60 ? "Medium" : "Hard";
-    const cuisineType = form.tags[0] || "";
-    const dishType = form.tags[1] || "";
     const joinedInstructions = filledInstructions
       .map((r) => r.instruction)
       .join("\n")
@@ -242,8 +306,7 @@ export default function AdminTeamRecipes({
           image: form.imageBase64,
           ingredients: filledIngredients,
           instructions: joinedInstructions,
-          cuisineType,
-          dishType,
+          tags: form.tags,
           readyInMinutes: cookTimeNum || null,
           difficulty,
         }),
@@ -583,8 +646,7 @@ export default function AdminTeamRecipes({
           <table className="admin-table recipes-table">
             <colgroup>
               <col className="tr-col-name" />
-              <col className="tr-col-cuisine" />
-              <col className="tr-col-dish" />
+              <col className="tr-col-tags" />
               <col className="tr-col-time" />
               <col className="tr-col-added" />
               <col className="tr-col-actions" />
@@ -592,8 +654,7 @@ export default function AdminTeamRecipes({
             <thead>
               <tr>
                 <th>Recipe</th>
-                <th>Cuisine</th>
-                <th>Dish Type</th>
+                <th>Tags</th>
                 <th>Time</th>
                 <th>Added</th>
                 <th>Actions</th>
@@ -602,16 +663,29 @@ export default function AdminTeamRecipes({
             <tbody>
               {teamRecipes.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="empty-row">
+                  <td colSpan={5} className="empty-row">
                     No team recipes yet. Add one above.
                   </td>
                 </tr>
               ) : (
-                teamRecipes.map((r) => (
+                teamRecipes.map((r) => {
+                  const tags = r.tags?.length
+                    ? r.tags
+                    : [r.cuisineType, r.dishType].filter(Boolean);
+                  return (
                   <tr key={r._id}>
                     <td className="recipe-name-cell">{r.name}</td>
-                    <td>{r.cuisineType || <span className="muted">—</span>}</td>
-                    <td>{r.dishType || <span className="muted">—</span>}</td>
+                    <td>
+                      {tags.length ? (
+                        <div className="tr-tags-cell">
+                          {tags.map((t, i) => (
+                            <span key={i} className="tr-tag-chip">{t}</span>
+                          ))}
+                        </div>
+                      ) : (
+                        <span className="muted">—</span>
+                      )}
+                    </td>
                     <td className="muted">
                       {r.readyInMinutes ? `${r.readyInMinutes} min` : "—"}
                     </td>
@@ -643,7 +717,8 @@ export default function AdminTeamRecipes({
                       </button>
                     </td>
                   </tr>
-                ))
+                  );
+                })
               )}
             </tbody>
           </table>

@@ -68,6 +68,10 @@ function TeamRecipeDetails() {
         .filter(Boolean)
     : [];
 
+  const tags = recipe?.tags?.length
+    ? recipe.tags
+    : [recipe?.cuisineType, recipe?.dishType].filter(Boolean);
+
   const createdDate = recipe?.createdAt
     ? new Date(recipe.createdAt).toLocaleDateString("en-US", {
         year: "numeric",
@@ -141,12 +145,11 @@ function TeamRecipeDetails() {
                     {recipe.difficulty}
                   </span>
                 )}
-                {recipe.cuisineType && (
-                  <span className="mrd-chip">{recipe.cuisineType}</span>
-                )}
-                {recipe.dishType && (
-                  <span className="mrd-chip">{recipe.dishType}</span>
-                )}
+                {tags.map((tag, i) => (
+                  <span key={i} className="mrd-chip">
+                    {tag}
+                  </span>
+                ))}
               </div>
 
               {/* Author + Date */}
@@ -158,32 +161,58 @@ function TeamRecipeDetails() {
                 </div>
               </div>
 
+              {/* Description */}
+              {recipe.description && (
+                <p
+                  style={{
+                    fontFamily: "Noto Sans, sans-serif",
+                    fontSize: "0.95rem",
+                    color: "#555",
+                    lineHeight: "1.6",
+                    margin: "0 0 1.5rem",
+                  }}
+                >
+                  {recipe.description}
+                </p>
+              )}
+
               <div className="mrd-body">
                 {/* Ingredients */}
                 <div className="mrd-ingredients-section">
                   <h2 className="mrd-section-title">Ingredients</h2>
-                  <div className="mrd-ingredients-columns">
-                    <div className="mrd-ingredients-col">
-                      <p className="mrd-col-label">Item</p>
-                      <ul className="mrd-ingredients">
-                        {ingredients.map((ing, i) => (
-                          <li key={i} className="mrd-ingredient-name">
-                            <span>{parseIngredient(ing).name}</span>
-                          </li>
-                        ))}
-                      </ul>
+                  {ingredients.length === 0 ? (
+                    <p
+                      style={{
+                        color: "#888",
+                        fontFamily: "Noto Sans, sans-serif",
+                      }}
+                    >
+                      No ingredients listed.
+                    </p>
+                  ) : (
+                    <div className="mrd-ingredients-columns">
+                      <div className="mrd-ingredients-col">
+                        <p className="mrd-col-label">Item</p>
+                        <ul className="mrd-ingredients">
+                          {ingredients.map((ing, i) => (
+                            <li key={i} className="mrd-ingredient-name">
+                              <span>{parseIngredient(ing).name}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div className="mrd-ingredients-col">
+                        <p className="mrd-col-label">Amount</p>
+                        <ul className="mrd-ingredients">
+                          {ingredients.map((ing, i) => (
+                            <li key={i} className="mrd-ingredient-amount">
+                              {parseIngredient(ing).amount}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
-                    <div className="mrd-ingredients-col">
-                      <p className="mrd-col-label">Amount</p>
-                      <ul className="mrd-ingredients">
-                        {ingredients.map((ing, i) => (
-                          <li key={i} className="mrd-ingredient-amount">
-                            {parseIngredient(ing).amount}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
+                  )}
                 </div>
 
                 {/* Instructions */}
@@ -216,7 +245,7 @@ function TeamRecipeDetails() {
                 recipeId={id}
                 token={token}
                 user={user}
-                type="user-recipe"
+                type="team-recipe"
               />
             </div>
           )}

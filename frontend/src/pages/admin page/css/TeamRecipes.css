@@ -47,13 +47,10 @@
 }
 
 .tr-col-name {
-  width: 22%;
+  width: 25%;
 }
-.tr-col-cuisine {
-  width: 14%;
-}
-.tr-col-dish {
-  width: 20%;
+.tr-col-tags {
+  width: 15%;
 }
 .tr-col-time {
   width: 10%;
@@ -62,7 +59,24 @@
   width: 12%;
 }
 .tr-col-actions {
-  width: 25%;
+  width: 18%;
+}
+
+.tr-tags-cell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.tr-tag-chip {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: #f5ece8;
+  color: #7a2020;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
 }
 
 .tr-error {

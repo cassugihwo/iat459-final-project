@@ -249,8 +249,8 @@ function Home() {
           sourceId: r._id,
           title: r.name,
           image: r.image || null,
-          cuisineType: r.cuisineType,
-          dishType: r.dishType,
+          cuisineType: r.tags?.[0] || r.cuisineType || null,
+          dishType: r.tags?.[1] || r.dishType || null,
           readyInMinutes: r.readyInMinutes,
           difficulty: r.difficulty,
           rating,
@@ -789,8 +789,8 @@ function Home() {
                         key={recipe._id}
                         title={recipe.name}
                         image={recipe.image || null}
-                        cuisineType={recipe.cuisineType}
-                        dishType={recipe.dishType}
+                        cuisineType={recipe.tags?.[0] || recipe.cuisineType || null}
+                        dishType={recipe.tags?.[1] || recipe.dishType || null}
                         readyInMinutes={recipe.readyInMinutes}
                         difficulty={recipe.difficulty}
                         isFavourited={favouriteIds.has(recipe._id)}
@@ -801,8 +801,8 @@ function Home() {
                             id: recipe._id,
                             title: recipe.name,
                             image: recipe.image || null,
-                            cuisineType: recipe.cuisineType,
-                            dishType: recipe.dishType,
+                            cuisineType: recipe.cuisineType || null,
+                            dishType: recipe.dishType || null,
                             readyInMinutes: recipe.readyInMinutes,
                           })
                         }

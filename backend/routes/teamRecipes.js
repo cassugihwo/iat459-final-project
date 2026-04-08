@@ -46,26 +46,18 @@ router.get("/:id", async (req, res) => {
 // POST create a team recipe (admin only)
 router.post("/", verifyToken, adminOnly, async (req, res) => {
   try {
-    const {
-      name,
-      image,
-      description,
-      cuisineType,
-      dishType,
-      readyInMinutes,
-      difficulty,
-      ingredients,
-      instructions,
-    } = req.body;
+    const { name, image, description, tags, readyInMinutes, difficulty, ingredients, instructions } = req.body;
     if (!name)
       return res.status(400).json({ message: "Recipe name is required." });
 
+    const normalizedTags = Array.isArray(tags) ? tags.filter(Boolean) : [];
     const recipe = await TeamRecipe.create({
       name,
       image,
       description,
-      cuisineType,
-      dishType,
+      tags: normalizedTags,
+      cuisineType: normalizedTags[0] || "",
+      dishType: normalizedTags[1] || "",
       readyInMinutes: readyInMinutes ? Number(readyInMinutes) : null,
       difficulty,
       ingredients,

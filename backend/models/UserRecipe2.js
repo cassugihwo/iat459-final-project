@@ -17,7 +17,7 @@ const UserRecipe2Schema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    owner:{
+    owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
@@ -25,9 +25,11 @@ const UserRecipe2Schema = new mongoose.Schema(
     isPublic: {
       type: Boolean,
       default: false,
-    }
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  },
 );
 
 module.exports = mongoose.model("UserRecipe2", UserRecipe2Schema);
