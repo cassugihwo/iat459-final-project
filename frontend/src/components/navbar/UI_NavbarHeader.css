@@ -2,164 +2,191 @@
 
 /* for UI_NavbarHeader.js (Navbar with logo and auth buttons) */
 .navbarHeader-container {
-    position: fixed;
-    z-index: 1000;
-    top: 0;
-    left: 0;
-    width: 100%;
-    display: grid;
-    grid-template-columns: 20% 60% 20%;
-    align-items: center;
-    background-color: transparent;
-    padding: 1.2rem 0;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 20% 60% 20%;
+  align-items: center;
+  background-color: transparent;
+  padding: 1.2rem 0;
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .navbarHeader-container.scrolled {
-    background-color: var(--color-white0);
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  background-color: var(--color-white0);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
 .navbarHeader-container .logo {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 0 1rem;
-    cursor: pointer;
+  position: relative;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0 1rem;
+  cursor: pointer;
 }
 
 .navbarHeader-container .logo img {
-    height: 2.2rem;
-    width: auto;
-    display: block;
+  height: 2.2rem;
+  width: auto;
+  display: block;
+}
+
+.navbarHeader-container .logo .logo-hover {
+  position: absolute;
+  left: 1rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.navbarHeader-container .logo .logo-default {
+  transition: opacity 0.3s ease;
+}
+
+.navbarHeader-container .logo:hover .logo-default {
+  opacity: 0;
+}
+
+.navbarHeader-container .logo:hover .logo-hover {
+  opacity: 1;
 }
 
 .navbarHeader-container .header-nav {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 11px;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.15s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 11px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
 }
 
 .navbarHeader-container.show-nav .header-nav {
-    opacity: 1;
-    pointer-events: all;
+  opacity: 1;
+  pointer-events: all;
 }
 
 .navbarHeader-container .header-nav a {
-    padding: 5px 14px;
-    border-radius: 15px;
-    font-family: "Noto Sans", sans-serif;
-    font-weight: 700;
-    color: var(--color-red1);
-    text-decoration: none;
-    transition: color 0.2s;
+  padding: 5px 14px;
+  border-radius: 15px;
+  font-family: "Noto Sans", sans-serif;
+  font-weight: 700;
+  color: var(--color-red1);
+  text-decoration: none;
+  transition: color 0.2s;
 }
 
 .navbarHeader-container .header-nav a:hover {
-    color: #4e1c1c;
+  color: #4e1c1c;
 }
 
 .navbarHeader-container .header-nav-item {
-    position: relative;
-    display: flex;
-    align-items: center;
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .navbarHeader-container .header-nav-item .member-only-link {
-    opacity: 0.58;
+  opacity: 0.58;
 }
 
 .navbarHeader-container .header-nav-item .member-only-link:hover {
-    opacity: 0.82;
-    color: #4e1c1c;
+  opacity: 0.82;
 }
 
 .navbarHeader-container .header-nav-item .member-only-tooltip {
-    position: absolute;
-    left: 50%;
-    bottom: calc(100% + 8px);
-    transform: translateX(-50%) translateY(4px);
-    background-color: rgba(29, 16, 16, 0.95);
-    color: var(--color-white0);
-    padding: 6px 10px;
-    border-radius: 8px;
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.75rem;
-    font-weight: 600;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.18s ease, transform 0.18s ease;
-    z-index: 10;
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%) translateY(4px);
+  background-color: rgba(29, 16, 16, 0.95);
+  color: var(--color-white0);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+  z-index: 10;
 }
 
 .navbarHeader-container .header-nav-item .member-only-tooltip::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border-width: 5px;
-    border-style: solid;
-    border-color: rgba(29, 16, 16, 0.95) transparent transparent transparent;
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: rgba(29, 16, 16, 0.95) transparent transparent transparent;
 }
 
 .navbarHeader-container .header-nav-item:hover .member-only-tooltip {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 .navbarHeader-container .header-nav a.selected {
-    background-color: var(--color-red1);
-    color: var(--color-white0);
-    padding: 10px 28px;
-    border-radius: 999px;
+  background-color: var(--color-red1);
+  color: var(--color-white0);
+  padding: 10px 28px;
+  border-radius: 999px;
 }
 
 .navbarHeader-container .rightside {
-    grid-column-start: 3;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 1rem;
-    padding: 0 1rem;
+  grid-column-start: 3;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1rem;
 }
 
 .navbarHeader-container .rightside button {
-    padding: 0.5rem 1.35rem;
-    border-radius: 10rem;
-    font-size: 0.9rem;
-    font-family: "Noto Sans", sans-serif;
-    font-weight: 600;
-    border: none;
-    text-align: center;
-    cursor: pointer;
-    transition: 0.2s ease;
+  padding: 0.5rem 1.35rem;
+  border-radius: 10rem;
+  font-size: 0.9rem;
+  font-family: "Noto Sans", sans-serif;
+  font-weight: 600;
+  border: none;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.2s ease;
 }
 
 .navbarHeader-container .rightside .outlined-btn {
-    color: #9E3B3B;
-    background-color: var(--color-white0);
-    border: 1.5px solid #9E3B3B;
-    transition: color, background-color 0.2s ease, color 0.2s ease;
+  color: #9e3b3b;
+  background-color: var(--color-white0);
+  border: 1.5px solid #9e3b3b;
+  transition:
+    color,
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .navbarHeader-container .rightside .filled-btn {
-    color: var(--color-white0);
-    background-color: #9E3B3B;
-    border: 1.5px solid #9E3B3B;
-    transition: color, background-color 0.2s ease, color 0.2s ease;
-
+  color: var(--color-white0);
+  background-color: #9e3b3b;
+  border: 1.5px solid #9e3b3b;
+  transition:
+    color,
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .navbarHeader-container .rightside .outlined-btn:hover,
 .navbarHeader-container .rightside .filled-btn:hover {
-    color: var(--color-white0);
-    background-color: #511d1d;
-    border: 1.5px solid #511d1d;
-
+  color: var(--color-white0);
+  background-color: #511d1d;
+  border: 1.5px solid #511d1d;
 }

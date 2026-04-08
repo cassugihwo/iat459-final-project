@@ -3,6 +3,7 @@ import { useNavigate, NavLink } from "react-router-dom";
 import { useAuth } from "context/AuthContext";
 import "./UI_NavbarHeader.css";
 import logo from "assets/logo/logo-noslogan.png";
+import logoDark from "assets/logo/logo-noslogan-darker.png";
 
 const PUBLIC = [
   { to: "/home", label: "Home" },
@@ -55,7 +56,13 @@ function UI_NavbarHeader() {
       className={`navbarHeader-container${hasBg ? " scrolled" : ""}${showNav ? " show-nav" : ""}`}
     >
       <div className="logo" onClick={() => navigate("/home")}>
-        <img src={logo} alt="YumMeal logo" />
+        <img src={logo} alt="YumMeal logo" className="logo-default" />
+        <img
+          src={logoDark}
+          alt="YumMeal logo dark"
+          className="logo-hover"
+          aria-hidden="true"
+        />
       </div>
 
       <nav className="header-nav">

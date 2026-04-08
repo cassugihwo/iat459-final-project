@@ -368,17 +368,16 @@ function Home() {
 
   const filterOptions = useMemo(() => {
     const types = [
-      ...new Set(teamRecipes.map((r) => r.cuisineType).filter(Boolean)),
+      ...new Set(teamRecipes.flatMap((r) => r.tags || []).filter(Boolean)),
     ];
     return ["All", ...types];
   }, [teamRecipes]);
 
   const filtered = useMemo(() => {
     if (filter === "All") return teamRecipes;
-    return teamRecipes.filter((r) => r.cuisineType === filter);
+    return teamRecipes.filter((r) => r.tags?.includes(filter));
   }, [teamRecipes, filter]);
 
-  if (teamRecipes.length === 0) return null;
   return (
     <div className="home-page">
       <div className="navbarHeader">
@@ -765,51 +764,54 @@ function Home() {
                   </div>
                 </div>
 
-                {filterOptions.length > 1 && (
-                  <div className="recipe-filter-section">
-                    <div className="recipe-filter-pills">
-                      {filterOptions.map((type) => (
-                        <button
-                          key={type}
-                          type="button"
-                          className={`recipe-filter-pill${filter === type ? " active" : ""}`}
-                          onClick={() => setFilter(type)}
-                        >
-                          {type}
-                        </button>
-                      ))}
+                {teamRecipes.length === 0 ? (
+                  <p className="home-empty">No recipe from the team yet.</p>
+                ) : (
+                  <>
+                    <div className="recipe-filter-section">
+                      <div className="recipe-filter-pills">
+                        {filterOptions.map((type) => (
+                          <button
+                            key={type}
+                            type="button"
+                            className={`recipe-filter-pill${filter === type ? " active" : ""}`}
+                            onClick={() => setFilter(type)}
+                          >
+                            {type}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                    <div className="recipe-carousel-wrapper">
+                      <div className="recipe-carousel">
+                        {filtered.map((recipe) => (
+                          <RecipeCard
+                            key={recipe._id}
+                            title={recipe.name}
+                            image={recipe.image || null}
+                            cuisineType={recipe.tags?.[0] || recipe.cuisineType || null}
+                            dishType={recipe.tags?.[1] || recipe.dishType || null}
+                            readyInMinutes={recipe.readyInMinutes}
+                            difficulty={recipe.difficulty}
+                            isFavourited={favouriteIds.has(recipe._id)}
+                            rating={teamRatings[recipe._id] ?? 0}
+                            onClick={() => navigate(`/team-recipe/${recipe._id}`)}
+                            onFavourite={() =>
+                              handleSaveFavourite({
+                                id: recipe._id,
+                                title: recipe.name,
+                                image: recipe.image || null,
+                                cuisineType: recipe.cuisineType || null,
+                                dishType: recipe.dishType || null,
+                                readyInMinutes: recipe.readyInMinutes,
+                              })
+                            }
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </>
                 )}
-
-                <div className="recipe-carousel-wrapper">
-                  <div className="recipe-carousel">
-                    {filtered.map((recipe) => (
-                      <RecipeCard
-                        key={recipe._id}
-                        title={recipe.name}
-                        image={recipe.image || null}
-                        cuisineType={recipe.tags?.[0] || recipe.cuisineType || null}
-                        dishType={recipe.tags?.[1] || recipe.dishType || null}
-                        readyInMinutes={recipe.readyInMinutes}
-                        difficulty={recipe.difficulty}
-                        isFavourited={favouriteIds.has(recipe._id)}
-                        rating={teamRatings[recipe._id] ?? 0}
-                        onClick={() => navigate(`/team-recipe/${recipe._id}`)}
-                        onFavourite={() =>
-                          handleSaveFavourite({
-                            id: recipe._id,
-                            title: recipe.name,
-                            image: recipe.image || null,
-                            cuisineType: recipe.cuisineType || null,
-                            dishType: recipe.dishType || null,
-                            readyInMinutes: recipe.readyInMinutes,
-                          })
-                        }
-                      />
-                    ))}
-                  </div>
-                </div>
               </section>{" "}
             </>
           )}

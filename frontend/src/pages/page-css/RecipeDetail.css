@@ -273,6 +273,11 @@
   color: #888;
 }
 
+.rd-empty-text {
+  color: #888;
+  font-family: "Noto Sans", sans-serif;
+}
+
 /* Responsive */
 @media (max-width: 680px) {
   .rd-body {

@@ -533,10 +533,7 @@ function SavedRecipes() {
                       ])
                     }
                   >
-                    <Plus
-                      size={18}
-                      style={{ marginRight: 6, verticalAlign: "middle" }}
-                    />
+                    <Plus size={18} className="sr-icon-add" />
                     Add Ingredient
                   </button>
                 </div>

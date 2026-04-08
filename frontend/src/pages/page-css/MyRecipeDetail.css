@@ -291,6 +291,11 @@
   margin: 0;
 }
 
+.mrd-empty-text {
+  color: #888;
+  font-family: "Noto Sans", sans-serif;
+}
+
 /* Responsive */
 @media (max-width: 680px) {
   .mrd-body {

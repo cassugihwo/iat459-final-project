@@ -10,10 +10,6 @@ const TeamRecipeSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    description: {
-      type: String,
-      default: "",
-    },
     tags: {
       type: [String],
       default: [],

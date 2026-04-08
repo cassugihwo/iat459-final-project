@@ -1,7 +1,18 @@
 import { timeAgo, getInitials } from "./Utils";
 import "./css/Dashboard.css";
 
-export default function AdminDashboard({ content, members, suspendedCount, recentRecipes, setView, VIEWS }) {
+export default function AdminDashboard({
+  content,
+  members,
+  suspendedCount,
+  recentRecipes,
+  setView,
+  VIEWS,
+}) {
+  const newUsers = [...members]
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .slice(0, 5);
+
   return (
     <div className="admin-dashboard">
       <div className="admin-stats">
@@ -34,36 +45,54 @@ export default function AdminDashboard({ content, members, suspendedCount, recen
       <div className="admin-panels">
         <div className="admin-panel">
           <div className="panel-header">
-            <span>Recent Recipe submissions</span>
-            <button className="view-all-btn" onClick={() => setView(VIEWS.RECIPES)}>
+            <span>New Members</span>
+            <button
+              className="view-all-btn"
+              onClick={() => setView(VIEWS.MEMBERS)}
+            >
               View all
             </button>
           </div>
-
           <table className="admin-table">
             <colgroup>
-              <col className="dash-col-recipe" />
-              <col className="dash-col-owner" />
-              <col className="dash-col-when" />
+              <col className="dash-col-user" />
+              <col className="dash-col-role" />
+              <col className="dash-col-joined" />
             </colgroup>
             <thead>
               <tr>
-                <th>Recipe</th>
-                <th>Submitted by</th>
-                <th>When</th>
+                <th>Member</th>
+                <th>Role</th>
+                <th>Joined</th>
               </tr>
             </thead>
             <tbody>
-              {recentRecipes.length === 0 ? (
+              {newUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={3} className="empty-row">No recipes yet</td>
+                  <td colSpan={3} className="empty-row">
+                    No members yet
+                  </td>
                 </tr>
               ) : (
-                recentRecipes.map((r) => (
-                  <tr key={r._id}>
-                    <td className="recipe-name-cell">{r.name}</td>
-                    <td>@{r.owner?.username || "unknown"}</td>
-                    <td className="muted">{timeAgo(r.createdAt)}</td>
+                newUsers.map((m) => (
+                  <tr key={m._id}>
+                    <td>
+                      <div className="member-cell">
+                        <div className="member-avatar sm">
+                          {getInitials(m.username)}
+                        </div>
+                        <div>
+                          <div className="member-name">{m.username}</div>
+                          <div className="member-sub muted">
+                            {m.firstName} {m.lastName}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span className={`badge ${m.role}`}>{m.role}</span>
+                    </td>
+                    <td className="muted">{timeAgo(m.createdAt)}</td>
                   </tr>
                 ))
               )}
@@ -74,7 +103,10 @@ export default function AdminDashboard({ content, members, suspendedCount, recen
         <div className="admin-panel">
           <div className="panel-header">
             <span>Suspended Members</span>
-            <button className="view-all-btn" onClick={() => setView(VIEWS.SUSPENDED)}>
+            <button
+              className="view-all-btn"
+              onClick={() => setView(VIEWS.SUSPENDED)}
+            >
               View all
             </button>
           </div>
@@ -89,29 +121,80 @@ export default function AdminDashboard({ content, members, suspendedCount, recen
             <tbody>
               {members.filter((m) => m.isSuspended).length === 0 ? (
                 <tr>
-                  <td colSpan={2} className="empty-row">No suspended members</td>
+                  <td colSpan={2} className="empty-row">
+                    No suspended members
+                  </td>
                 </tr>
               ) : (
-                members.filter((m) => m.isSuspended).map((m) => (
-                  <tr key={m._id}>
-                    <td>
-                      <div className="member-cell">
-                        <div className="member-avatar sm">{getInitials(m.username)}</div>
-                        <div>
-                          <div className="member-name">{m.username}</div>
-                          <div className="member-sub muted">{m.firstName} {m.lastName}</div>
+                members
+                  .filter((m) => m.isSuspended)
+                  .map((m) => (
+                    <tr key={m._id}>
+                      <td>
+                        <div className="member-cell">
+                          <div className="member-avatar sm">
+                            {getInitials(m.username)}
+                          </div>
+                          <div>
+                            <div className="member-name">{m.username}</div>
+                            <div className="member-sub muted">
+                              {m.firstName} {m.lastName}
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td>
-                      <span className={`badge ${m.role}`}>{m.role}</span>
-                    </td>
-                  </tr>
-                ))
+                      </td>
+                      <td>
+                        <span className={`badge ${m.role}`}>{m.role}</span>
+                      </td>
+                    </tr>
+                  ))
               )}
             </tbody>
           </table>
         </div>
+      </div>
+
+      <div className="admin-panel dash-full-panel">
+        <div className="panel-header">
+          <span>Recent Recipe Submissions</span>
+          <button
+            className="view-all-btn"
+            onClick={() => setView(VIEWS.RECIPES)}
+          >
+            View all
+          </button>
+        </div>
+        <table className="admin-table">
+          <colgroup>
+            <col className="dash-col-recipe" />
+            <col className="dash-col-owner" />
+            <col className="dash-col-when" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Recipe</th>
+              <th>Submitted by</th>
+              <th>When</th>
+            </tr>
+          </thead>
+          <tbody>
+            {recentRecipes.length === 0 ? (
+              <tr>
+                <td colSpan={3} className="empty-row">
+                  No recipes yet
+                </td>
+              </tr>
+            ) : (
+              recentRecipes.map((r) => (
+                <tr key={r._id}>
+                  <td className="recipe-name-cell">{r.name}</td>
+                  <td>@{r.owner?.username || "unknown"}</td>
+                  <td className="muted">{timeAgo(r.createdAt)}</td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );

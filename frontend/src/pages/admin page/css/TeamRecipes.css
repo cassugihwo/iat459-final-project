@@ -47,10 +47,7 @@
 }
 
 .tr-col-name {
-  width: 25%;
-}
-.tr-col-tags {
-  width: 15%;
+  width: 10%;
 }
 .tr-col-time {
   width: 10%;
@@ -83,4 +80,27 @@
   color: #c0392b;
   font-size: 0.85rem;
   margin: 0 0 0.5rem;
+}
+
+.tr-modal-hero {
+  margin: 0;
+  height: 16rem;
+}
+
+.tr-modal-title {
+  margin-top: 1rem;
+}
+
+.tr-empty-text {
+  color: #888;
+  font-family: "Noto Sans", sans-serif;
+}
+
+.action-btn.edit {
+  background: rgba(200, 130, 0, 0.1);
+  color: #b8750a;
+}
+
+.action-btn.edit:hover {
+  background: rgba(200, 130, 0, 0.2);
 }

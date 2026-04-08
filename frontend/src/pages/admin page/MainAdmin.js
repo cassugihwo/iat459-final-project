@@ -26,8 +26,13 @@ export default function Admin() {
   const { token, user, logout } = useAuth();
   const navigate = useNavigate();
 
-  const [view, setViewState] = useState(() => localStorage.getItem("adminView") || VIEWS.DASHBOARD);
-  function setView(v) { setViewState(v); localStorage.setItem("adminView", v); }
+  const [view, setViewState] = useState(
+    () => localStorage.getItem("adminView") || VIEWS.DASHBOARD,
+  );
+  function setView(v) {
+    setViewState(v);
+    localStorage.setItem("adminView", v);
+  }
   const [members, setMembers] = useState([]);
   const [content, setContent] = useState([]);
   const [search, setSearch] = useState("");
@@ -191,8 +196,7 @@ export default function Admin() {
   const filteredTeamRecipes = teamRecipes.filter(
     (r) =>
       r.name?.toLowerCase().includes(search.toLowerCase()) ||
-      r.cuisineType?.toLowerCase().includes(search.toLowerCase()) ||
-      r.dishType?.toLowerCase().includes(search.toLowerCase()),
+      r.tags?.some((t) => t.toLowerCase().includes(search.toLowerCase())),
   );
 
   return (
@@ -302,15 +306,17 @@ export default function Admin() {
             </p>
           </div>
 
-          <div className="admin-search-wrap">
-            <i className="ri-search-line admin-search-icon" />
-            <input
-              className="admin-search"
-              placeholder="Search anything..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
+          {view !== VIEWS.DASHBOARD && (
+            <div className="admin-search-wrap">
+              <i className="ri-search-line admin-search-icon" />
+              <input
+                className="admin-search"
+                placeholder="Search anything..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+          )}
         </div>
 
         {loading ? (

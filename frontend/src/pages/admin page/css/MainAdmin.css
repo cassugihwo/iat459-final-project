@@ -329,6 +329,10 @@
   gap: 0.65rem;
 }
 
+.member-cell > div:last-child {
+  min-width: 0;
+}
+
 .member-avatar.sm {
   width: 2rem;
   height: 2rem;
@@ -347,10 +351,16 @@
   font-weight: 600;
   color: #570000;
   font-size: 0.85rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .member-sub {
   font-size: 0.75rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 /* Badges */

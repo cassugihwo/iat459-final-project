@@ -195,12 +195,7 @@ function RecipeDetail() {
                   <div className="rd-instructions-section">
                     <h2 className="rd-section-title">Instructions</h2>
                     {recipe.steps.length === 0 ? (
-                      <p
-                        style={{
-                          color: "#888",
-                          fontFamily: "Noto Sans, sans-serif",
-                        }}
-                      >
+                      <p className="rd-empty-text">
                         No instructions available.
                       </p>
                     ) : (

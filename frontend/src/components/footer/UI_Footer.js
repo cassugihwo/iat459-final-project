@@ -4,7 +4,7 @@ import logo from "assets/logo/logo-noslogan-light.png";
 import "remixicon/fonts/remixicon.css";
 import "./UI_Footer.css";
 
-//Protected routes that require login to access
+// Protected routes that require login to access
 const PROTECTED = [
   "/pantry",
   "/saved-recipes",
@@ -22,11 +22,17 @@ function FooterLink({ to, children }) {
   if (isProtected && !user) {
     return (
       <li className="footer-protected">
-        <span onClick={() => navigate("/login")}>{children}</span>
+        <span
+          onClick={() => navigate("/login")}
+          className="footer-protected-link"
+        >
+          {children}
+        </span>
         <span className="footer-tooltip">Login to access this feature</span>
       </li>
     );
   }
+
   return (
     <li>
       <NavLink to={to}>{children}</NavLink>
@@ -35,6 +41,14 @@ function FooterLink({ to, children }) {
 }
 
 function UI_Footer() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
   return (
     <footer className="footer">
       <div className="footer-inner">
@@ -44,7 +58,7 @@ function UI_Footer() {
             Find your next Yum. Discover recipes, plan your meals, and cook with
             confidence.
           </p>
-          {/* Social media links */}
+
           <div className="footer-socials">
             <span className="social-icon" aria-label="Facebook">
               <i className="ri-facebook-fill"></i>
@@ -58,7 +72,6 @@ function UI_Footer() {
           </div>
         </div>
 
-        {/*Explore and Protected links */}
         <div className="footer-col">
           <h4 className="footer-col-title">Explore</h4>
           <ul>
@@ -69,19 +82,22 @@ function UI_Footer() {
           </ul>
         </div>
 
-        {/* Account and Favourite links */}
         <div className="footer-col">
           <h4 className="footer-col-title">Account</h4>
           <ul>
             <FooterLink to="/profile">My Profile</FooterLink>
             <FooterLink to="/pantry">Your Pantry</FooterLink>
+
             <li>
-              <NavLink to="/login">Login / Sign Up</NavLink>
+              {user ? (
+                <span onClick={handleLogout}>Logout</span>
+              ) : (
+                <NavLink to="/login">Login / Sign Up</NavLink>
+              )}
             </li>
           </ul>
         </div>
 
-        {/* Company links (place holder)*/}
         <div className="footer-col">
           <h4 className="footer-col-title">Company</h4>
           <ul>
@@ -101,9 +117,10 @@ function UI_Footer() {
         </div>
       </div>
 
-      {/* Footer bottom with copyright and legal links (placeholder)*/}
       <div className="footer-bottom">
-        <p>&copy; {new Date().getFullYear()} YumMeal. All rights reserved.</p>
+        <p className="footer-copy">
+          © {new Date().getFullYear()} YumMeal. All rights reserved.
+        </p>{" "}
         <div className="footer-bottom-links">
           <span>Privacy</span>
           <span>Terms</span>

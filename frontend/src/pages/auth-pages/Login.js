@@ -56,8 +56,11 @@ function Login() {
             </div>
             <h3 className="suspended-title">Account Suspended</h3>
             <p className="suspended-msg">
-              Your account has been suspended. Please contact support if you
-              believe this is a mistake.
+              Your account has been suspended. Please{" "}
+              <button type="button" className="suspended-contact-link">
+                CONTACT SUPPORT
+              </button>{" "}
+              if you believe this is a mistake.
             </p>
             <button
               className="suspended-btn"

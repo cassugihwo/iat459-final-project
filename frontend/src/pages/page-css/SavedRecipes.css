@@ -1,6 +1,6 @@
 @import "App.css";
 
-/* ── Layout ── */
+/*Layout*/
 
 .sr-body {
   max-width: 1300px;
@@ -95,8 +95,7 @@
   flex: 1;
 }
 
-/* ── Table ── */
-/*table*/
+/* Table */
 .rd-step-number {
   margin-left: 8px;
   margin-top: 8px;
@@ -135,29 +134,8 @@
   vertical-align: top;
   text-align: center;
 }
-/* Show trash button only on row hover in ingredients table */
-.sr-ingredient-row .sr-btn-trash,
-.sr-instruction-row .sr-btn-trash {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s;
-}
-.sr-ingredient-row:hover .sr-btn-trash,
-.sr-instruction-row:hover .sr-btn-trash {
-  opacity: 1;
-  pointer-events: auto;
-}
-.sr-btn-trash {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #c00;
-  padding: 0.2em 0.4em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
+/*Ingredients table*/
 .sr-table th {
   font-family: "Noto Sans", sans-serif;
   font-size: 0.75rem;
@@ -197,7 +175,7 @@
   background: #fff;
 }
 
-/* ── Add / trash buttons ── */
+/* Add buttons*/
 .sr-btn-add {
   display: inline-flex;
   align-items: center;
@@ -221,6 +199,7 @@
   color: #fff;
 }
 
+/*Trash Buttons*/
 .sr-btn-trash {
   display: flex;
   align-items: center;
@@ -240,7 +219,7 @@
   color: #c0392b;
 }
 
-/* ── Instructions step list ── */
+/*Instructions step list*/
 .sr-steps-list {
   display: flex;
   flex-direction: column;
@@ -274,13 +253,14 @@
   resize: vertical;
 }
 
-/* ── Form actions ── */
+/*Form actions*/
 .sr-actions {
   display: flex;
   gap: 0.75rem;
   margin-top: 0.25rem;
 }
 
+/*Save Button*/
 .sr-btn-save {
   padding: 0.7rem 2rem;
   background: var(--color-red1);
@@ -298,6 +278,7 @@
   background: var(--color-red0);
 }
 
+/*Clear Button*/
 .sr-btn-clear {
   padding: 0.7rem 1.5rem;
   background: transparent;
@@ -347,7 +328,7 @@
   color: #bbb;
 }
 
-/* ── Recipe list ── */
+/*Recipe list*/
 .sr-empty {
   color: #aaa;
   font-family: "Noto Sans", sans-serif;
@@ -446,6 +427,7 @@
   z-index: 2;
 }
 
+/*Button in card*/
 .sr-btn-card-action {
   width: 2rem;
   height: 2rem;
@@ -473,7 +455,7 @@
   color: #c0392b;
 }
 
-/*Tag chips*/
+/*Tag */
 .sr-tags-list {
   display: flex;
   flex-wrap: wrap;
@@ -521,7 +503,7 @@
   flex: 1;
 }
 
-/* ── Visibility toggle ── */
+/* Toggle*/
 .sr-visibility {
   display: flex;
   gap: 0.5rem;
@@ -556,6 +538,11 @@
   font-size: 0.78rem;
   color: #aaa;
   margin: 0;
+}
+
+.sr-icon-add {
+  margin-right: 6px;
+  vertical-align: middle;
 }
 
 /*Responsive*/

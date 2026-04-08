@@ -227,12 +227,7 @@ function MyRecipeDetails() {
                 <div className="mrd-instructions-section">
                   <h2 className="mrd-section-title">Instructions</h2>
                   {parsed.steps.length === 0 ? (
-                    <p
-                      style={{
-                        color: "#888",
-                        fontFamily: "Noto Sans, sans-serif",
-                      }}
-                    >
+                    <p className="mrd-empty-text">
                       No instructions available.
                     </p>
                   ) : (

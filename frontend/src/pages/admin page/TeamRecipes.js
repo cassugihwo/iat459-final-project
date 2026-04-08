@@ -6,6 +6,7 @@ import "pages/page-css/MyRecipeDetail.css";
 import "./css/UserRecipes.css";
 import "./css/TeamRecipes.css";
 import logo from "assets/logo/logo-full.png";
+import Toast from "components/toast/UI_Toast";
 
 function parseIngredient(str) {
   const match = str.match(
@@ -49,7 +50,7 @@ function TeamRecipeDetailModal({ recipe, onClose }) {
         </div>
 
         {/* Hero image */}
-        <div className="mrd-hero" style={{ margin: 0, height: "16rem" }}>
+        <div className="mrd-hero tr-modal-hero">
           {recipe.image ? (
             <img src={recipe.image} alt={recipe.name} />
           ) : (
@@ -60,9 +61,7 @@ function TeamRecipeDetailModal({ recipe, onClose }) {
         </div>
 
         {/* Title */}
-        <h1 className="mrd-title" style={{ marginTop: "1rem" }}>
-          {recipe.name}
-        </h1>
+        <h1 className="mrd-title tr-modal-title">{recipe.name}</h1>
 
         {/* Meta chips */}
         <div className="mrd-meta">
@@ -90,29 +89,12 @@ function TeamRecipeDetailModal({ recipe, onClose }) {
           </div>
         </div>
 
-        {/* Description */}
-        {recipe.description && (
-          <p
-            style={{
-              fontFamily: "Noto Sans, sans-serif",
-              fontSize: "0.95rem",
-              color: "#555",
-              lineHeight: "1.6",
-              margin: "0",
-            }}
-          >
-            {recipe.description}
-          </p>
-        )}
-
         {/* Body: ingredients + instructions */}
         <div className="mrd-body">
           <div className="mrd-ingredients-section">
             <h2 className="mrd-section-title">Ingredients</h2>
             {ingredients.length === 0 ? (
-              <p style={{ color: "#888", fontFamily: "Noto Sans, sans-serif" }}>
-                No ingredients listed.
-              </p>
+              <p className="tr-empty-text">No ingredients listed.</p>
             ) : (
               <div className="mrd-ingredients-columns">
                 <div className="mrd-ingredients-col">
@@ -142,9 +124,7 @@ function TeamRecipeDetailModal({ recipe, onClose }) {
           <div className="mrd-instructions-section">
             <h2 className="mrd-section-title">Instructions</h2>
             {steps.length === 0 ? (
-              <p style={{ color: "#888", fontFamily: "Noto Sans, sans-serif" }}>
-                No instructions provided.
-              </p>
+              <p className="tr-empty-text">No instructions provided.</p>
             ) : (
               <div className="mrd-steps">
                 {steps.map((step, i) => (
@@ -210,6 +190,7 @@ export default function AdminTeamRecipes({
   deleteTeamRecipe,
 }) {
   const [form, setForm] = useState(EMPTY_FORM);
+  const [editingId, setEditingId] = useState(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [selectedRecipe, setSelectedRecipe] = useState(null);
@@ -240,6 +221,42 @@ export default function AdminTeamRecipes({
 
   function resetForm() {
     setForm(EMPTY_FORM);
+    setEditingId(null);
+    setError("");
+  }
+
+  function loadForEdit(recipe) {
+    const ingredientRows = (recipe.ingredients || "")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .map((s) => {
+        const m = s.match(/^(\d[\d/.]*)\s+(.*)/);
+        return m
+          ? { amount: m[1], unit: "", name: m[2] }
+          : { amount: "", unit: "", name: s };
+      });
+
+    const instructionRows = (recipe.instructions || "")
+      .split("\n")
+      .map((l) => l.trim())
+      .filter(Boolean)
+      .map((l) => ({ instruction: l }));
+
+    setForm({
+      name: recipe.name || "",
+      serves: "",
+      cookTime: recipe.readyInMinutes?.toString() || "",
+      ingredients: ingredientRows.length ? ingredientRows : emptyIngredients(),
+      instructionsList: instructionRows.length
+        ? instructionRows
+        : emptyInstructions(),
+      tags: recipe.tags || [],
+      tagInput: "",
+      imageBase64: recipe.image || "",
+      imagePreview: recipe.image || "",
+    });
+    setEditingId(recipe._id);
     setError("");
   }
 
@@ -293,45 +310,80 @@ export default function AdminTeamRecipes({
       .join("\n")
       .trim();
 
-    setSaving(true);
-    try {
-      const res = await fetch("http://localhost:5001/api/team-recipes", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          name: form.name.trim(),
-          image: form.imageBase64,
-          ingredients: filledIngredients,
-          instructions: joinedInstructions,
-          tags: form.tags,
-          readyInMinutes: cookTimeNum || null,
-          difficulty,
-        }),
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message || "Failed to create recipe.");
+    // Flush any pending tag input that wasn't explicitly added
+    const pendingTag = form.tagInput.trim();
+    const finalTags =
+      pendingTag && !form.tags.includes(pendingTag)
+        ? [...form.tags, pendingTag]
+        : form.tags;
+
+    const payload = {
+      name: form.name.trim(),
+      image: form.imageBase64,
+      ingredients: filledIngredients,
+      instructions: joinedInstructions,
+      tags: finalTags,
+      readyInMinutes: cookTimeNum || null,
+      difficulty,
+    };
+
+    async function doSave() {
+      setSaving(true);
+      try {
+        const url = editingId
+          ? `http://localhost:5001/api/team-recipes/${editingId}`
+          : "http://localhost:5001/api/team-recipes";
+        const res = await fetch(url, {
+          method: editingId ? "PUT" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(
+            data.message ||
+              `Failed to ${editingId ? "update" : "create"} recipe.`,
+          );
+        }
+        resetForm();
+        onRefresh();
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setSaving(false);
       }
-      resetForm();
-      onRefresh();
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setSaving(false);
+    }
+
+    if (editingId) {
+      setPendingAction({
+        title: "Save Changes",
+        message: (
+          <>
+            Save changes to <strong>{form.name.trim()}</strong>? This will
+            update the recipe on the home page and for all users.
+          </>
+        ),
+        confirmLabel: "Save",
+        onConfirm: doSave,
+      });
+    } else {
+      doSave();
     }
   }
 
   return (
     <div className="tr-layout">
-      {/* Create Form */}
+      {/* Create / Edit Form */}
       <div className="tr-form-panel">
-        <h2 className="tr-form-title">Add Recipe</h2>
+        <h2 className="tr-form-title">
+          {editingId ? "Edit Recipe" : "Add Recipe"}
+        </h2>
 
         <section className="sr-form-section tr-form-section-override">
-          {error && <p className="tr-error">{error}</p>}
+          <Toast message={error} onClose={() => setError("")} />
 
           <form className="sr-form" onSubmit={handleSubmit}>
             {/* Recipe Name */}
@@ -625,28 +677,33 @@ export default function AdminTeamRecipes({
 
             <div className="sr-actions">
               <button className="sr-btn-save" type="submit" disabled={saving}>
-                {saving ? "Adding..." : "Add Recipe"}
+                {saving
+                  ? editingId
+                    ? "Saving..."
+                    : "Adding..."
+                  : editingId
+                    ? "Save Changes"
+                    : "Add Recipe"}
               </button>
               <button
                 className="sr-btn-clear"
                 type="button"
                 onClick={resetForm}
               >
-                Clear
+                {editingId ? "Cancel" : "Clear"}
               </button>
             </div>
           </form>
         </section>
       </div>
 
-      {/* Existing Team Recipes Table */}
+      {/*Team Recipes Table */}
       <div className="tr-table-col">
         <h2 className="tr-form-title">Team Recipes</h2>
         <div className="admin-panel full">
           <table className="admin-table recipes-table">
             <colgroup>
               <col className="tr-col-name" />
-              <col className="tr-col-tags" />
               <col className="tr-col-time" />
               <col className="tr-col-added" />
               <col className="tr-col-actions" />
@@ -654,7 +711,6 @@ export default function AdminTeamRecipes({
             <thead>
               <tr>
                 <th>Recipe</th>
-                <th>Tags</th>
                 <th>Time</th>
                 <th>Added</th>
                 <th>Actions</th>
@@ -669,54 +725,58 @@ export default function AdminTeamRecipes({
                 </tr>
               ) : (
                 teamRecipes.map((r) => {
-                  const tags = r.tags?.length
-                    ? r.tags
-                    : [r.cuisineType, r.dishType].filter(Boolean);
                   return (
-                  <tr key={r._id}>
-                    <td className="recipe-name-cell">{r.name}</td>
-                    <td>
-                      {tags.length ? (
-                        <div className="tr-tags-cell">
-                          {tags.map((t, i) => (
-                            <span key={i} className="tr-tag-chip">{t}</span>
-                          ))}
-                        </div>
-                      ) : (
-                        <span className="muted">—</span>
-                      )}
-                    </td>
-                    <td className="muted">
-                      {r.readyInMinutes ? `${r.readyInMinutes} min` : "—"}
-                    </td>
-                    <td className="muted">{timeAgo(r.createdAt)}</td>
-                    <td className="actions-cell">
-                      <button
-                        className="action-btn view"
-                        onClick={() => setSelectedRecipe(r)}
-                      >
-                        View
-                      </button>
-                      <button
-                        className="action-btn danger"
-                        onClick={() =>
-                          setPendingAction({
-                            title: "Delete Team Recipe",
-                            message: (
-                              <>
-                                Permanently delete <strong>{r.name}</strong>? It
-                                will be removed from the home page.
-                              </>
-                            ),
-                            confirmLabel: "Delete",
-                            onConfirm: () => deleteTeamRecipe(r._id),
-                          })
-                        }
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
+                    <tr key={r._id}>
+                      <td className="recipe-name-cell">{r.name}</td>
+                      <td className="muted">
+                        {r.readyInMinutes ? `${r.readyInMinutes} min` : "—"}
+                      </td>
+                      <td className="muted">{timeAgo(r.createdAt)}</td>
+                      <td className="actions-cell">
+                        <button
+                          className="action-btn view"
+                          onClick={() => setSelectedRecipe(r)}
+                        >
+                          View
+                        </button>
+                        <button
+                          className="action-btn edit"
+                          onClick={() =>
+                            setPendingAction({
+                              title: "Edit Recipe",
+                              message: (
+                                <>
+                                  Edit <strong>{r.name}</strong>? The form will
+                                  be pre-filled with the current recipe data.
+                                </>
+                              ),
+                              confirmLabel: "Edit",
+                              onConfirm: () => loadForEdit(r),
+                            })
+                          }
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="action-btn danger"
+                          onClick={() =>
+                            setPendingAction({
+                              title: "Delete Team Recipe",
+                              message: (
+                                <>
+                                  Permanently delete <strong>{r.name}</strong>?
+                                  It will be removed from the home page.
+                                </>
+                              ),
+                              confirmLabel: "Delete",
+                              onConfirm: () => deleteTeamRecipe(r._id),
+                            })
+                          }
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
                   );
                 })
               )}

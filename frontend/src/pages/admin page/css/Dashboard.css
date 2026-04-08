@@ -92,16 +92,28 @@
   color: #570000;
 }
 
-.admin-panels .admin-table {
+.admin-panels .admin-table,
+.dash-full-panel .admin-table {
   table-layout: fixed;
   width: 100%;
 }
 
-.admin-panels .recipe-name-cell {
+.admin-panels .recipe-name-cell,
+.dash-full-panel .recipe-name-cell {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   max-width: 0;
+}
+
+.admin-panels .member-name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.admin-panels .member-cell > div:last-child {
+  min-width: 0;
 }
 
 .dash-col-recipe {
@@ -111,5 +123,20 @@
   width: 30%;
 }
 .dash-col-when {
+  width: 20%;
+}
+
+.dash-full-panel {
+  margin-top: 1rem;
+}
+
+.dash-col-user {
+  width: 50%;
+}
+
+.dash-col-role {
+  width: 15%;
+}
+.dash-col-joined {
   width: 20%;
 }

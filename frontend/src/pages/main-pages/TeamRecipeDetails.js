@@ -161,21 +161,6 @@ function TeamRecipeDetails() {
                 </div>
               </div>
 
-              {/* Description */}
-              {recipe.description && (
-                <p
-                  style={{
-                    fontFamily: "Noto Sans, sans-serif",
-                    fontSize: "0.95rem",
-                    color: "#555",
-                    lineHeight: "1.6",
-                    margin: "0 0 1.5rem",
-                  }}
-                >
-                  {recipe.description}
-                </p>
-              )}
-
               <div className="mrd-body">
                 {/* Ingredients */}
                 <div className="mrd-ingredients-section">
@@ -219,12 +204,7 @@ function TeamRecipeDetails() {
                 <div className="mrd-instructions-section">
                   <h2 className="mrd-section-title">Instructions</h2>
                   {steps.length === 0 ? (
-                    <p
-                      style={{
-                        color: "#888",
-                        fontFamily: "Noto Sans, sans-serif",
-                      }}
-                    >
+                    <p className="mrd-empty-text">
                       No instructions available.
                     </p>
                   ) : (

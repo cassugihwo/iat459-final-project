@@ -1,172 +1,188 @@
 .footer {
-    background-color: #5b0101;
-    color: #ffffff;
-    padding: 3.5rem 5rem 0;
+  background-color: #5b0101;
+  color: #ffffff;
+  padding: 3.5rem 5rem 0;
 }
 
 .footer-inner {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 3rem;
-    padding-bottom: 3rem;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.557);
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 3rem;
+  padding-bottom: 3rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.557);
 }
 
 /* Brand column */
 .footer-brand {
-    display: flex;
-    flex-direction: column;
-    gap: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
 }
 
 .footer-logo {
-    height: auto;
-    width: 13rem;
-    display: block;
+  height: auto;
+  width: 13rem;
+  display: block;
 }
 
 .footer-tagline {
-    font-size: 1rem;
-    line-height: 1.65;
-    color: var(--color-white0);
-    margin: 0;
-    max-width: 320px;
-    font-family: "Noto Sans", sans-serif;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--color-white0);
+  margin: 0;
+  max-width: 320px;
+  font-family: "Noto Sans", sans-serif;
 }
 
 /* Social icons */
 .footer-socials {
-    display: flex;
-    gap: 0.65rem;
+  display: flex;
+  gap: 0.65rem;
 }
 
 .social-icon {
-    width: 2.4rem;
-    height: 2.4rem;
-    border-radius: 50%;
-    border: 1.5px solid rgba(255, 255, 255, 0.25);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    text-decoration: none;
-    cursor: pointer;
-    transition: border-color 0.2s, color 0.2s;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    color 0.2s;
 }
 
 .social-icon:hover {
-    border-color: #BF8040;
-    color: #E8D0B0;
+  border-color: #bf8040;
+  color: #e8d0b0;
 }
 
 .social-icon svg {
-    width: 1rem;
-    height: 1rem;
+  width: 1rem;
+  height: 1rem;
 }
 
 /* Nav columns */
 .footer-col-title {
-    font-family: "Noto Sans", sans-serif;
-    font-size: 1.2rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: #BF8040;
-    margin: 0 0 1.25rem;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #bf8040;
+  margin: 0 0 1.25rem;
 }
 
 .footer-col ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.85rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
 }
 
 .footer-col a,
 .footer-col span {
-    color: var(--color-white0);
-    text-decoration: none;
-    font-size: 1rem;
-    font-family: "Noto Sans", sans-serif;
-    cursor: pointer;
-    transition:color 0.2s;
+  color: var(--color-white0);
+  text-decoration: none;
+  font-size: 1rem;
+  font-family: "Noto Sans", sans-serif;
+  cursor: pointer;
+  transition: color 0.2s;
 }
 
 .footer-col a:hover,
-.footer-col span:hover {    
-    color: #E8D0B0;
+.footer-col span:hover {
+  color: #e8d0b0;
 }
 
 /* Guest-protected footer links */
 .footer-protected {
-    position: relative;
-    list-style: none;
+  position: relative;
+  list-style: none;
+}
+
+.footer-protected-link {
+  opacity: 0.4;
+  cursor: pointer;
+}
+
+.footer-protected:hover .footer-protected-link {
+  opacity: 0.6;
 }
 
 .footer-tooltip {
-    position: absolute;
-    left: 0;
-    bottom: calc(100% + 8px);
-    transform: translateY(4px);
-    background-color: rgba(29, 16, 16, 0.95);
-    color: #fff;
-    padding: 6px 10px;
-    border-radius: 8px;
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.75rem;
-    font-weight: 600;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.18s ease, transform 0.18s ease;
-    z-index: 1000;
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 8px);
+  transform: translateY(4px);
+  background-color: rgba(29, 16, 16, 0.95);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+  z-index: 1000;
 }
 
 .footer-tooltip::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 1rem;
-    border-width: 5px;
-    border-style: solid;
-    border-color: rgba(29, 16, 16, 0.95) transparent transparent transparent;
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 1rem;
+  border-width: 5px;
+  border-style: solid;
+  border-color: rgba(29, 16, 16, 0.95) transparent transparent transparent;
 }
 
 .footer-protected:hover .footer-tooltip {
-    opacity: 1;
-    transform: translateY(0);
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Bottom bar */
 .footer-bottom {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.4rem 0;
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.85rem;
-    color: var(--color-white0);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.4rem 0;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.85rem;
+  color: var(--color-white0);
 }
 
 .footer-bottom p {
-    margin: 0;
+  margin: 0;
+}
+.footer-copy {
+  color: var(--color-white0);
 }
 
 .footer-bottom-links {
-    display: flex;
-    gap: 1.5rem;
+  display: flex;
+  gap: 1.5rem;
 }
 
 .footer-bottom-links span {
-    color: var(--color-white0);
-    font-size: 0.85rem;
-    font-family: "Noto Sans", sans-serif;
-    cursor: pointer;
-    transition: opacity 0.2s;
+  color: var(--color-white0);
+  font-size: 0.85rem;
+  font-family: "Noto Sans", sans-serif;
+  cursor: pointer;
+  transition: opacity 0.2s;
 }
 
 .footer-bottom-links span:hover {
-    opacity: 0.7;
+  opacity: 0.7;
 }
