@@ -1,22 +1,24 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "context/AuthContext";
 import RecipeCard from "components/recipe-card/UI_RecipeCard";
 import "./UI_MealPlan.css";
 import "pages/MainPage.css";
 
-function UI_MealPlanModal({ isOpen, onClose }) {
+function UI_MealPlanModal({ isOpen, onClose, onAdd, day }) {
   const { token } = useAuth();
-  const navigate = useNavigate();
 
   const [favourites, setFavourites] = useState([]);
   const [createdRecipes, setCreatedRecipes] = useState([]);
   const [ratings, setRatings] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const [selectedRecipeKey, setSelectedRecipeKey] = useState("");
 
   useEffect(() => {
     if (!isOpen) return;
+    setSelectedRecipe(null);
+    setSelectedRecipeKey("");
 
     async function fetchModalData() {
       setLoading(true);
@@ -73,17 +75,25 @@ function UI_MealPlanModal({ isOpen, onClose }) {
     return acc;
   }, {});
 
+  function handleSave() {
+    if (selectedRecipe) {
+      onAdd(selectedRecipe);
+    } else {
+      onClose();
+    }
+  }
+
   return (
     <div className="mps-modal-overlay" onClick={onClose}>
       <div
         className="mps-modal-body"
         role="dialog"
         aria-modal="true"
-        aria-label="Select recipes for meal plan"
+        aria-label={`Select recipes for ${day || "meal plan"}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mps-modal-header">
-          <h2>Select Recipes</h2>
+          <h2>Select a Recipe{day ? ` for ${day}` : ""}</h2>
         </div>
 
         <div className="mps-modal-content">
@@ -108,27 +118,50 @@ function UI_MealPlanModal({ isOpen, onClose }) {
                       </span>
                     </div>
                     <div className="mps-modal-card-list">
-                      {items.map((fav) => (
-                        <div key={fav._id} className="mps-modal-card-wrapper">
-                          <RecipeCard
-                            title={fav.title}
-                            image={fav.image}
-                            cuisineType={fav.cuisineType}
-                            dishType={fav.dishType}
-                            readyInMinutes={fav.readyInMinutes}
-                            difficulty={
-                              fav.readyInMinutes <= 30
-                                ? "Easy"
-                                : fav.readyInMinutes <= 60
-                                  ? "Medium"
-                                  : "Hard"
-                            }
-                            isFavourited={true}
-                            rating={ratings[fav.recipeId] ?? null}
-                            onClick={() => navigate(`/recipe/${fav.recipeId}`)}
-                          />
-                        </div>
-                      ))}
+                      {items.map((fav) => {
+                        const selectionKey = `fav-${fav._id}`;
+                        const snap = {
+                          title: fav.title,
+                          image: fav.image,
+                          cuisineType: fav.cuisineType,
+                          dishType: fav.dishType,
+                          readyInMinutes: fav.readyInMinutes,
+                          isUserRecipe: false,
+                        };
+                        const isSelected = selectedRecipeKey === selectionKey;
+                        return (
+                          <div
+                            key={fav._id}
+                            className={`mps-modal-card-wrapper${isSelected ? " mps-modal-card-wrapper-selected" : ""}`}
+                            onClick={() => {
+                              if (isSelected) {
+                                setSelectedRecipe(null);
+                                setSelectedRecipeKey("");
+                              } else {
+                                setSelectedRecipe(snap);
+                                setSelectedRecipeKey(selectionKey);
+                              }
+                            }}
+                          >
+                            <RecipeCard
+                              title={fav.title}
+                              image={fav.image}
+                              cuisineType={fav.cuisineType}
+                              dishType={fav.dishType}
+                              readyInMinutes={fav.readyInMinutes}
+                              difficulty={
+                                fav.readyInMinutes <= 30
+                                  ? "Easy"
+                                  : fav.readyInMinutes <= 60
+                                    ? "Medium"
+                                    : "Hard"
+                              }
+                              hideHeart={true}
+                              rating={ratings[fav.recipeId] ?? null}
+                            />
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 ))}
@@ -150,17 +183,38 @@ function UI_MealPlanModal({ isOpen, onClose }) {
                       </span>
                     </div>
                     <div className="mps-modal-card-list">
-                      {createdRecipes.map((recipe) => (
-                        <div key={recipe._id} className="mps-modal-card-wrapper">
-                          <RecipeCard
-                            title={recipe.name}
-                            image={recipe.image}
-                            dishType={recipe.isPublic ? "Public" : "Private"}
-                            hideHeart={true}
-                            onClick={() => navigate(`/my-recipe/${recipe._id}`)}
-                          />
-                        </div>
-                      ))}
+                      {createdRecipes.map((recipe) => {
+                        const selectionKey = `created-${recipe._id}`;
+                        const snap = {
+                          title: recipe.name,
+                          image: recipe.image,
+                          dishType: recipe.isPublic ? "Public" : "Private",
+                          isUserRecipe: true,
+                        };
+                        const isSelected = selectedRecipeKey === selectionKey;
+                        return (
+                          <div
+                            key={recipe._id}
+                            className={`mps-modal-card-wrapper${isSelected ? " mps-modal-card-wrapper-selected" : ""}`}
+                            onClick={() => {
+                              if (isSelected) {
+                                setSelectedRecipe(null);
+                                setSelectedRecipeKey("");
+                              } else {
+                                setSelectedRecipe(snap);
+                                setSelectedRecipeKey(selectionKey);
+                              }
+                            }}
+                          >
+                            <RecipeCard
+                              title={recipe.name}
+                              image={recipe.image}
+                              dishType={recipe.isPublic ? "Public" : "Private"}
+                              hideHeart={true}
+                            />
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
@@ -172,10 +226,11 @@ function UI_MealPlanModal({ isOpen, onClose }) {
         <div className="mps-modal-actions">
           <button
             type="button"
-            className="mps-modal-btn mps-modal-btn-save"
-            onClick={onClose}
+            className={`mps-modal-btn mps-modal-btn-save${!selectedRecipe ? " mps-modal-btn-disabled" : ""}`}
+            onClick={handleSave}
+            disabled={!selectedRecipe}
           >
-            Save
+            Add{day ? ` to ${day}` : ""}
           </button>
           <button
             type="button"

@@ -44,14 +44,38 @@
   display: flex;
   align-items: stretch;
   gap: 1.8rem;
-  overflow-x: scroll;
+  overflow-x: auto;
   scroll-behavior: smooth;
   padding: 1.5rem 1.5rem 2rem;
+  scroll-snap-type: x mandatory
 }
 
 .mps-carousel::-webkit-scrollbar {
-  display: none;
+  height: 6px;
 }
+
+.mps-carousel::-webkit-scrollbar-thumb {
+  background: #d6cfca;
+  border-radius: 999px;
+}
+
+.mps-carousel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.mps-carousel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.mps-carousel::-webkit-scrollbar-thumb {
+  background: #d6cfca;
+  border-radius: 999px;
+}
+
+.mps-carousel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 
 .mps-day {
   display: flex;
