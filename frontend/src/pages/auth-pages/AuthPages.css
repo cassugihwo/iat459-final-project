@@ -8,7 +8,6 @@ body {
   margin: 0;
 }
 
-
 html,
 body {
   min-height: 100%;
@@ -40,12 +39,22 @@ body {
   z-index: 1;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 55% 55% at 15% 50%, rgba(180, 80, 80, 0.13) 0%, transparent 65%),
-    radial-gradient(ellipse 45% 60% at 85% 30%, rgba(200, 100, 60, 0.09) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 40% at 50% 85%, rgba(160, 60, 60, 0.07) 0%, transparent 55%);
+    radial-gradient(
+      ellipse 55% 55% at 15% 50%,
+      rgba(180, 80, 80, 0.13) 0%,
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse 45% 60% at 85% 30%,
+      rgba(200, 100, 60, 0.09) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 40% 40% at 50% 85%,
+      rgba(160, 60, 60, 0.07) 0%,
+      transparent 55%
+    );
 }
-
-
 
 .bg-emoji {
   position: fixed;
@@ -78,7 +87,6 @@ body {
     transform: rotate(360deg);
   }
 }
-
 
 /* make page content appear above background */
 .auth-left,
@@ -183,7 +191,7 @@ body {
 .forgot-link,
 .guest-link,
 .terms-link {
-  color: #E98C00;
+  color: #e98c00;
   text-decoration: underline;
   font-weight: 700;
 }
@@ -321,7 +329,6 @@ body {
     width: 100%;
   }
 }
-
 
 /* Suspended account modal */
 .suspended-overlay {

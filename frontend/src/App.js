@@ -11,6 +11,7 @@ import FindRecipes from "pages/main-pages/FindRecipes";
 import MealPlan from "pages/main-pages/MealPlan";
 import RecipeDetail from "pages/main-pages/RecipeDetail";
 import MyRecipeDetails from "pages/main-pages/MyRecipeDetails";
+import TeamRecipeDetails from "pages/main-pages/TeamRecipeDetails";
 import UserProfile from "pages/main-pages/UserProfile";
 import ProtectedRoute from "protectedRoute/ProtectedRoute";
 import AdminProtectedRoute from "protectedRoute/AdminProtectedRoute";
@@ -32,6 +33,7 @@ export default function App() {
         <Route path="/find-recipes" element={<FindRecipes />} />
         <Route path="/recipe/:id" element={<RecipeDetail />} />
         <Route path="/my-recipe/:id" element={<MyRecipeDetails />} />
+        <Route path="/team-recipe/:id" element={<TeamRecipeDetails />} />
 
         <Route
           path="/profile"

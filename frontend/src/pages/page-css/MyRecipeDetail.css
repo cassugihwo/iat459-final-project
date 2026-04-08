@@ -2,306 +2,308 @@
 
 /* Back button */
 .mrd-back-bar {
-    padding: 1.25rem 2rem 0;
+  padding: 1.25rem 2rem 0;
 }
 
 .mrd-back-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    background: none;
-    border: none;
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--color-red1);
-    cursor: pointer;
-    padding: 0.4rem 0.75rem 0.4rem 0;
-    border-radius: 8px;
-    transition: color 0.15s, gap 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: none;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-red1);
+  cursor: pointer;
+  padding: 0.4rem 0.75rem 0.4rem 0;
+  border-radius: 8px;
+  transition:
+    color 0.15s,
+    gap 0.15s;
 }
 
 .mrd-back-btn:hover {
-    color: var(--color-red0);
-    gap: 0.65rem;
+  color: var(--color-red0);
+  gap: 0.65rem;
 }
 
 .mrd-back-arrow {
-    font-size: 1.2rem;
-    line-height: 1;
+  font-size: 1.2rem;
+  line-height: 1;
 }
 
 /* Loading */
 .mrd-loading {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 40vh;
-    font-family: "Noto Sans", sans-serif;
-    font-size: 1rem;
-    color: #888;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 40vh;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 1rem;
+  color: #888;
 }
 
 /* Content wrapper */
 .mrd-content {
-    max-width: 90vw;
-    margin: 0 auto;
-    padding: 2rem 3rem 4rem;
+  max-width: 90vw;
+  margin: 0 auto;
+  padding: 2rem 3rem 4rem;
 }
 
 /* Hero image */
 .mrd-hero {
-    position: relative;
-    width: 100%;
-    height: 30rem;
-    overflow: hidden;
-    border-radius: 16px;
-    margin: 0 0 1.5rem;
+  position: relative;
+  width: 100%;
+  height: 30rem;
+  overflow: hidden;
+  border-radius: 16px;
+  margin: 0 0 1.5rem;
 }
 
 .mrd-hero img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .mrd-hero-placeholder {
-    width: 100%;
-    height: 100%;
-    background: var(--color-white1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: inherit;
+  width: 100%;
+  height: 100%;
+  background: var(--color-white1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: inherit;
 }
 
 .mrd-hero-placeholder img {
-    width: auto;
-    max-width: 35%;
-    max-height: 50%;
-    opacity: 0.5;
-    object-fit: contain;
+  width: auto;
+  max-width: 35%;
+  max-height: 50%;
+  opacity: 0.5;
+  object-fit: contain;
 }
 
 /* Visibility badge */
 .mrd-vis-badge {
-    position: absolute;
-    top: 0.75rem;
-    left: 0.75rem;
-    padding: 0.25rem 0.8rem;
-    border-radius: 999px;
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.78rem;
-    font-weight: 700;
-    background: rgba(0, 0, 0, 0.5);
-    color: #fff;
-    pointer-events: none;
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.25rem 0.8rem;
+  border-radius: 999px;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  pointer-events: none;
 }
 
 .mrd-vis-badge.public {
-    background: var(--color-red1);
+  background: var(--color-red1);
 }
 
 /* Title */
 .mrd-title {
-    font-family: "Passion One", sans-serif;
-    font-size: 2.8rem;
-    font-weight: 700;
-    color: var(--color-red0);
-    margin: 0 0 1.25rem;
-    line-height: 1.1;
+  font-family: "Passion One", sans-serif;
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: var(--color-red0);
+  margin: 0 0 1.25rem;
+  line-height: 1.1;
 }
 
 /* Meta chips — all pills share the same style */
 .mrd-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-    margin-bottom: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
 }
 
 .mrd-chip,
 .mrd-chip.highlight {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    padding: 0.35rem 0.9rem;
-    border-radius: 999px;
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.82rem;
-    font-weight: 600;
-    background-color: var(--color-red1);
-    color: #fff;
-    border: 1.5px solid var(--color-red1);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  background-color: var(--color-red1);
+  color: #fff;
+  border: 1.5px solid var(--color-red1);
 }
 
 /* Owner row */
 .mrd-owner-row {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin: 0.5rem 0 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.5rem 0 1.5rem;
 }
 
 .mrd-owner-avatar {
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
 }
 
 .mrd-owner-initials {
-    background: #f0e6da;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--color-red1);
+  background: #f0e6da;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-red1);
 }
 
 .mrd-owner-name {
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: #333;
-    margin: 0;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
 }
 
 .mrd-owner-date {
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.78rem;
-    color: #aaa;
-    margin: 0;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.78rem;
+  color: #aaa;
+  margin: 0;
 }
 
 /* Two-column body */
 .mrd-body {
-    display: grid;
-    grid-template-columns: 1fr 1.6fr;
-    gap: 3rem;
-    align-items: start;
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 3rem;
+  align-items: start;
 }
 
 /* Section headings */
 .mrd-section-title {
-    font-family: "Passion One", sans-serif;
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: var(--color-red1);
-    margin: 0 0 1rem;
-    line-height: 1;
+  font-family: "Passion One", sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-red1);
+  margin: 0 0 1rem;
+  line-height: 1;
 }
 
 /* Ingredients — two-column layout */
 .mrd-ingredients-columns {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
 }
 
 .mrd-ingredients-col {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .mrd-col-label {
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.78rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--color-red1);
-    margin: 0 0 0.5rem;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-red1);
+  margin: 0 0 0.5rem;
 }
 
 .mrd-ingredients {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .mrd-ingredient-name {
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.9rem;
-    font-weight: 500;
-    text-transform: capitalize;
-    color: #333;
-    padding: 0.5rem 0.75rem;
-    border-radius: 8px;
-    background-color: #fff;
-    border: 1px solid var(--color-white1);
-    span {
-        font-weight: 650;
-        color: var(--color-red1);
-    }
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  color: #333;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  background-color: #fff;
+  border: 1px solid var(--color-white1);
+  span {
+    font-weight: 650;
+    color: var(--color-red1);
+  }
 }
 
 .mrd-ingredient-amount {
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.9rem;
-    color: #555;
-    padding: 0.5rem 0.75rem;
-    border-radius: 8px;
-    background-color: #fff;
-    border: 1px solid var(--color-white1);
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.9rem;
+  color: #555;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  background-color: #fff;
+  border: 1px solid var(--color-white1);
 }
 
 /* Instructions */
 .mrd-steps {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .mrd-step {
-    display: flex;
-    gap: 1rem;
-    align-items: flex-start;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
 }
 
 .mrd-step-number {
-    flex-shrink: 0;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
-    background-color: var(--color-red1);
-    color: #fff;
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.85rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: var(--color-red1);
+  color: #fff;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .mrd-step-text {
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.92rem;
-    color: #333;
-    line-height: 1.6;
-    margin: 0;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.92rem;
+  color: #333;
+  line-height: 1.6;
+  margin: 0;
 }
 
 /* Responsive */
 @media (max-width: 680px) {
-    .mrd-body {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-    }
+  .mrd-body {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
 
-    .mrd-hero {
-        height: 16rem;
-        border-radius: 10px;
-    }
+  .mrd-hero {
+    height: 16rem;
+    border-radius: 10px;
+  }
 
-    .mrd-title {
-        font-size: 2rem;
-    }
+  .mrd-title {
+    font-size: 2rem;
+  }
 }

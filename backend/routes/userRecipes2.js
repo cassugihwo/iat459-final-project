@@ -96,6 +96,32 @@ router.post("/", verifyToken, async (req, res) => {
   }
 });
 
+// Update recipe by owner
+router.put("/:id", verifyToken, async (req, res) => {
+  try {
+    const userRecipe = await UserRecipe2.findById(req.params.id);
+    if (!userRecipe)
+      return res.status(404).json({ message: "Recipe not found." });
+    if (userRecipe.owner.toString() !== req.userId) {
+      return res
+        .status(403)
+        .json({
+          message: "Forbidden: You do not have permission to edit this recipe.",
+        });
+    }
+    const { name, image, ingredients, instructions, isPublic } = req.body;
+    if (name !== undefined) userRecipe.name = name;
+    if (image !== undefined) userRecipe.image = image;
+    if (ingredients !== undefined) userRecipe.ingredients = ingredients;
+    if (instructions !== undefined) userRecipe.instructions = instructions;
+    if (isPublic !== undefined) userRecipe.isPublic = isPublic;
+    await userRecipe.save();
+    res.json(userRecipe);
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
 // Delete recipe by owner
 router.delete("/:id", verifyToken, async (req, res) => {
   try {

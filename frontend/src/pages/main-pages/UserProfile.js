@@ -259,7 +259,7 @@ function UserProfile() {
                               setEditMode(!editMode);
                             }}
                           >
-                            {editMode ? "✕ Cancel" : "✏ Edit Profile"}
+                            {editMode ? "x Cancel" : "Edit Profile"}
                           </button>
                           {editMode && (
                             <button

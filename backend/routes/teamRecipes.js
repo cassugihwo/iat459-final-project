@@ -29,11 +29,36 @@ router.get("/", async (req, res) => {
   }
 });
 
+// GET a single team recipe by id (public)
+router.get("/:id", async (req, res) => {
+  try {
+    const recipe = await TeamRecipe.findById(req.params.id).populate(
+      "createdBy",
+      "username",
+    );
+    if (!recipe) return res.status(404).json({ message: "Recipe not found." });
+    res.json(recipe);
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
 // POST create a team recipe (admin only)
 router.post("/", verifyToken, adminOnly, async (req, res) => {
   try {
-    const { name, image, description, cuisineType, dishType, readyInMinutes, difficulty, ingredients, instructions } = req.body;
-    if (!name) return res.status(400).json({ message: "Recipe name is required." });
+    const {
+      name,
+      image,
+      description,
+      cuisineType,
+      dishType,
+      readyInMinutes,
+      difficulty,
+      ingredients,
+      instructions,
+    } = req.body;
+    if (!name)
+      return res.status(400).json({ message: "Recipe name is required." });
 
     const recipe = await TeamRecipe.create({
       name,

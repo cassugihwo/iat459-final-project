@@ -129,7 +129,9 @@
   cursor: pointer;
   padding: 0;
   line-height: 1;
-  transition: color 0.15s, transform 0.1s;
+  transition:
+    color 0.15s,
+    transform 0.1s;
 }
 
 .rr-star-btn.active {
@@ -209,20 +211,64 @@
   color: #aaa;
 }
 
+.rr-review-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: auto;
+}
+
+.rr-review-edit,
 .rr-review-delete {
   background: none;
   border: none;
-  color: #ccc;
-  font-size: 1.1rem;
+  color: #444;
+  font-size: 1rem;
   cursor: pointer;
   padding: 0 0.25rem;
   line-height: 1;
   transition: color 0.2s;
-  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.rr-review-edit:hover {
+  color: #c0392b;
 }
 
 .rr-review-delete:hover {
   color: #c0392b;
+}
+
+.rr-edit-form {
+  margin-top: 0.5rem;
+}
+
+.rr-edit-actions {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+  align-items: center;
+}
+
+.rr-edit-cancel {
+  background: none;
+  border: 1.5px solid #ccc;
+  border-radius: 999px;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #888;
+  cursor: pointer;
+  padding: 0.5rem 1.2rem;
+  transition:
+    border-color 0.2s,
+    color 0.2s;
+}
+
+.rr-edit-cancel:hover {
+  border-color: #888;
+  color: #555;
 }
 
 .rr-review-comment {
@@ -306,6 +352,40 @@
   text-decoration: underline;
 }
 
+/* Sort pills */
+.rr-sort-pills {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.rr-sort-pill {
+  padding: 0.35rem 1rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--color-white1);
+  background: #fff;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    color 0.15s,
+    border-color 0.15s;
+}
+
+.rr-sort-pill:hover {
+  border-color: var(--color-red1);
+  color: var(--color-red1);
+}
+
+.rr-sort-pill.active {
+  background-color: var(--color-red1);
+  border-color: var(--color-red1);
+  color: #fff;
+}
+
 .rr-reviews-toggle {
   display: block;
   margin: 1rem auto 2rem;
@@ -318,7 +398,9 @@
   font-weight: 700;
   color: var(--color-red1);
   cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
 }
 
 .rr-reviews-toggle:hover {

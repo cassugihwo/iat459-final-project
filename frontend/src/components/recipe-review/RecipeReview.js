@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "remixicon/fonts/remixicon.css";
 import "./RecipeReview.css";
 
 function StarPicker({ value, onChange }) {
@@ -27,7 +28,10 @@ function ReviewStars({ rating }) {
   return (
     <span className="rr-stars">
       {[1, 2, 3, 4, 5].map((n) => (
-        <span key={n} className={n <= rating ? "rr-star-filled" : "rr-star-empty"}>
+        <span
+          key={n}
+          className={n <= rating ? "rr-star-filled" : "rr-star-empty"}
+        >
           ★
         </span>
       ))}
@@ -37,8 +41,6 @@ function ReviewStars({ rating }) {
 
 const REVIEWS_PREVIEW = 3;
 
-// type="recipe"      → /api/reviews/:recipeId        (Spoonacular recipes)
-// type="user-recipe" → /api/reviews/user-recipe/:id  (user-created recipes)
 function RecipeReview({ recipeId, token, user, type = "recipe" }) {
   const navigate = useNavigate();
 
@@ -55,6 +57,7 @@ function RecipeReview({ recipeId, token, user, type = "recipe" }) {
   const [submitting, setSubmitting] = useState(false);
   const [reviewsExpanded, setReviewsExpanded] = useState(false);
   const [userAvatar, setUserAvatar] = useState("");
+  const [sortOrder, setSortOrder] = useState("recent");
 
   useEffect(() => {
     async function fetchReviews() {
@@ -81,7 +84,9 @@ function RecipeReview({ recipeId, token, user, type = "recipe" }) {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((r) => (r.ok ? r.json() : null))
-      .then((data) => { if (data?.avatar) setUserAvatar(data.avatar); })
+      .then((data) => {
+        if (data?.avatar) setUserAvatar(data.avatar);
+      })
       .catch(() => {});
   }, [token]);
 
@@ -108,7 +113,9 @@ function RecipeReview({ recipeId, token, user, type = "recipe" }) {
       setReviews(updated);
       setAvgRating(
         parseFloat(
-          (updated.reduce((s, r) => s + r.rating, 0) / updated.length).toFixed(1),
+          (updated.reduce((s, r) => s + r.rating, 0) / updated.length).toFixed(
+            1,
+          ),
         ),
       );
       setNewRating(0);
@@ -117,6 +124,62 @@ function RecipeReview({ recipeId, token, user, type = "recipe" }) {
       setReviewError(err.message);
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  const [editingId, setEditingId] = useState(null);
+  const [editRating, setEditRating] = useState(0);
+  const [editComment, setEditComment] = useState("");
+  const [editError, setEditError] = useState("");
+  const [editSubmitting, setEditSubmitting] = useState(false);
+
+  function startEdit(r) {
+    setEditingId(r._id);
+    setEditRating(r.rating);
+    setEditComment(r.comment || "");
+    setEditError("");
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+    setEditError("");
+  }
+
+  async function handleEditReview(reviewId) {
+    if (!editRating) {
+      setEditError("Please select a star rating.");
+      return;
+    }
+    setEditSubmitting(true);
+    setEditError("");
+    try {
+      const res = await fetch(`http://localhost:5001/api/reviews/${reviewId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          rating: editRating,
+          comment: editComment.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to update review.");
+      const updated = reviews.map((r) => (r._id === reviewId ? data : r));
+      setReviews(updated);
+      setAvgRating(
+        parseFloat(
+          (updated.reduce((s, r) => s + r.rating, 0) / updated.length).toFixed(
+            1,
+          ),
+        ),
+      );
+      setEditingId(null);
+    } catch (err) {
+      setEditError(err.message);
+    } finally {
+      setEditSubmitting(false);
     }
   }
 
@@ -131,7 +194,9 @@ function RecipeReview({ recipeId, token, user, type = "recipe" }) {
       setAvgRating(
         updated.length
           ? parseFloat(
-              (updated.reduce((s, r) => s + r.rating, 0) / updated.length).toFixed(1),
+              (
+                updated.reduce((s, r) => s + r.rating, 0) / updated.length
+              ).toFixed(1),
             )
           : 0,
       );
@@ -147,7 +212,9 @@ function RecipeReview({ recipeId, token, user, type = "recipe" }) {
           <span className="rr-rating-big">
             {reviews.length > 0 ? avgRating : "0"}
           </span>
-          <ReviewStars rating={reviews.length > 0 ? Math.round(avgRating) : 0} />
+          <ReviewStars
+            rating={reviews.length > 0 ? Math.round(avgRating) : 0}
+          />
           <span className="rr-review-count">
             {reviews.length} review{reviews.length !== 1 ? "s" : ""}
           </span>
@@ -171,22 +238,62 @@ function RecipeReview({ recipeId, token, user, type = "recipe" }) {
         </div>
       </div>
 
-      <h2 className="rr-section-title" style={{ marginTop: "2rem" }}>Reviews</h2>
+      <h2 className="rr-section-title" style={{ marginTop: "2rem" }}>
+        Reviews
+      </h2>
 
       {reviews.length === 0 ? (
         <p className="rr-no-reviews">No reviews yet. Be the first!</p>
       ) : (
         <>
+          <div className="rr-sort-pills">
+            {[
+              ["recent", "Recent"],
+              ["highest", "Highest"],
+              ["lowest", "Lowest"],
+            ].map(([val, label]) => (
+              <button
+                key={val}
+                type="button"
+                className={`rr-sort-pill${sortOrder === val ? " active" : ""}`}
+                onClick={() => setSortOrder(val)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
           <div className="rr-review-list">
-            {(reviewsExpanded ? reviews : reviews.slice(0, REVIEWS_PREVIEW)).map((r) => {
+            {(reviewsExpanded
+              ? [...reviews].sort((a, b) =>
+                  sortOrder === "highest"
+                    ? b.rating - a.rating
+                    : sortOrder === "lowest"
+                      ? a.rating - b.rating
+                      : new Date(b.createdAt) - new Date(a.createdAt),
+                )
+              : [...reviews]
+                  .sort((a, b) =>
+                    sortOrder === "highest"
+                      ? b.rating - a.rating
+                      : sortOrder === "lowest"
+                        ? a.rating - b.rating
+                        : new Date(b.createdAt) - new Date(a.createdAt),
+                  )
+                  .slice(0, REVIEWS_PREVIEW)
+            ).map((r) => {
               const initials = r.username.slice(0, 2).toUpperCase();
               const avatar = r.owner?.avatar;
+              const isEditing = editingId === r._id;
               return (
                 <div key={r._id} className="rr-review-item">
                   <div className="rr-review-header">
                     <div className="rr-review-avatar">
                       {avatar ? (
-                        <img src={avatar} alt={r.username} className="rr-review-avatar-img" />
+                        <img
+                          src={avatar}
+                          alt={r.username}
+                          className="rr-review-avatar-img"
+                        />
                       ) : (
                         initials
                       )}
@@ -201,18 +308,58 @@ function RecipeReview({ recipeId, token, user, type = "recipe" }) {
                         })}
                       </span>
                     </div>
-                    {user?.username === r.username && (
-                      <button
-                        className="rr-review-delete"
-                        onClick={() => handleDeleteReview(r._id)}
-                        aria-label="Delete review"
-                      >
-                        ×
-                      </button>
+                    {user?.username === r.username && !isEditing && (
+                      <div className="rr-review-actions">
+                        <button
+                          className="rr-review-edit"
+                          onClick={() => startEdit(r)}
+                          aria-label="Edit review"
+                        >
+                          <i className="ri-edit-line" />
+                        </button>
+                        <button
+                          className="rr-review-delete"
+                          onClick={() => handleDeleteReview(r._id)}
+                          aria-label="Delete review"
+                        >
+                          <i className="ri-delete-bin-line" />
+                        </button>
+                      </div>
                     )}
                   </div>
-                  <ReviewStars rating={r.rating} />
-                  {r.comment && <p className="rr-review-comment">{r.comment}</p>}
+                  {isEditing ? (
+                    <div className="rr-edit-form">
+                      <StarPicker value={editRating} onChange={setEditRating} />
+                      <textarea
+                        className="rr-review-textarea"
+                        value={editComment}
+                        onChange={(e) => setEditComment(e.target.value)}
+                        rows={3}
+                      />
+                      {editError && (
+                        <p className="rr-review-error">{editError}</p>
+                      )}
+                      <div className="rr-edit-actions">
+                        <button
+                          className="rr-review-submit"
+                          onClick={() => handleEditReview(r._id)}
+                          disabled={editSubmitting}
+                        >
+                          {editSubmitting ? "Saving..." : "Save"}
+                        </button>
+                        <button className="rr-edit-cancel" onClick={cancelEdit}>
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <ReviewStars rating={r.rating} />
+                      {r.comment && (
+                        <p className="rr-review-comment">{r.comment}</p>
+                      )}
+                    </>
+                  )}
                 </div>
               );
             })}
@@ -235,7 +382,11 @@ function RecipeReview({ recipeId, token, user, type = "recipe" }) {
           <div className="rr-review-header">
             <div className="rr-review-avatar">
               {userAvatar ? (
-                <img src={userAvatar} alt={user?.username} className="rr-review-avatar-img" />
+                <img
+                  src={userAvatar}
+                  alt={user?.username}
+                  className="rr-review-avatar-img"
+                />
               ) : (
                 user?.username?.slice(0, 2).toUpperCase()
               )}
@@ -255,7 +406,11 @@ function RecipeReview({ recipeId, token, user, type = "recipe" }) {
               rows={3}
             />
             {reviewError && <p className="rr-review-error">{reviewError}</p>}
-            <button className="rr-review-submit" type="submit" disabled={submitting}>
+            <button
+              className="rr-review-submit"
+              type="submit"
+              disabled={submitting}
+            >
               {submitting ? "Submitting..." : "Submit Review"}
             </button>
           </form>
@@ -270,7 +425,10 @@ function RecipeReview({ recipeId, token, user, type = "recipe" }) {
             </div>
           </div>
           <p className="rr-review-login">
-            <button className="rr-review-login-btn" onClick={() => navigate("/login")}>
+            <button
+              className="rr-review-login-btn"
+              onClick={() => navigate("/login")}
+            >
               Log in
             </button>{" "}
             to leave a review.

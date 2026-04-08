@@ -8,26 +8,26 @@ const favouriteSchema = new mongoose.Schema(
       required: true,
     },
     recipeId: {
-      type: Number,
+      type: mongoose.Schema.Types.Mixed,
       required: true,
     },
-    title: { 
-      type: String 
+    title: {
+      type: String,
     },
-    image: { 
-      type: String 
+    image: {
+      type: String,
     },
-    cuisineType: { 
-      type: String 
+    cuisineType: {
+      type: String,
     },
-    dishType: { 
-      type: String 
+    dishType: {
+      type: String,
     },
-    readyInMinutes: { 
-      type: Number 
+    readyInMinutes: {
+      type: Number,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // Ensure a user can only have one favourite per recipe

@@ -23,7 +23,7 @@
   top: 1.5rem;
 }
 
-/* ── Form card ── */
+/*Form card*/
 .sr-form {
   background: #fff;
   border: 1.5px solid var(--color-white1);
@@ -34,7 +34,7 @@
   gap: 1.5rem;
 }
 
-/* ── Section title ── */
+/* Section title*/
 .sr-section-title {
   font-family: "Passion One", sans-serif;
   font-size: 1.5rem;
@@ -85,7 +85,7 @@
   min-height: 5rem;
 }
 
-/* ── Two-column row ── */
+/*Two-column row*/
 .sr-row {
   display: flex;
   gap: 1rem;
@@ -316,7 +316,7 @@
   color: #666;
 }
 
-/* ── Image upload ── */
+/*Image upload*/
 .sr-image-upload {
   display: flex;
   align-items: center;
@@ -437,35 +437,43 @@
   max-width: 100%;
 }
 
-.sr-btn-delete {
+.sr-card-actions {
   position: absolute;
   top: 0.6rem;
   right: 0.6rem;
+  display: flex;
+  gap: 0.3rem;
+  z-index: 2;
+}
+
+.sr-btn-card-action {
   width: 2rem;
   height: 2rem;
   padding: 0;
   border: none;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.95);
-  color: #c0392b;
-  font-size: 1.2rem;
-  font-weight: 700;
-  line-height: 1;
+  color: #333;
+  font-size: 0.95rem;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.15s;
-  z-index: 2;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
 
-.sr-btn-delete:hover {
-  background: #fdecea;
+.sr-btn-card-action:hover {
+  background: #f0f0f0;
   transform: scale(1.05);
 }
 
-/* ── Tag chips ── */
+.sr-btn-card-delete:hover {
+  background: #fdecea;
+  color: #c0392b;
+}
+
+/*Tag chips*/
 .sr-tags-list {
   display: flex;
   flex-wrap: wrap;
@@ -550,8 +558,7 @@
   margin: 0;
 }
 
-/* ── Scrollbar ── */
-/* ── Responsive ── */
+/*Responsive*/
 @media (max-width: 900px) {
   .sr-body {
     flex-direction: column;

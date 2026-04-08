@@ -127,6 +127,25 @@ router.post("/:recipeId", verifyToken, async (req, res) => {
   }
 });
 
+// Edit a specific review by its _id (owner only)
+router.put("/:reviewId", verifyToken, async (req, res) => {
+  try {
+    const { rating, comment } = req.body;
+    const review = await Review.findById(req.params.reviewId);
+    if (!review) return res.status(404).json({ message: "Review not found." });
+    if (String(review.owner) !== String(req.userId)) {
+      return res.status(403).json({ message: "Not allowed." });
+    }
+    if (rating) review.rating = rating;
+    review.comment = comment ?? review.comment;
+    await review.save();
+    await review.populate("owner", "avatar");
+    res.json(review);
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
 // Delete a specific review by its _id (owner only)
 router.delete("/:reviewId", verifyToken, async (req, res) => {
   try {

@@ -181,11 +181,91 @@ function Home() {
   }, [recipes]);
 
   const topRatedRecipes = useMemo(() => {
-    return [...recipes]
-      .filter((r) => (ratings[r.id] || 0) > 0)
-      .sort((a, b) => (ratings[b.id] || 0) - (ratings[a.id] || 0))
-      .slice(0, 5);
-  }, [recipes, ratings]);
+    const pool = [];
+
+    recipes.forEach((r) => {
+      const rating = ratings[r.id] || 0;
+      if (rating > 0)
+        pool.push({
+          _key: `sp-${r.id}`,
+          type: "spoonacular",
+          sourceId: r.id,
+          title: r.title,
+          image: r.image,
+          cuisineType: r.cuisineType,
+          dishType: r.dishType,
+          readyInMinutes: r.readyInMinutes,
+          difficulty:
+            r.readyInMinutes <= 30
+              ? "Easy"
+              : r.readyInMinutes <= 60
+                ? "Medium"
+                : "Hard",
+          rating,
+          raw: r,
+        });
+    });
+
+    communityRecipes.forEach((r) => {
+      const rating = communityRatings[r._id] || 0;
+      if (rating > 0) {
+        const cookMatch = r.instructions?.match(/Cook: (\d+) min/);
+        const mins = cookMatch ? parseInt(cookMatch[1]) : null;
+        const tagMatch = r.instructions?.match(/Tags: ([^\n]+)/);
+        const tags = tagMatch
+          ? tagMatch[1]
+              .split(",")
+              .map((t) => t.trim())
+              .filter(Boolean)
+          : [];
+        pool.push({
+          _key: `user-${r._id}`,
+          type: "community",
+          sourceId: r._id,
+          title: r.name,
+          image: r.image || null,
+          cuisineType: tags[0] || null,
+          dishType: tags[1] || null,
+          readyInMinutes: mins,
+          difficulty:
+            mins == null
+              ? null
+              : mins <= 30
+                ? "Easy"
+                : mins <= 60
+                  ? "Medium"
+                  : "Hard",
+          rating,
+        });
+      }
+    });
+
+    teamRecipes.forEach((r) => {
+      const rating = teamRatings[r._id] || 0;
+      if (rating > 0)
+        pool.push({
+          _key: `team-${r._id}`,
+          type: "team",
+          sourceId: r._id,
+          title: r.name,
+          image: r.image || null,
+          cuisineType: r.cuisineType,
+          dishType: r.dishType,
+          readyInMinutes: r.readyInMinutes,
+          difficulty: r.difficulty,
+          rating,
+        });
+    });
+
+    return pool.sort((a, b) => b.rating - a.rating).slice(0, 5);
+  }, [
+    recipes,
+    ratings,
+    communityRecipes,
+    communityRatings,
+    teamRecipes,
+    teamRatings,
+  ]);
 
   const dayFilterOptions = useMemo(() => {
     const types = [
@@ -555,23 +635,32 @@ function Home() {
                       <div className="recipe-carousel">
                         {filteredTopRecipes.map((recipe) => (
                           <RecipeCard
-                            key={recipe.id}
+                            key={recipe._key}
                             title={recipe.title}
                             image={recipe.image}
                             cuisineType={recipe.cuisineType}
                             dishType={recipe.dishType}
                             readyInMinutes={recipe.readyInMinutes}
-                            difficulty={
-                              recipe.readyInMinutes <= 30
-                                ? "Easy"
-                                : recipe.readyInMinutes <= 60
-                                  ? "Medium"
-                                  : "Hard"
+                            difficulty={recipe.difficulty}
+                            isFavourited={favouriteIds.has(recipe.sourceId)}
+                            rating={recipe.rating}
+                            onClick={() => {
+                              if (recipe.type === "spoonacular")
+                                navigate(`/recipe/${recipe.sourceId}`);
+                              else if (recipe.type === "community")
+                                navigate(`/my-recipe/${recipe.sourceId}`);
+                              else navigate(`/team-recipe/${recipe.sourceId}`);
+                            }}
+                            onFavourite={() =>
+                              handleSaveFavourite({
+                                id: recipe.sourceId,
+                                title: recipe.title,
+                                image: recipe.image,
+                                cuisineType: recipe.cuisineType,
+                                dishType: recipe.dishType,
+                                readyInMinutes: recipe.readyInMinutes,
+                              })
                             }
-                            isFavourited={favouriteIds.has(recipe.id)}
-                            rating={ratings[recipe.id] ?? 0}
-                            onClick={() => navigate(`/recipe/${recipe.id}`)}
-                            onFavourite={() => handleSaveFavourite(recipe)}
                           />
                         ))}
                       </div>
@@ -642,10 +731,20 @@ function Home() {
                                       ? "Medium"
                                       : "Hard"
                               }
-                              hideHeart={true}
+                              isFavourited={favouriteIds.has(recipe._id)}
                               rating={communityRatings[recipe._id] ?? 0}
                               onClick={() =>
                                 navigate(`/my-recipe/${recipe._id}`)
+                              }
+                              onFavourite={() =>
+                                handleSaveFavourite({
+                                  id: recipe._id,
+                                  title: recipe.name,
+                                  image: recipe.image || null,
+                                  cuisineType: tags[0] || null,
+                                  dishType: tags[1] || null,
+                                  readyInMinutes: mins,
+                                })
                               }
                             />
                           );
@@ -694,9 +793,19 @@ function Home() {
                         dishType={recipe.dishType}
                         readyInMinutes={recipe.readyInMinutes}
                         difficulty={recipe.difficulty}
-                        hideHeart={true}
+                        isFavourited={favouriteIds.has(recipe._id)}
                         rating={teamRatings[recipe._id] ?? 0}
                         onClick={() => navigate(`/team-recipe/${recipe._id}`)}
+                        onFavourite={() =>
+                          handleSaveFavourite({
+                            id: recipe._id,
+                            title: recipe.name,
+                            image: recipe.image || null,
+                            cuisineType: recipe.cuisineType,
+                            dishType: recipe.dishType,
+                            readyInMinutes: recipe.readyInMinutes,
+                          })
+                        }
                       />
                     ))}
                   </div>

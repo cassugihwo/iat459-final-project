@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Trash2, Plus } from "lucide-react";
+import "remixicon/fonts/remixicon.css";
 import Toast from "components/toast/UI_Toast";
 import Confirmation from "components/confirm/Confirmation";
 import "pages/MainPage.css";
@@ -68,7 +69,90 @@ function SavedRecipes() {
   const [imagePreview, setImagePreview] = useState("");
   const [isPublic, setIsPublic] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+  const [confirmEditRecipe, setConfirmEditRecipe] = useState(null);
   const [errors, setErrors] = useState("");
+  const [editingId, setEditingId] = useState(null);
+
+  function parseRecipeIntoForm(recipe) {
+    const lines = (recipe.instructions || "").split("\n");
+    const meta = lines[0] || "";
+    const servesMatch = meta.match(/Serves:\s*(\d+)/);
+    const cookMatch = meta.match(/Cook:\s*(\d+)\s*min/);
+    const tagMatch = meta.match(/Tags:\s*([^|]+)/);
+    const parsedServes = servesMatch ? servesMatch[1] : "";
+    const parsedCook = cookMatch ? cookMatch[1] : "";
+    const parsedTags = tagMatch
+      ? tagMatch[1]
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean)
+      : [];
+    const parsedSteps = lines
+      .slice(2)
+      .map((l) => l.trim())
+      .filter(Boolean);
+    const parsedIngredients = (recipe.ingredients || "")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .map((s) => {
+        const m = s.match(
+          /^([\d./\s]*)(\s*(?:g|kg|lb|ml|l|oz|tsp|tbsp|cup|pinch|piece))?\s+(.+)$/i,
+        );
+        if (m)
+          return {
+            amount: m[1].trim(),
+            unit: m[2]?.trim() || "",
+            name: m[3].trim(),
+          };
+        return { amount: "", unit: "", name: s };
+      });
+    return {
+      serves: parsedServes,
+      cookTime: parsedCook,
+      tags: parsedTags,
+      instructionsList: parsedSteps.length
+        ? parsedSteps.map((s) => ({ instruction: s }))
+        : emptyInstructions(),
+      ingredients: parsedIngredients.length
+        ? parsedIngredients
+        : emptyIngredients(),
+      name: recipe.name || "",
+      imageBase64: recipe.image || "",
+      imagePreview: recipe.image || "",
+      isPublic: recipe.isPublic || false,
+    };
+  }
+
+  const formSectionRef = useRef(null);
+
+  function startEdit(recipe) {
+    const parsed = parseRecipeIntoForm(recipe);
+    setEditingId(recipe._id);
+    setName(parsed.name);
+    setServes(parsed.serves);
+    setCookTime(parsed.cookTime);
+    setTags(parsed.tags);
+    setInstructionsList(parsed.instructionsList);
+    setIngredients(parsed.ingredients);
+    setImageBase64(parsed.imageBase64);
+    setImagePreview(parsed.imagePreview);
+    setIsPublic(parsed.isPublic);
+    setErrors("");
+    setTimeout(
+      () =>
+        formSectionRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        }),
+      50,
+    );
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+    resetForm();
+  }
   const privateRef = useRef(null);
   const publicRef = useRef(null);
 
@@ -178,31 +262,57 @@ function SavedRecipes() {
     const fullInstructions = `${meta}\n\n${joinedInstructions}`;
 
     try {
-      const response = await fetch(`http://localhost:5001/api/${recipeVer}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          name: name.trim(),
-          image: imageBase64,
-          ingredients: filledIngredients,
-          instructions: fullInstructions,
-          isPublic,
-        }),
-      });
-      if (!response.ok)
-        throw new Error("Failed to add recipe. Are you authorized?");
-      const newRecipe = await response.json();
-      setUserRecipes((prev) => [...prev, newRecipe]);
-      resetForm();
-      setTimeout(() => {
-        (newRecipe.isPublic ? publicRef : privateRef).current?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
+      if (editingId) {
+        const response = await fetch(
+          `http://localhost:5001/api/${recipeVer}/${editingId}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              name: name.trim(),
+              image: imageBase64,
+              ingredients: filledIngredients,
+              instructions: fullInstructions,
+              isPublic,
+            }),
+          },
+        );
+        if (!response.ok) throw new Error("Failed to update recipe.");
+        const updated = await response.json();
+        setUserRecipes((prev) =>
+          prev.map((r) => (r._id === editingId ? updated : r)),
+        );
+        setEditingId(null);
+        resetForm();
+      } else {
+        const response = await fetch(`http://localhost:5001/api/${recipeVer}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            name: name.trim(),
+            image: imageBase64,
+            ingredients: filledIngredients,
+            instructions: fullInstructions,
+            isPublic,
+          }),
         });
-      }, 100);
+        if (!response.ok)
+          throw new Error("Failed to add recipe. Are you authorized?");
+        const newRecipe = await response.json();
+        setUserRecipes((prev) => [...prev, newRecipe]);
+        resetForm();
+        setTimeout(() => {
+          (newRecipe.isPublic ? publicRef : privateRef).current?.scrollIntoView(
+            { behavior: "smooth", block: "start" },
+          );
+        }, 100);
+      }
     } catch (err) {
       console.error("Failed form submit:", err);
       setErrors(err.message);
@@ -239,6 +349,18 @@ function SavedRecipes() {
           onCancel={() => setConfirmDeleteId(null)}
         />
       )}
+      {confirmEditRecipe && (
+        <Confirmation
+          title="Edit Recipe?"
+          message={`Edit "${confirmEditRecipe.name}"? Your current form will be replaced.`}
+          confirmLabel="Edit"
+          onConfirm={() => {
+            startEdit(confirmEditRecipe);
+            setConfirmEditRecipe(null);
+          }}
+          onCancel={() => setConfirmEditRecipe(null)}
+        />
+      )}
 
       <div className="navbarHeader">
         <NavbarHeader />
@@ -268,13 +390,13 @@ function SavedRecipes() {
         <div className="main-content">
           <div className="header-container">
             <div className="header-container-wrapper">
-              <h2>Add My Recipes</h2>
+              <h2>{editingId ? "Edit Recipe" : "Add My Recipes"}</h2>
             </div>
           </div>
 
           <div className="sr-body">
-            {/* Add Recipe Form */}
-            <section className="sr-form-section">
+            {/* Add / Edit Recipe Form */}
+            <section className="sr-form-section" ref={formSectionRef}>
               <Toast message={errors} onClose={() => setErrors("")} />
 
               <form className="sr-form" onSubmit={handleSubmit}>
@@ -583,15 +705,25 @@ function SavedRecipes() {
 
                 <div className="sr-actions">
                   <button className="sr-btn-save" type="submit">
-                    Save Recipe
+                    {editingId ? "Save Changes" : "Save Recipe"}
                   </button>
-                  <button
-                    className="sr-btn-clear"
-                    type="button"
-                    onClick={resetForm}
-                  >
-                    Clear
-                  </button>
+                  {editingId ? (
+                    <button
+                      className="sr-btn-clear"
+                      type="button"
+                      onClick={cancelEdit}
+                    >
+                      Cancel
+                    </button>
+                  ) : (
+                    <button
+                      className="sr-btn-clear"
+                      type="button"
+                      onClick={resetForm}
+                    >
+                      Clear
+                    </button>
+                  )}
                 </div>
               </form>
             </section>
@@ -670,16 +802,30 @@ function SavedRecipes() {
                                       navigate(`/my-recipe/${recipe._id}`)
                                     }
                                   />
-                                  <button
-                                    className="sr-btn-delete"
-                                    onClick={() =>
-                                      setConfirmDeleteId(recipe._id)
-                                    }
-                                    aria-label={`Delete ${recipe.name}`}
-                                    title="Delete recipe"
-                                  >
-                                    ×
-                                  </button>
+                                  <div className="sr-card-actions">
+                                    <button
+                                      className="sr-btn-card-action"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setConfirmEditRecipe(recipe);
+                                      }}
+                                      aria-label={`Edit ${recipe.name}`}
+                                      title="Edit recipe"
+                                    >
+                                      <i className="ri-edit-line" />
+                                    </button>
+                                    <button
+                                      className="sr-btn-card-action sr-btn-card-delete"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setConfirmDeleteId(recipe._id);
+                                      }}
+                                      aria-label={`Delete ${recipe.name}`}
+                                      title="Delete recipe"
+                                    >
+                                      <i className="ri-delete-bin-line" />
+                                    </button>
+                                  </div>
                                 </div>
                               );
                             })}
