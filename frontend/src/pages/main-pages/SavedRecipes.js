@@ -70,6 +70,7 @@ function SavedRecipes() {
   const [isPublic, setIsPublic] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const [confirmEditRecipe, setConfirmEditRecipe] = useState(null);
+  const [pendingSave, setPendingSave] = useState(null);
   const [errors, setErrors] = useState("");
   const [editingId, setEditingId] = useState(null);
 
@@ -207,7 +208,7 @@ function SavedRecipes() {
     setErrors("");
   }
 
-  async function handleSubmit(e) {
+  function handleSubmit(e) {
     e.preventDefault();
     setErrors("");
 
@@ -261,6 +262,17 @@ function SavedRecipes() {
       .trim();
     const fullInstructions = `${meta}\n\n${joinedInstructions}`;
 
+    setPendingSave({
+      name: name.trim(),
+      image: imageBase64,
+      ingredients: filledIngredients,
+      instructions: fullInstructions,
+      isPublic,
+    });
+  }
+
+  async function doSave(payload) {
+    setPendingSave(null);
     try {
       if (editingId) {
         const response = await fetch(
@@ -271,13 +283,7 @@ function SavedRecipes() {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({
-              name: name.trim(),
-              image: imageBase64,
-              ingredients: filledIngredients,
-              instructions: fullInstructions,
-              isPublic,
-            }),
+            body: JSON.stringify(payload),
           },
         );
         if (!response.ok) throw new Error("Failed to update recipe.");
@@ -294,13 +300,7 @@ function SavedRecipes() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({
-            name: name.trim(),
-            image: imageBase64,
-            ingredients: filledIngredients,
-            instructions: fullInstructions,
-            isPublic,
-          }),
+          body: JSON.stringify(payload),
         });
         if (!response.ok)
           throw new Error("Failed to add recipe. Are you authorized?");
@@ -359,6 +359,19 @@ function SavedRecipes() {
             setConfirmEditRecipe(null);
           }}
           onCancel={() => setConfirmEditRecipe(null)}
+        />
+      )}
+      {pendingSave && (
+        <Confirmation
+          title={editingId ? "Save Changes?" : "Save Recipe?"}
+          message={
+            editingId
+              ? `Save your changes to "${pendingSave.name}"?`
+              : `Save "${pendingSave.name}" to your recipes?`
+          }
+          confirmLabel={editingId ? "Save Changes" : "Save Recipe"}
+          onConfirm={() => doSave(pendingSave)}
+          onCancel={() => setPendingSave(null)}
         />
       )}
 
