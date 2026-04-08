@@ -35,6 +35,7 @@ export default function App() {
         <Route path="/my-recipe/:id" element={<MyRecipeDetails />} />
         <Route path="/team-recipe/:id" element={<TeamRecipeDetails />} />
 
+        {/* protected member routes */}
         <Route
           path="/profile"
           element={
@@ -44,7 +45,6 @@ export default function App() {
           }
         />
 
-        {/* protected member routes */}
         <Route
           path="/pantry"
           element={
@@ -72,7 +72,7 @@ export default function App() {
           }
         />
 
-        {/* admin routes will go here */}
+        {/* admin routes */}
         <Route
           path="/admin"
           element={
