@@ -154,7 +154,7 @@ function Home() {
     }
   }
 
-  const DAY_COUNT = 3;
+  const DAY_COUNT = 5;
   const WEEK_COUNT = 5;
 
   function getRotatingSlice(pool, seed, count) {

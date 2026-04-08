@@ -52,7 +52,7 @@ function Login() {
         <div className="suspended-overlay" onClick={() => setSuspended(false)}>
           <div className="suspended-box" onClick={(e) => e.stopPropagation()}>
             <div className="suspended-icon">
-              <i class="ri-close-circle-line"></i>
+              <i className="ri-close-circle-line"></i>
             </div>
             <h3 className="suspended-title">Account Suspended</h3>
             <p className="suspended-msg">
