@@ -93,7 +93,10 @@ function MealPlan() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ title: updatedPlan.title, plan: updatedPlan.plan }),
+        body: JSON.stringify({
+          title: updatedPlan.title,
+          plan: updatedPlan.plan,
+        }),
       });
       if (!res.ok) throw new Error();
       const saved = await res.json();
@@ -134,35 +137,39 @@ function MealPlan() {
         <div className="main-content">
           <div className="header-container">
             <div className="header-container-wrapper">
-              <h1>Meal Plans</h1>
+              <h2>Your Meal Plans</h2>
             </div>
           </div>
           <div className="mp-body">
             <div className="mps-body">
-              <h2>Your Meal Plan</h2>
+              <div className="mps-section">
+                <h3 className="home-section-title">Create meal plan</h3>
 
-              {loading && <p className="mps-hint">Loading...</p>}
+                {loading && <p className="mps-hint">Loading...</p>}
 
-              {!loading && !selectedPlan && (
-                <div>
-                  <p className="mps-hint">Create your first meal plan!</p>
-                  <button
-                    className="mps-schedule-card-container mps-schedule-card-add"
-                    onClick={handleCreatePlan}
-                    aria-label="Create new meal plan"
-                  >
-                    <Plus size={26} />
-                    <span>New Plan</span>
-                  </button>
-                </div>
-              )}
+                {!loading && !selectedPlan && (
+                  <div>
+                    <p className="mps-hint">Create your first meal plan!</p>
+                    <button
+                      className="mps-schedule-card-container mps-schedule-card-add"
+                      onClick={handleCreatePlan}
+                      aria-label="Create new meal plan"
+                    >
+                      <Plus size={26} />
+                      <span>New Plan</span>
+                    </button>
+                  </div>
+                )}
 
-              {selectedPlan && (
-                <MealPlanSchedule plan={selectedPlan} onSave={handleSavePlan} />
-              )}
+                {selectedPlan && (
+                  <MealPlanSchedule plan={selectedPlan} onSave={handleSavePlan} />
+                )}
+              </div>
 
-              <h2>Your Plans</h2>
-              <div className="mps-carousel-wrapper">
+              <div className="mps-section">
+                <h3 className="home-section-title">Your Plans</h3>
+                <p className="mps-hint">Your Saved Meal Plans</p>
+                <div className="mps-carousel-wrapper">
                 <div className="mps-carousel">
                   <button
                     className="mps-schedule-card-container mps-schedule-card-add"
@@ -182,6 +189,7 @@ function MealPlan() {
                       onDelete={() => handleDeletePlan(plan._id)}
                     />
                   ))}
+                </div>
                 </div>
               </div>
             </div>

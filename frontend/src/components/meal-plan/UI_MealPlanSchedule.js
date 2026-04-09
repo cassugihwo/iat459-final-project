@@ -327,7 +327,7 @@ function UI_MealPlanSchedule({ plan, onSave }) {
             aria-label="Plan name"
           />
         ) : (
-          <h3>{planTitle || "Untitled Plan"}</h3>
+          <h4>{planTitle || "Untitled Plan"}</h4>
         )}
         <button
           className={`mps-edit-btn${editMode ? " mps-edit-btn-finish" : ""}`}

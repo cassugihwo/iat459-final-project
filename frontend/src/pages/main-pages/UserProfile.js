@@ -8,6 +8,7 @@ import ScrollToTop from "components/scroll-to-top/UI_ScrollToTop";
 import Toast from "components/toast/UI_Toast";
 // eslint-disable-next-line import/no-unresolved
 import UIRecipeCard from "components/recipe-card/UI_RecipeCard";
+import MealPlanCard from "components/meal-plan/UI_MealPlanCard";
 import logo from "assets/logo/logo-full.png";
 import leftDish from "assets/bg image/left.png";
 import centerDish from "assets/bg image/center.png";
@@ -25,6 +26,7 @@ function UserProfile() {
   const [profile, setProfile] = useState(null);
   const [userRecipes, setUserRecipes] = useState([]);
   const [favourites, setFavourites] = useState([]);
+  const [mealPlans, setMealPlans] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [editMode, setEditMode] = useState(false);
@@ -44,7 +46,7 @@ function UserProfile() {
 
     async function fetchAll() {
       try {
-        const [profileRes, recipesRes, favsRes] = await Promise.all([
+        const [profileRes, recipesRes, favsRes, plansRes] = await Promise.all([
           fetch("http://localhost:5001/api/auth/profile", {
             headers: { Authorization: `Bearer ${token}` },
           }),
@@ -57,15 +59,20 @@ function UserProfile() {
           fetch("http://localhost:5001/api/favourites", {
             headers: { Authorization: `Bearer ${token}` },
           }),
+          fetch("http://localhost:5001/api/meal-plans", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
         ]);
         const profileData = await profileRes.json();
         const recipesData = recipesRes.ok ? await recipesRes.json() : [];
         const favsData = favsRes.ok ? await favsRes.json() : [];
+        const plansData = plansRes.ok ? await plansRes.json() : [];
 
         setProfile(profileData);
         setAvatarPreview(profileData.avatar || "");
         setUserRecipes(recipesData);
         setFavourites(favsData);
+        setMealPlans(Array.isArray(plansData) ? plansData : []);
       } catch (err) {
         setToast("Failed to load profile.");
       } finally {
@@ -310,7 +317,7 @@ function UserProfile() {
                         })
                       }
                     >
-                      <span className="up-stat-num">0</span>
+                      <span className="up-stat-num">{mealPlans.length}</span>
                       <span className="up-stat-label">Meal Plans</span>
                     </div>
                   </div>
@@ -437,9 +444,31 @@ function UserProfile() {
                         View All →
                       </button>
                     </div>
-                    <div className="up-empty-state">
-                      <p className="up-empty-text">🗓 No meal plans yet</p>
-                    </div>
+                    {mealPlans.length === 0 ? (
+                      <div className="up-empty-state">
+                        <p className="up-empty-text">No meal plans yet.</p>
+                        <button
+                          className="up-empty-action"
+                          onClick={() => navigate("/meal-plan")}
+                        >
+                          Create one
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="up-carousel-wrapper">
+                        <div className="up-cards-row">
+                          {mealPlans.map((plan) => (
+                            <MealPlanCard
+                              key={plan._id}
+                              plan={plan}
+                              isSelected={false}
+                              onClick={() => navigate("/meal-plan")}
+                              onDelete={() => {}}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </>

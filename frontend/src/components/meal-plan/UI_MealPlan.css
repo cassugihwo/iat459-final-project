@@ -426,7 +426,7 @@
 .mps-modal-header h2 {
     margin: 0;
     color: var(--color-red0);
-    font-size: 4rem;
+    font-size: 1.4rem;
 }
 
 .mps-modal-content {
@@ -442,7 +442,7 @@
 .mps-modal-sections h3 {
     margin: 0 0 0.75rem;
     color: var(--color-red1);
-    font-size: 2rem;
+    font-size: 1rem;
 }
 
 .mps-modal-section {
@@ -539,8 +539,8 @@
 
     .title {
         font-family: "Noto Sans", sans-serif;
-        font-size: 1rem;
-        font-weight: 800;
+        font-size: 0.9rem;
+        font-weight: 700;
         color: var(--color-red0);
         margin: 0;
         white-space: nowrap;
@@ -620,11 +620,11 @@
     gap: 0.6rem;
     margin-bottom: 2rem;
 
-    h3, .mps-plan-title-input {
+    h4, .mps-plan-title-input {
         margin: 0;
         margin-right: 1rem;
         font-family: "Noto Sans", sans-serif;
-        font-size: 2.2rem;
+        font-size: 1.4rem;
         font-weight: 700;
         color: var(--color-red0);
     }

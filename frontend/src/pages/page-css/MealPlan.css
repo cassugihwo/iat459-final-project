@@ -14,7 +14,15 @@
 
 .mps-body {
   width: 100%;
-  margin: 0 0.75rem;
+  margin: 0;
+}
+
+.mps-body .home-section-title {
+  margin-bottom: 0.5rem;
+}
+
+.mps-section {
+  margin-bottom: 2.5rem;
 }
 
 .mps-wrapper {
@@ -36,8 +44,9 @@
 .mps-carousel-wrapper {
   position: relative;
   display: flex;
-  align-items: center;
-  margin-top: 1.5rem;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 0.5rem;
 }
 
 .mps-carousel {
@@ -46,8 +55,10 @@
   gap: 1.8rem;
   overflow-x: auto;
   scroll-behavior: smooth;
-  padding: 1.5rem 1.5rem 2rem;
-  scroll-snap-type: x mandatory
+  padding: 0.75rem 1.5rem 1.5rem 0;
+  scroll-snap-type: x mandatory;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .mps-carousel::-webkit-scrollbar {
@@ -90,7 +101,7 @@
   min-width: 0;
 
   .mps-day-header {
-    /* padding: 0.5rem 0.5rem; */
+    padding: 0.5rem 0.5rem;
     width: 100%;
     background: var(--color-white0);
     border-bottom: 1.5px solid var(--color-white1);
@@ -118,13 +129,28 @@
 .mps-day-recipe-card-wrapper {
   width: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 0.75rem;
   min-width: 0;
 }
 
 .mps-day-recipe-card-wrapper-editing {
   gap: 0.5rem;
+}
+
+.mps-day-recipe-card-wrapper-inner {
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.mps-day-recipe-card-wrapper-inner.editing {
+  grid-template-columns: auto minmax(0, 1fr);
 }
 
 .mps-reorder-controls {
@@ -156,247 +182,6 @@
   transform: translateY(-1px);
   box-shadow: 0 0.125rem 0.35rem rgba(0, 0, 0, 0.12);
 }
-
-/* .mps-recipe-card-container {
-  background-color: var(--color-white0);
-  border-radius: var(--mps-recipe-card-border-radius);
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: var(--mps-recipe-card-width);
-  flex-shrink: 0;
-  cursor: pointer;
-  border: 0.125rem solid var(--color-white1);
-  box-shadow: 0 0.125rem 0.75rem rgba(0, 0, 0, 0.08);
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-  position: relative;
-
-  .mps-recipe-image {
-    position: relative;
-    height: 10rem;
-    flex-shrink: 0;
-    overflow: hidden;
-    border-radius: var(--recipe-card-border-radius)
-      var(--recipe-card-border-radius) 0 0;
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .mps-recipe-rating-pill {
-      position: absolute;
-      top: 0.6rem;
-      left: 0.6rem;
-      display: flex;
-      align-items: center;
-      gap: 0.2rem;
-      background: rgba(255, 255, 255, 0.92);
-      border-radius: 999px;
-      padding: 0.2rem 0.55rem;
-      box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.12);
-      z-index: 2;
-    }
-
-    .mps-recipe-rating-star {
-      font-size: 0.75rem;
-      color: #c49a00;
-      line-height: 1;
-    }
-
-    .mps-recipe-rating-value {
-      font-family: "Noto Sans", sans-serif;
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: #333;
-      line-height: 1;
-    }
-
-    .mps-recipe-image-placeholder {
-      width: 100%;
-      height: 100%;
-      background-color: var(--color-white1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      img {
-        width: 60%;
-        height: auto;
-        object-fit: contain;
-        opacity: 0.85;
-      }
-    }
-  }
-
-  .mps-recipe-del-wrapper {
-    position: absolute;
-    top: 0.75rem;
-    right: 0.75rem;
-    z-index: 4;
-  }
-
-  .mps-recipe-del-wrapper .mps-del-tooltip {
-    position: absolute;
-    bottom: calc(100% + 8px);
-    right: 0;
-    transform: translateY(4px);
-    background-color: rgba(29, 16, 16, 0.95);
-    color: #fff;
-    padding: 6px 10px;
-    border-radius: 8px;
-    font-family: "Noto Sans", sans-serif;
-    font-size: 0.72rem;
-    font-weight: 600;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition:
-      opacity 0.18s ease,
-      transform 0.18s ease;
-    z-index: 10;
-  }
-
-  .mps-recipe-del-wrapper .mps-del-tooltip::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    right: 0.65rem;
-    border-width: 5px;
-    border-style: solid;
-    border-color: rgba(29, 16, 16, 0.95) transparent transparent transparent;
-  }
-
-  .mps-recipe-del-wrapper:hover .mps-del-tooltip {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .mps-recipe-del-btn {
-    position: relative;
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 50%;
-    border: none;
-    background: rgba(255, 255, 255, 0.92);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.12);
-    transition: 0.2s ease;
-    z-index: 3;
-  }
-
-  .mps-recipe-del-btn:hover {
-    transform: scale(1.08);
-    background: #fff;
-  }
-
-  .mps-recipe-desc {
-    background-color: var(--color-white0);
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    padding: 1.6rem 1.1rem 1.1rem;
-    flex: 1;
-    border-radius: 0 0 var(--recipe-card-border-radius)
-      var(--recipe-card-border-radius);
-
-    .mps-recipe-categories {
-      margin: 0;
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      color: var(--color-yellow0);
-    }
-
-    h4 {
-      font-family: "Noto Sans", sans-serif;
-      font-size: 1.15rem;
-      font-weight: 800;
-      color: var(--color-red0);
-      margin: 0;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      line-height: 1.3;
-    }
-
-    .mps-recipe-meta-row {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-top: 0.2rem;
-    }
-
-    .mps-time {
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-
-      .mps-icon-cooktime {
-        width: 0.85rem;
-        height: auto;
-      }
-
-      span {
-        color: var(--color-red1);
-        font-size: 0.8rem;
-        font-family: "Noto Sans", sans-serif;
-      }
-    }
-
-    .mps-recipe-ingredients-list {
-      list-style: none;
-      margin: 0.3rem 0 0;
-      padding: 0.5rem 0 0;
-      border-top: 1px solid var(--color-white1);
-      display: flex;
-      flex-direction: column;
-      gap: 0.18rem;
-    }
-
-    .mps-recipe-ingredients-list li {
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-      font-size: 0.75rem;
-      font-family: "Noto Sans", sans-serif;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .mps-ingredient-match {
-      color: #2e7d32;
-    }
-
-    .mps-ingredient-miss {
-      color: #b71c1c;
-    }
-
-    .mps-ingredient-icon {
-      font-size: 0.7rem;
-      font-weight: 800;
-      flex-shrink: 0;
-    }
-
-    .mps-recipe-difficulty {
-      font-size: 0.75rem;
-      font-weight: 600;
-      font-family: "Noto Sans", sans-serif;
-      color: var(--color-red0);
-      background: var(--color-white1);
-      border-radius: 999px;
-      padding: 0.15rem 0.65rem;
-    }
-  }
-} */
 
 .mps-modal-overlay {
   position: fixed;

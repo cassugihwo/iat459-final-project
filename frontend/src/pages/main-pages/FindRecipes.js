@@ -295,8 +295,10 @@ function FindRecipes() {
         </div>
 
         <div className="main-content">
-          <div className="find-hero">
-            <h2 className="find-hero-title">Recipes with your ingredients</h2>
+          <div className="header-container">
+            <div className="header-container-wrapper">
+              <h2>Recipes with your ingredients</h2>
+            </div>
           </div>
 
           <div className="find-recipes-body">

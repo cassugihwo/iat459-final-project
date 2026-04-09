@@ -20,7 +20,7 @@ function UI_MealPlanCard({ plan, isSelected, onClick, onDelete }) {
       aria-label={`Select ${plan?.title || "Untitled Plan"}`}
       aria-pressed={isSelected}
     >
-      <h3 className="title">{plan?.title || "Untitled Plan"}</h3>
+      <h4 className="title">{plan?.title || "Untitled Plan"}</h4>
       <p className="mps-schedule-card-count">
         {recipeCount} {recipeCount === 1 ? "recipe saved" : "recipes saved"}
       </p>
