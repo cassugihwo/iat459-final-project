@@ -135,7 +135,6 @@ function MealPlan() {
           <div className="header-container">
             <div className="header-container-wrapper">
               <h1>Meal Plans</h1>
-              <p>(insert explanation of meal schedule here)</p>
             </div>
           </div>
           <div className="mp-body">

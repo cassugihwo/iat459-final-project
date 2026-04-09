@@ -10,7 +10,7 @@ const WEEK_DAYS = [
   "Sunday",
 ];
 
-/* Local snapshot schema for recipes */
+/* Pseudo 'interface' or 'object type' for recipe snapshots */
 const recipeSnapshotSchema = {
   recipeId: { type: mongoose.Schema.Types.Mixed },
   title: { type: String },
