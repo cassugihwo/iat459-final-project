@@ -157,7 +157,7 @@
   box-shadow: 0 0.125rem 0.35rem rgba(0, 0, 0, 0.12);
 }
 
-.mps-recipe-card-container {
+/* .mps-recipe-card-container {
   background-color: var(--color-white0);
   border-radius: var(--mps-recipe-card-border-radius);
   display: flex;
@@ -396,7 +396,7 @@
       padding: 0.15rem 0.65rem;
     }
   }
-}
+} */
 
 .mps-modal-overlay {
   position: fixed;

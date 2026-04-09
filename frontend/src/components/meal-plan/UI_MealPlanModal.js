@@ -121,6 +121,7 @@ function UI_MealPlanModal({ isOpen, onClose, onAdd, day }) {
                       {items.map((fav) => {
                         const selectionKey = `fav-${fav._id}`;
                         const snap = {
+                          recipeId: fav.recipeId,
                           title: fav.title,
                           image: fav.image,
                           cuisineType: fav.cuisineType,
@@ -186,6 +187,7 @@ function UI_MealPlanModal({ isOpen, onClose, onAdd, day }) {
                       {createdRecipes.map((recipe) => {
                         const selectionKey = `created-${recipe._id}`;
                         const snap = {
+                          recipeId: recipe._id,
                           title: recipe.name,
                           image: recipe.image,
                           dishType: recipe.isPublic ? "Public" : "Private",

@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "context/AuthContext";
 import "./UI_MealPlan.css";
 import "pages/MainPage.css";
 import { Trash2, ChevronUp, ChevronDown, Plus } from "lucide-react";
@@ -16,12 +18,26 @@ const DAYS = [
   "Sunday",
 ];
 
+function buildRecipeLookupKey(recipe) {
+  return [
+    recipe?.title || "",
+    recipe?.image || "",
+    recipe?.cuisineType || "",
+    recipe?.dishType || "",
+    recipe?.readyInMinutes || "",
+    recipe?.isUserRecipe ? "user" : "favourite",
+  ].join("|");
+}
+
 function UI_MealPlanSchedule({ plan, onSave }) {
+  const navigate = useNavigate();
+  const { token } = useAuth();
   const [editMode, setEditMode] = useState(false);
   const [localPlan, setLocalPlan] = useState(null);
   const [planTitle, setPlanTitle] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalDay, setModalDay] = useState(null);
+  const [recipePaths, setRecipePaths] = useState({});
 
   // Sync local state when the plan prop changes (e.g. after a save or plan switch)
   useEffect(() => {
@@ -31,6 +47,75 @@ function UI_MealPlanSchedule({ plan, onSave }) {
       setEditMode(false);
     }
   }, [plan]);
+
+  useEffect(() => {
+    if (!token) {
+      setRecipePaths({});
+      return;
+    }
+
+    let isActive = true;
+
+    async function fetchRecipePaths() {
+      try {
+        const headers = { Authorization: `Bearer ${token}` };
+        const [favRes, createdRes] = await Promise.all([
+          fetch("http://localhost:5001/api/favourites", { headers }),
+          fetch("http://localhost:5001/api/user-recipes2", { headers }),
+        ]);
+
+        if (!favRes.ok || !createdRes.ok) {
+          if (isActive) setRecipePaths({});
+          return;
+        }
+
+        const [favourites, createdRecipes] = await Promise.all([
+          favRes.json(),
+          createdRes.json(),
+        ]);
+
+        if (!isActive) return;
+
+        const nextPaths = {};
+
+        for (const favourite of Array.isArray(favourites) ? favourites : []) {
+          nextPaths[
+            buildRecipeLookupKey({
+              recipeId: favourite.recipeId,
+              title: favourite.title,
+              image: favourite.image,
+              cuisineType: favourite.cuisineType,
+              dishType: favourite.dishType,
+              readyInMinutes: favourite.readyInMinutes,
+              isUserRecipe: false,
+            })
+          ] = `/recipe/${favourite.recipeId}`;
+        }
+
+        for (const recipe of Array.isArray(createdRecipes) ? createdRecipes : []) {
+          nextPaths[
+            buildRecipeLookupKey({
+              recipeId: recipe._id,
+              title: recipe.name,
+              image: recipe.image,
+              dishType: recipe.isPublic ? "Public" : "Private",
+              isUserRecipe: true,
+            })
+          ] = `/my-recipe/${recipe._id}`;
+        }
+
+        setRecipePaths(nextPaths);
+      } catch {
+        if (isActive) setRecipePaths({});
+      }
+    }
+
+    fetchRecipePaths();
+
+    return () => {
+      isActive = false;
+    };
+  }, [token]);
 
   if (!localPlan) return null;
 
@@ -77,10 +162,29 @@ function UI_MealPlanSchedule({ plan, onSave }) {
     setEditMode(false);
   }
 
+  function getRecipeDetailPath(recipe) {
+    if (recipe?.recipeId) {
+      return recipe.isUserRecipe
+        ? `/my-recipe/${recipe.recipeId}`
+        : `/recipe/${recipe.recipeId}`;
+    }
+
+    return recipePaths[buildRecipeLookupKey(recipe)] || null;
+  }
+
   function RecipeCardRow({ recipe, idx, day }) {
     const categories = [recipe.cuisineType, recipe.dishType].filter(Boolean);
+    const detailPath = getRecipeDetailPath(recipe);
+    const isClickable = !editMode && Boolean(detailPath);
+
+    function handleOpenRecipe() {
+      if (detailPath) {
+        navigate(detailPath);
+      }
+    }
+
     return (
-      <div className="mps-day-recipe-card-wrapper-inner">
+      <div className={`mps-day-recipe-card-wrapper-inner ${editMode ? "editing" : ""}`}>
         {editMode && (
           <div className="mps-reorder-controls" aria-label="Reorder recipes">
             <button
@@ -101,7 +205,23 @@ function UI_MealPlanSchedule({ plan, onSave }) {
             </button>
           </div>
         )}
-        <div className="mps-recipe-card-container">
+        <div
+          className={`mps-recipe-card-container${isClickable ? " mps-recipe-card-container-clickable" : ""}`}
+          onClick={isClickable ? handleOpenRecipe : undefined}
+          onKeyDown={
+            isClickable
+              ? (event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    handleOpenRecipe();
+                  }
+                }
+              : undefined
+          }
+          role={isClickable ? "button" : undefined}
+          tabIndex={isClickable ? 0 : undefined}
+          aria-label={isClickable ? `Open ${recipe.title || "recipe"}` : undefined}
+        >
           <div className="mps-recipe-image">
             {recipe.image ? (
               <img src={recipe.image} alt={recipe.title || "Dish"} />
